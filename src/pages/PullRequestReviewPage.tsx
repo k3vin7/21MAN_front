@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, FileText, Sparkles } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Input } from '@/components/common/Input';
@@ -19,12 +18,6 @@ import { pullRequestService } from '@/features/pull-request/pullRequest.service'
 import type { Repository } from '@/features/repository/repository.types';
 import { repositoryService } from '@/features/repository/repository.service';
 import { useToast } from '@/hooks/useToast';
-
-const gradeKorean = {
-  MAJOR: '상',
-  NORMAL: '중',
-  MINOR: '하',
-} as const;
 
 const loadingSteps = ['내용 분석 중...', '제안 유형 판정 중...', '등급 계산 중...', '충돌 검사 중...'];
 
@@ -54,9 +47,7 @@ export const PullRequestReviewPage = () => {
         repositoryService.getRepositoryById(repoId),
       ]);
 
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       setPullRequest(nextPullRequest);
       setRepository(nextRepository);
@@ -68,20 +59,17 @@ export const PullRequestReviewPage = () => {
     };
 
     fetchReview();
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [prId, repoId]);
 
   if (isLoading) {
     return (
       <div className="mx-auto max-w-4xl space-y-4">
-        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h1 className="text-2xl font-semibold text-slate-950">AI가 창작 제안을 분석했습니다</h1>
+        <section className="rounded-2xl bg-white p-6 shadow-sm">
+          <h1 className="text-2xl font-bold text-slate-950">AI가 분석하고 있어요</h1>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {loadingSteps.map((step) => (
-              <div key={step} className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+              <div key={step} className="rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-600">
                 {step}
               </div>
             ))}
@@ -96,12 +84,12 @@ export const PullRequestReviewPage = () => {
     return (
       <EmptyState
         action={
-          <Link className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" to={`/r/${repoId}/pr/new`}>
-            새 창작 제안 작성
+          <Link className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white" to={`/r/${repoId}/pr/new`}>
+            다시 써볼게요
           </Link>
         }
-        title="창작 제안을 찾지 못했습니다"
-        description="mock service 메모리에 없는 창작 제안입니다. 작성 페이지에서 AI 분석을 다시 실행해보세요."
+        title="제안을 찾지 못했어요"
+        description="작성 페이지에서 AI 분석을 다시 실행해보세요."
       />
     );
   }
@@ -119,10 +107,7 @@ export const PullRequestReviewPage = () => {
       },
     });
 
-    if (updated) {
-      setPullRequest(updated);
-    }
-
+    if (updated) setPullRequest(updated);
     return updated;
   };
 
@@ -136,8 +121,8 @@ export const PullRequestReviewPage = () => {
       if (submitted) {
         setPullRequest(submitted);
         toast({
-          title: '창작 제안이 제출되었습니다',
-          description: '세계관 소개 페이지로 이동합니다.',
+          title: '제안이 작가님한테 전달됐어요',
+          description: '작품 페이지로 돌아갑니다.',
           tone: 'success',
         });
         setConfirmOpen(false);
@@ -149,96 +134,114 @@ export const PullRequestReviewPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-4">
       <Link
-        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-950"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-slate-900"
         to={`/r/${pullRequest.repositoryId}/pr/new`}
       >
         <ArrowLeft className="size-4" />
         수정하러 돌아가기
       </Link>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">AI 검토</p>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold text-slate-950">AI가 창작 제안을 분석했습니다</h1>
-          {isSubmitted ? <Badge tone="teal">제출 완료</Badge> : null}
+      {/* 헤더 */}
+      <section className="rounded-2xl bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-3xl font-black text-slate-950">AI 분석 결과</h1>
+          {isSubmitted && (
+            <span className="rounded-full bg-slate-900 px-3 py-1 text-xs font-bold text-white">제출 완료</span>
+          )}
         </div>
-        <p className="mt-3 text-sm leading-6 text-slate-500">내용을 확인하고 제출하세요.</p>
+        <p className="mt-2 text-base text-slate-500">아래 내용 확인하고 제출하면 돼요.</p>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      {/* 제목 + 기여 유형 */}
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <Input label="제안 제목" onChange={(event) => setTitle(event.target.value)} value={title} />
-        <div className="mt-4 flex flex-wrap gap-2">
-          {pullRequest.contributionTypes.map((type) => (
-            <Badge key={type} tone="blue">
-              {type}
-            </Badge>
-          ))}
-        </div>
-        <p className="mt-4 text-sm leading-6 text-slate-600">{pullRequest.structuredContent.expectedEffect}</p>
+        {pullRequest.contributionTypes.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {pullRequest.contributionTypes.map((type) => (
+              <span key={type} className="rounded-full bg-slate-100 px-3.5 py-1.5 text-sm font-semibold text-slate-700">
+                {type}
+              </span>
+            ))}
+          </div>
+        )}
+        <p className="mt-4 text-sm leading-7 text-slate-600">{pullRequest.structuredContent.expectedEffect}</p>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex items-center gap-3">
-          <FileText className="size-5 text-accent-700" />
-          <h2 className="text-lg font-semibold text-slate-950">정리된 창작 제안</h2>
-        </div>
-        <dl className="mt-5 grid gap-4">
+      {/* 정리된 내용 */}
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <h2 className="text-base font-bold text-slate-900">AI가 정리한 내용</h2>
+        <dl className="mt-4 space-y-4">
           <StructuredItem label="핵심 제안" value={pullRequest.structuredContent.coreIdea} />
           <StructuredItem label="관련 캐릭터" value={pullRequest.structuredContent.relatedCharacters.join(', ') || '해당 없음'} />
-          <StructuredItem label="관련 지역/세력" value={pullRequest.structuredContent.relatedLocations.join(', ') || '해당 없음'} />
+          <StructuredItem label="관련 지역·세력" value={pullRequest.structuredContent.relatedLocations.join(', ') || '해당 없음'} />
           <StructuredItem label="관련 세계 규칙" value={pullRequest.structuredContent.relatedWorldRules.join(', ') || '해당 없음'} />
           <StructuredItem label="기대 효과" value={pullRequest.structuredContent.expectedEffect} />
         </dl>
-        <Button className="mt-5" onClick={() => setShowOriginal((value) => !value)} variant="secondary">
+        <button
+          type="button"
+          className="mt-5 rounded-xl bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+          onClick={() => setShowOriginal((v) => !v)}
+        >
           원문 {showOriginal ? '닫기' : '보기'}
-        </Button>
-        {showOriginal ? (
-          <p className="mt-4 whitespace-pre-wrap rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-700">
+        </button>
+        {showOriginal && (
+          <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 px-4 py-4 text-sm leading-7 text-slate-700">
             {pullRequest.originalContent}
           </p>
-        ) : null}
+        )}
       </section>
 
-      <section className="rounded-lg border border-accent-200 bg-accent-50 p-5">
+      {/* AI 등급 */}
+      <section className="rounded-2xl bg-slate-50 p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-950">AI 창작 제안 등급</h2>
-            <p className="mt-1 text-sm text-slate-600">사용자 표시 등급: {gradeKorean[pullRequest.aiGrading.grade]}</p>
-          </div>
+          <h2 className="text-base font-bold text-slate-900">AI 등급 판정</h2>
           <div className="flex items-center gap-3">
             <GradeBadge grade={pullRequest.aiGrading.grade} />
-            <span className="text-2xl font-semibold text-slate-950">{pullRequest.aiGrading.totalScore}/100</span>
+            <span className="text-2xl font-black text-slate-950">{pullRequest.aiGrading.totalScore}<span className="text-base font-semibold text-slate-400">/100</span></span>
           </div>
         </div>
         <div className="mt-5">
           <AiScoreBars grading={pullRequest.aiGrading} />
         </div>
-        <p className="mt-5 rounded-lg border border-accent-100 bg-white p-4 text-sm leading-6 text-slate-700">
+        <p className="mt-5 rounded-xl bg-white px-4 py-3 text-sm leading-7 text-slate-600">
           {pullRequest.aiGrading.rationale}
         </p>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-950">AI 판정에 동의하시나요?</h2>
+      {/* AI 판정 동의 */}
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <h2 className="text-base font-bold text-slate-900">AI 판정, 어떻게 생각하세요?</h2>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Button onClick={() => setAgreesWithAI(true)} variant={agreesWithAI ? 'primary' : 'secondary'}>
-            동의합니다
-          </Button>
-          <Button onClick={() => setAgreesWithAI(false)} variant={!agreesWithAI ? 'primary' : 'secondary'}>
-            이의 있음
-          </Button>
+          <button
+            type="button"
+            onClick={() => setAgreesWithAI(true)}
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              agreesWithAI ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            맞아요
+          </button>
+          <button
+            type="button"
+            onClick={() => setAgreesWithAI(false)}
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              !agreesWithAI ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            다르게 봐요
+          </button>
         </div>
-        {!agreesWithAI ? (
+        {!agreesWithAI && (
           <Textarea
             className="mt-4"
-            label="이의 사유"
+            label="어떤 부분이 다른가요?"
             onChange={(event) => setOpinionNote(event.target.value)}
             placeholder="AI가 놓친 맥락이나 등급 판단에 대한 의견을 적어주세요."
             value={opinionNote}
           />
-        ) : null}
+        )}
       </section>
 
       <ConflictCheckCard pullRequest={pullRequest} repository={repository} />
@@ -250,36 +253,42 @@ export const PullRequestReviewPage = () => {
         submittedAt={pullRequest.timestamps.submittedAt}
       />
 
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-        <Button onClick={saveReviewState} variant="secondary">
-          임시 저장
-        </Button>
-        <Button
-          disabled={isSubmitted || !allAgreed || (!agreesWithAI && !opinionNote.trim()) || !title.trim()}
-          leftIcon={<Sparkles className="size-4" />}
-          onClick={() => setConfirmOpen(true)}
+      <div className="flex flex-col gap-3 pb-6 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          onClick={saveReviewState}
+          className="flex h-12 items-center justify-center rounded-2xl bg-slate-100 px-6 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 sm:w-auto"
         >
-          {isSubmitted ? '제출 완료' : '제출'}
-        </Button>
+          임시 저장
+        </button>
+        <button
+          type="button"
+          disabled={isSubmitted || !allAgreed || (!agreesWithAI && !opinionNote.trim()) || !title.trim()}
+          onClick={() => setConfirmOpen(true)}
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 text-base font-bold text-white transition hover:bg-slate-800 disabled:opacity-30 sm:w-auto sm:px-8"
+        >
+          <Sparkles className="size-5" />
+          {isSubmitted ? '제출 완료' : '작가님한테 보내기'}
+        </button>
       </div>
 
       <Modal
         footer={
           <div className="flex justify-end gap-3">
             <Button onClick={() => setConfirmOpen(false)} variant="ghost">
-              취소
+              잠깐만요
             </Button>
             <Button isLoading={isSubmitting} onClick={handleSubmit}>
-              제출 확정
+              보낼게요
             </Button>
           </div>
         }
         isOpen={confirmOpen}
         onClose={() => setConfirmOpen(false)}
-        title="창작 제안을 제출할까요?"
+        title="작가님한테 보낼게요"
       >
-        <p className="text-sm leading-6 text-slate-600">
-          제출 후 작성 시각과 제출 시각이 기록되며, 원작자가 열람하면 열람 로그도 추가됩니다.
+        <p className="text-sm leading-7 text-slate-600">
+          제출하면 작성 시각과 제출 시각이 기록돼요. 작가님이 열어보면 열람 기록도 남아요.
         </p>
       </Modal>
     </div>
@@ -293,9 +302,9 @@ type StructuredItemProps = {
 
 const StructuredItem = ({ label, value }: StructuredItemProps) => {
   return (
-    <div>
-      <dt className="text-sm font-medium text-slate-500">{label}</dt>
-      <dd className="mt-1 text-sm leading-6 text-slate-700">{value}</dd>
+    <div className="rounded-xl bg-slate-50 px-4 py-3">
+      <dt className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</dt>
+      <dd className="mt-1 text-sm leading-6 text-slate-800">{value}</dd>
     </div>
   );
 };

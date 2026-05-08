@@ -7,11 +7,11 @@ type AiScoreBarsProps = {
 };
 
 const scoreItems = [
-  { key: 'scope', label: 'Scope', description: '제안 범위' },
-  { key: 'permanence', label: 'Permanence', description: '영구 반영성' },
-  { key: 'cascade', label: 'Cascade', description: '후속 영향' },
-  { key: 'alignment', label: 'Alignment', description: '세계관 정합성' },
-  { key: 'specificity', label: 'Specificity', description: '구체성' },
+  { key: 'scope', label: '제안 범위' },
+  { key: 'permanence', label: '영구 반영성' },
+  { key: 'cascade', label: '후속 영향' },
+  { key: 'alignment', label: '세계관 정합성' },
+  { key: 'specificity', label: '구체성' },
 ] as const;
 
 export const AiScoreBars = ({ grading, compact = false }: AiScoreBarsProps) => {
@@ -24,15 +24,12 @@ export const AiScoreBars = ({ grading, compact = false }: AiScoreBarsProps) => {
         return (
           <div key={item.key}>
             <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="font-medium text-slate-700">
-                {item.label}
-                {!compact ? <span className="ml-2 text-xs font-normal text-slate-500">{item.description}</span> : null}
-              </span>
-              <span className="text-slate-500">{score}/20</span>
+              <span className="font-semibold text-slate-700">{item.label}</span>
+              <span className="font-bold text-slate-900">{score}<span className="text-xs font-normal text-slate-400">/20</span></span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
               <div
-                className="h-full rounded-full bg-accent-600"
+                className="h-full rounded-full bg-slate-800"
                 style={{ width: `${percentage}%` }}
               />
             </div>

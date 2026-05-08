@@ -6,15 +6,15 @@ type AgreementChecklistProps = {
 const agreements = [
   {
     id: 'ip',
-    label: '공식 반영 시 IP는 원작자에게 귀속됨에 동의',
+    label: '공식 반영 시 IP는 원작자에게 귀속돼요',
   },
   {
     id: 'credit',
-    label: '크레딧은 내 프로필에 영구 표기됨에 동의',
+    label: '기여 크레딧은 내 프로필에 영구 표기돼요',
   },
   {
     id: 'timestamp',
-    label: '작성 / 제출 / 열람 시점이 영구 기록됨에 동의',
+    label: '작성·제출·열람 시점이 영구 기록돼요',
   },
 ];
 
@@ -30,14 +30,14 @@ export const AgreementChecklist = ({ value, onChange }: AgreementChecklistProps)
   };
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-950">제출 전 동의</h2>
+    <section className="rounded-2xl bg-white p-5 shadow-sm">
+      <h2 className="text-base font-bold text-slate-900">제출 전에 확인해주세요</h2>
       <div className="mt-4 space-y-3">
         {agreements.map((agreement) => (
-          <label key={agreement.id} className="flex cursor-pointer items-center gap-3 text-sm text-slate-700">
+          <label key={agreement.id} className="flex cursor-pointer items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100">
             <input
               checked={value.includes(agreement.id)}
-              className="size-4 rounded border-slate-300 bg-white text-accent-600 focus:ring-accent-500"
+              className="size-4 rounded border-slate-300 bg-white text-slate-900 focus:ring-slate-500"
               onChange={() => toggleAgreement(agreement.id)}
               type="checkbox"
             />

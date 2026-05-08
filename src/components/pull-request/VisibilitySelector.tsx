@@ -10,24 +10,22 @@ type VisibilitySelectorProps = {
 const options = [
   {
     value: 'PUBLIC' as const,
-    label: '공개 제안',
-    description: '다른 사용자가 보고 반응할 수 있습니다.',
-    guide: '목격자가 많아 원작성 증명에 더 유리합니다.',
+    label: '모두에게 공개',
+    description: '다른 사람들도 볼 수 있어요. 원작성 증명에 더 유리해요.',
     icon: Eye,
   },
   {
     value: 'PRIVATE' as const,
-    label: '비공개 제안',
-    description: '원작자와 작성자만 볼 수 있습니다.',
-    guide: '목격자는 적지만 타임스탬프는 남고, 공식 반영 기록은 공개될 수 있습니다.',
+    label: '작가님만',
+    description: '원작자와 나만 볼 수 있어요. 타임스탬프는 그대로 남아요.',
     icon: LockKeyhole,
   },
 ];
 
 export const VisibilitySelector = ({ value, onChange }: VisibilitySelectorProps) => {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-950">공개 범위</h2>
+    <section className="rounded-2xl bg-white p-5 shadow-sm">
+      <h2 className="text-base font-bold text-slate-900">누구한테 보여줄까요?</h2>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         {options.map((option) => {
           const Icon = option.icon;
@@ -37,8 +35,8 @@ export const VisibilitySelector = ({ value, onChange }: VisibilitySelectorProps)
             <label
               key={option.value}
               className={cn(
-                'cursor-pointer rounded-lg border p-4 transition',
-                selected ? 'border-accent-300 bg-accent-50' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
+                'cursor-pointer rounded-2xl p-4 transition',
+                selected ? 'bg-slate-900' : 'bg-slate-50 hover:bg-slate-100',
               )}
             >
               <input
@@ -47,12 +45,15 @@ export const VisibilitySelector = ({ value, onChange }: VisibilitySelectorProps)
                 onChange={() => onChange(option.value)}
                 type="radio"
               />
-              <div className="flex items-center gap-3">
-                <Icon className={selected ? 'size-5 text-accent-700' : 'size-5 text-slate-500'} />
-                <span className="font-semibold text-slate-950">{option.label}</span>
+              <div className="flex items-center gap-2.5">
+                <Icon className={`size-4 ${selected ? 'text-white' : 'text-slate-500'}`} />
+                <span className={`text-sm font-bold ${selected ? 'text-white' : 'text-slate-900'}`}>
+                  {option.label}
+                </span>
               </div>
-              <p className="mt-3 text-sm leading-6 text-slate-600">{option.description}</p>
-              <p className="mt-2 text-xs leading-5 text-slate-500">{option.guide}</p>
+              <p className={`mt-2 text-sm leading-6 ${selected ? 'text-white/70' : 'text-slate-500'}`}>
+                {option.description}
+              </p>
             </label>
           );
         })}
