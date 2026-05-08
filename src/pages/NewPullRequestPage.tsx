@@ -140,7 +140,7 @@ export const NewPullRequestPage = () => {
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <Link
-        className="inline-flex items-center gap-1.5 text-sm text-slate-400 transition hover:text-slate-700"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-slate-900"
         to={`/r/${repository.id}`}
       >
         <ArrowLeft className="size-4" />
@@ -151,21 +151,21 @@ export const NewPullRequestPage = () => {
       <div className="relative overflow-hidden rounded-2xl">
         <img
           alt=""
-          className="absolute inset-0 size-full object-cover opacity-40"
+          className="absolute inset-0 size-full object-cover opacity-50"
           src={repository.thumbnail}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-slate-900/20" />
-        <div className="relative px-7 py-8">
-          <p className="text-xs font-semibold uppercase tracking-wider text-white/50">작품에 기여하기</p>
-          <h1 className="mt-2 text-3xl font-bold text-white">{repository.title}</h1>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-slate-900/40" />
+        <div className="relative px-7 py-10">
+          <p className="text-xs font-bold uppercase tracking-wider text-white/80">작품에 기여하기</p>
+          <h1 className="mt-2 text-4xl font-black text-white">{repository.title}</h1>
           {author && (
             <div className="mt-4 flex items-center gap-2.5">
               <img
                 alt={author.displayName}
-                className="size-7 rounded-full object-cover ring-2 ring-white/20"
+                className="size-8 rounded-full object-cover ring-2 ring-white/40"
                 src={author.avatar}
               />
-              <span className="text-sm text-white/70">@{author.username} 작가님 작품에 기여하기</span>
+              <span className="text-sm font-semibold text-white/90">@{author.username} 작가님 작품에 기여하기</span>
             </div>
           )}
         </div>
@@ -173,18 +173,18 @@ export const NewPullRequestPage = () => {
 
       {/* 금지 설정 경고 */}
       {repository.readme.forbiddenSettings.length > 0 && (
-        <div className="rounded-2xl bg-amber-50 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider text-amber-500">작가님이 원하지 않는 것들</p>
-          <ul className="mt-2 space-y-1">
+        <div className="rounded-2xl bg-amber-50 p-5">
+          <p className="text-xs font-bold uppercase tracking-wider text-amber-600">작가님이 원하지 않는 것들</p>
+          <ul className="mt-2.5 space-y-1.5">
             {repository.readme.forbiddenSettings.slice(0, 2).map((setting) => (
-              <li key={setting} className="flex items-start gap-2 text-sm text-amber-800">
-                <span className="mt-2 size-1 shrink-0 rounded-full bg-amber-400" />
+              <li key={setting} className="flex items-start gap-2 text-sm font-medium text-amber-900">
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-amber-500" />
                 {setting}
               </li>
             ))}
           </ul>
-          <Link className="mt-3 inline-flex text-xs text-amber-500 hover:text-amber-700" to={`/r/${repository.id}`}>
-            작품 규칙 전체 보기
+          <Link className="mt-3 inline-flex text-xs font-semibold text-amber-600 hover:text-amber-800" to={`/r/${repository.id}`}>
+            작품 규칙 전체 보기 →
           </Link>
         </div>
       )}
@@ -192,17 +192,17 @@ export const NewPullRequestPage = () => {
       {/* 모집 영역 선택 */}
       {recruitingAreas.length > 0 && (
         <div className="rounded-2xl bg-white px-5 py-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">작가님이 찾는 건</p>
+          <p className="text-sm font-bold text-slate-800">작가님이 찾는 건</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {recruitingAreas.map((area) => (
               <button
                 key={area.id}
                 type="button"
                 onClick={() => toggleContributionType(area.type)}
-                className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                   draft.contributionTypes.includes(area.type)
                     ? 'bg-slate-900 text-white'
-                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
                 {RECRUITING_AREA_LABELS[area.type]}
@@ -215,12 +215,12 @@ export const NewPullRequestPage = () => {
       {/* 작성 폼 */}
       <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
         <div className="px-5 pt-5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400" htmlFor="pr-title">
+          <label className="text-sm font-bold text-slate-800" htmlFor="pr-title">
             제목을 붙여볼까요?
           </label>
           <input
             id="pr-title"
-            className="mt-2 h-11 w-full rounded-xl border border-slate-100 bg-slate-50 px-3 text-sm text-slate-900 outline-none placeholder:text-slate-300 focus:border-accent-400 focus:bg-white focus:ring-2 focus:ring-accent-400/15 transition"
+            className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-accent-400 focus:bg-white focus:ring-2 focus:ring-accent-400/15 transition"
             onChange={(event) => updateDraft({ title: event.target.value })}
             placeholder="예: 마법 아카데미에 신입 교수 한 명 추가"
             value={draft.title}
@@ -228,19 +228,19 @@ export const NewPullRequestPage = () => {
         </div>
 
         <div className="px-5 pt-5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400" htmlFor="pr-content">
+          <label className="text-sm font-bold text-slate-800" htmlFor="pr-content">
             뭐든 자유롭게 써주세요
           </label>
           <textarea
             id="pr-content"
-            className="mt-2 w-full resize-none rounded-xl border border-slate-100 bg-slate-50 px-3 py-3 text-sm leading-7 text-slate-900 outline-none placeholder:text-slate-300 focus:border-accent-400 focus:bg-white focus:ring-2 focus:ring-accent-400/15 transition min-h-[320px]"
+            className="mt-2 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm leading-7 text-slate-900 outline-none placeholder:text-slate-400 focus:border-accent-400 focus:bg-white focus:ring-2 focus:ring-accent-400/15 transition min-h-[320px]"
             onChange={(event) => updateDraft({ content: event.target.value })}
             placeholder={`이 작품에 어떤 걸 제안하고 싶은지 편하게 써주세요.\n\n예) ${repository.title}에 새로운 캐릭터를 추가하고 싶어요. 이 캐릭터는...`}
             value={draft.content}
           />
         </div>
 
-        <div className="flex items-center justify-between px-5 py-3 text-xs text-slate-300">
+        <div className="flex items-center justify-between px-5 py-3 text-xs font-medium text-slate-400">
           <span>{draft.content.length.toLocaleString('ko-KR')}자</span>
           <span>{saveStatus}</span>
         </div>
