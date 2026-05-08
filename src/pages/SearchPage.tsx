@@ -95,7 +95,7 @@ export const SearchPage = () => {
   }, [filters]);
 
   const selectedAuthor = selectedRepository
-    ? users.find((user) => user.id === selectedRepository.authorId)
+    ? users.find((user) => user.id === selectedRepository.authorId || user.username === selectedRepository.authorId)
     : undefined;
 
   const toggleArrayFilter = <T extends string>(key: keyof RepositorySearchFilters, value: T) => {

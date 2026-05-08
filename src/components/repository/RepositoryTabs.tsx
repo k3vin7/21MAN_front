@@ -45,7 +45,7 @@ const filterOptions: Array<{
 
 const closedStatuses: PullRequestStatus[] = ['ACCEPTED', 'MERGED', 'REJECTED'];
 
-const getUser = (users: User[], userId: string) => users.find((user) => user.id === userId);
+const getUser = (users: User[], userId: string) => users.find((user) => user.id === userId || user.username === userId);
 
 export const RepositoryTabs = ({
   repository,
@@ -96,7 +96,9 @@ export const RepositoryTabs = ({
 
   const contributorSummaries = users
     .map((user) => {
-      const authored = pullRequests.filter((pullRequest) => pullRequest.authorId === user.id);
+      const authored = pullRequests.filter(
+        (pullRequest) => pullRequest.authorId === user.id || pullRequest.authorId === user.username,
+      );
       const merged = authored.filter((pullRequest) => pullRequest.status === 'MERGED');
       const recentTime = Math.max(
         0,

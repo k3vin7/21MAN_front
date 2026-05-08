@@ -56,7 +56,7 @@ export const HomePage = () => {
   }, []);
 
   const selectedAuthor = selectedRepository
-    ? users.find((user) => user.id === selectedRepository.authorId)
+    ? users.find((user) => user.id === selectedRepository.authorId || user.username === selectedRepository.authorId)
     : undefined;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -66,7 +66,7 @@ export const HomePage = () => {
   };
 
   const getContributorUser = (featured: FeaturedContributor) => {
-    return users.find((user) => user.id === featured.userId);
+    return users.find((user) => user.id === featured.userId || user.username === featured.userId);
   };
 
   return (
