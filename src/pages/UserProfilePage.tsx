@@ -44,7 +44,10 @@ export const UserProfilePage = () => {
           repositoryService.getRepositories(),
         ]);
         const nextPullRequests = nextUser
-          ? await pullRequestService.getPullRequests({ authorId: nextUser.id })
+          ? await pullRequestService.getPullRequests({
+              authorId: nextUser.id,
+              authorUsername: nextUser.username,
+            })
           : [];
 
         if (!mounted) {
@@ -79,7 +82,9 @@ export const UserProfilePage = () => {
   }, [currentUser?.username, username]);
 
   const ownedRepositories = user
-    ? repositories.filter((repository) => repository.authorId === user.id)
+    ? repositories.filter(
+        (repository) => repository.authorId === user.id || repository.authorId === user.username,
+      )
     : [];
 
   const contributionGroups = useMemo(() => {
@@ -90,13 +95,18 @@ export const UserProfilePage = () => {
     return repositories
       .map((repository) => ({
         repository,
-        pullRequests: pullRequests.filter((pullRequest) => pullRequest.repositoryId === repository.id),
+        pullRequests: pullRequests.filter(
+          (pullRequest) =>
+            pullRequest.repositoryId === repository.id && pullRequest.status === 'MERGED',
+        ),
       }))
       .filter((group) => group.pullRequests.length > 0);
   }, [pullRequests, repositories, user]);
 
   const selectedAuthor = selectedRepository
-    ? users.find((item) => item.id === selectedRepository.authorId)
+    ? users.find(
+        (item) => item.id === selectedRepository.authorId || item.username === selectedRepository.authorId,
+      )
     : undefined;
   const officialCredits = user
     ? user.stats.majorMerges + user.stats.normalMerges + user.stats.minorMerges

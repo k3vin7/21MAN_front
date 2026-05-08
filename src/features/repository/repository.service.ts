@@ -128,11 +128,11 @@ const getApiSort = (sort: RepositorySearchFilters['sort']) => {
 const getApiRecruitingArea = (type?: RecruitingAreaType) => {
   const map: Record<RecruitingAreaType, string> = {
     CHARACTER: 'character_add',
-    EPISODE: 'episode_add',
+    EPISODE: 'event_episode',
     WORLD_RULE: 'worldbuilding',
-    LOCATION: 'location_add',
-    EXTRA: 'extra',
-    STORYBOARD: 'storyboard',
+    LOCATION: 'region',
+    EXTRA: 'other',
+    STORYBOARD: 'other',
   };
 
   return type ? map[type] : undefined;
@@ -149,6 +149,14 @@ const withApiFallback = async <T>(apiCall: () => Promise<T>, mockCall: () => Pro
     console.warn('Falling back to repository mock service.', error);
     return mockCall();
   }
+};
+
+const writeWithApiOnly = async <T>(apiCall: () => Promise<T>, mockCall: () => Promise<T>) => {
+  if (!isApiEnabled) {
+    return mockCall();
+  }
+
+  return apiCall();
 };
 
 const getMockRepositories = async (filters?: RepositorySearchFilters) => {
@@ -185,11 +193,14 @@ const getRepositoryWithStats = async (repositoryId: string) => {
 const toApiRepositoryPayload = (repository: Repository) => ({
   title: repository.title,
   description: repository.description,
-  thumbnail: repository.thumbnail,
+  thumbnail_url: repository.thumbnail,
   tags: repository.tags,
-  external_links: repository.externalLinks.map((link) => link.url),
+  external_links: repository.externalLinks.map((link) => ({
+    label: link.type,
+    url: link.url,
+  })),
   readme: {
-    content: [repository.readme.intro, repository.readme.worldOverview].filter(Boolean).join('\n\n'),
+    overview: repository.readme.worldOverview || repository.readme.intro,
     characters: repository.readme.mainCharacters.map((character) => ({
       name: character.name,
       description: character.description,
@@ -267,7 +278,7 @@ export const repositoryService = {
   },
 
   async createRepository(repository: Repository): Promise<Repository> {
-    return withApiFallback(
+    return writeWithApiOnly(
       async () => {
         const created = await apiClient.post<Record<string, unknown>>(
           API_PATHS.repositories.create,

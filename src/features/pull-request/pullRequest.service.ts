@@ -17,6 +17,7 @@ import { cloneMock, mockDelay } from '@/lib/mock';
 type PullRequestFilters = {
   repositoryId?: string;
   authorId?: string;
+  authorUsername?: string;
   statuses?: PullRequestStatus[];
 };
 
@@ -91,6 +92,14 @@ const withApiFallback = async <T>(apiCall: () => Promise<T>, mockCall: () => Pro
   }
 };
 
+const writeWithApiOnly = async <T>(apiCall: () => Promise<T>, mockCall: () => Promise<T>) => {
+  if (!isApiEnabled) {
+    return mockCall();
+  }
+
+  return apiCall();
+};
+
 const getApiStatus = (status: PullRequestStatus) => {
   const map: Record<PullRequestStatus, string> = {
     DRAFT: 'DRAFT',
@@ -119,7 +128,10 @@ const getMockPullRequests = async (filters: PullRequestFilters = {}) => {
     const matchesRepository = filters.repositoryId
       ? pullRequest.repositoryId === filters.repositoryId
       : true;
-    const matchesAuthor = filters.authorId ? pullRequest.authorId === filters.authorId : true;
+    const authorFilters = [filters.authorId, filters.authorUsername].filter(Boolean);
+    const matchesAuthor = authorFilters.length
+      ? authorFilters.includes(pullRequest.authorId)
+      : true;
     const matchesStatus = filters.statuses?.length
       ? filters.statuses.includes(pullRequest.status)
       : true;
@@ -163,7 +175,7 @@ export const pullRequestService = {
       async () => {
         const response = await apiClient.get<ApiListResponse>(API_PATHS.pullRequests.list, {
           repo_id: filters.repositoryId,
-          author: filters.authorId,
+          author: filters.authorUsername ?? filters.authorId,
           status: filters.statuses?.map(getApiStatus),
           page: 1,
           size: 100,
@@ -191,7 +203,7 @@ export const pullRequestService = {
   },
 
   async createAiReviewedPullRequest(input: PullRequestDraftInput): Promise<PullRequest> {
-    return withApiFallback(
+    return writeWithApiOnly(
       async () => {
         const draft = await apiClient.post<ApiDraftResponse>(
           API_PATHS.pullRequests.createDraft(input.repositoryId),
@@ -259,7 +271,7 @@ export const pullRequestService = {
   },
 
   async submitPullRequest(pullRequestId: string): Promise<PullRequest | null> {
-    return withApiFallback<PullRequest | null>(
+    return writeWithApiOnly<PullRequest | null>(
       async () => {
         const current = pullRequests.find((item) => item.id === pullRequestId);
         const response = await apiClient.post<Record<string, unknown>>(
@@ -310,7 +322,7 @@ export const pullRequestService = {
     pullRequestId: string,
     update: PullRequestReviewUpdate,
   ): Promise<PullRequest | null> {
-    return withApiFallback<PullRequest | null>(
+    return writeWithApiOnly<PullRequest | null>(
       async () => {
         if (update.contributorOpinion !== undefined) {
           await apiClient.patch(API_PATHS.pullRequests.contributorComment(pullRequestId), {
@@ -361,7 +373,7 @@ export const pullRequestService = {
   },
 
   async recordAuthorView(pullRequestId: string, viewerId: string): Promise<PullRequest | null> {
-    return withApiFallback<PullRequest | null>(
+    return writeWithApiOnly<PullRequest | null>(
       async () => {
         const now = new Date().toISOString();
         const current = await getApiPullRequestById(pullRequestId);
@@ -457,13 +469,13 @@ export const pullRequestService = {
       return updated ? cloneMock(updated) : null;
     };
 
-    return withApiFallback<PullRequest | null>(
+    return writeWithApiOnly<PullRequest | null>(
       async () => {
         if (finalGrade) {
           await apiClient.post(API_PATHS.pullRequests.gradeOverride(pullRequestId), {
             grade: finalGrade,
             reason: note,
-          }).catch(() => undefined);
+          });
         }
 
         if (decision === 'ACCEPT') {
@@ -487,7 +499,7 @@ export const pullRequestService = {
           });
         }
 
-        return getApiPullRequestById(pullRequestId).catch(applyLocalDecision);
+        return getApiPullRequestById(pullRequestId);
       },
       applyLocalDecision,
     );

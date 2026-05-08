@@ -12,6 +12,7 @@ import { pullRequestService } from '@/features/pull-request/pullRequest.service'
 type PullRequestFilters = {
   repositoryId?: string;
   authorId?: string;
+  authorUsername?: string;
   statuses?: PullRequestStatus[];
 };
 

@@ -30,6 +30,19 @@ const asString = (value: unknown, fallback = '') => (typeof value === 'string' ?
 const asNumber = (value: unknown, fallback = 0) => (typeof value === 'number' ? value : fallback);
 const asStringArray = (value: unknown) => asArray(value).filter((item): item is string => typeof item === 'string');
 
+const getThumbnailUrl = (payload: ApiObject) => {
+  const thumbnail = asString(payload.thumbnail_url, asString(payload.thumbnail, DEFAULT_THUMBNAIL));
+
+  try {
+    const url = new URL(thumbnail);
+    const isPlaceholderHost = url.hostname === 'example.com' || url.hostname.endsWith('.example.com');
+
+    return isPlaceholderHost ? DEFAULT_THUMBNAIL : thumbnail;
+  } catch {
+    return DEFAULT_THUMBNAIL;
+  }
+};
+
 const normalizeRecruitingAreaType = (value: unknown): RecruitingAreaType => {
   const normalized = asString(value, 'CHARACTER').toUpperCase();
   const map: Record<string, RecruitingAreaType> = {
@@ -37,6 +50,7 @@ const normalizeRecruitingAreaType = (value: unknown): RecruitingAreaType => {
     CHARACTER_ADD: 'CHARACTER',
     EPISODE: 'EPISODE',
     EPISODE_ADD: 'EPISODE',
+    EVENT_EPISODE: 'EPISODE',
     WORLD_RULE: 'WORLD_RULE',
     WORLDBUILDING: 'WORLD_RULE',
     WORLD_RULE_ADD: 'WORLD_RULE',
@@ -44,6 +58,7 @@ const normalizeRecruitingAreaType = (value: unknown): RecruitingAreaType => {
     REGION: 'LOCATION',
     LOCATION_ADD: 'LOCATION',
     EXTRA: 'EXTRA',
+    OTHER: 'EXTRA',
     STORYBOARD: 'STORYBOARD',
   };
 
@@ -109,7 +124,7 @@ export const mapApiUser = (payload: unknown): User => {
   const username = asString(user.username, String(user.id ?? 'unknown'));
 
   return {
-    id: username,
+    id: String(user.id ?? username),
     username,
     displayName: asString(user.display_name, username),
     avatar: asString(user.avatar, `https://api.dicebear.com/9.x/notionists/svg?seed=${username}`),
@@ -144,19 +159,23 @@ export const mapApiRepository = (payload: unknown): Repository => {
   return {
     id: String(repository.id ?? ''),
     title: asString(repository.title, 'Untitled Repository'),
-    thumbnail: asString(repository.thumbnail, DEFAULT_THUMBNAIL),
+    thumbnail: getThumbnailUrl(repository),
     authorId: String(author.username ?? author.id ?? ''),
     description: asString(repository.description),
     genre: normalizeGenre(tags),
     workScale: 'MEDIUM' as WorkScale,
     tags,
-    externalLinks: asArray(repository.external_links).map((link, index) => ({
-      type: `link-${index + 1}`,
-      url: asString(link),
-    })),
+    externalLinks: asArray(repository.external_links).map((link, index) => {
+      const item = asObject(link);
+
+      return {
+        type: asString(item.label, `link-${index + 1}`),
+        url: asString(item.url, asString(link)),
+      };
+    }),
     readme: {
-      intro: asString(readme.content, asString(repository.description)),
-      worldOverview: asString(readme.content, asString(repository.description)),
+      intro: asString(readme.overview, asString(readme.content, asString(repository.description))),
+      worldOverview: asString(readme.overview, asString(readme.content, asString(repository.description))),
       mainCharacters: asArray(readme.characters).map((character, index) => {
         const item = asObject(character);
         return {
