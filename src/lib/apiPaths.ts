@@ -23,6 +23,7 @@ export const API_PATHS = {
     merges: (repositoryId: string) => `/api/v1/repositories/${repositoryId}/merges`,
     pullRequests: (repositoryId: string) => `/api/v1/repositories/${repositoryId}/pull-requests`,
     stats: (repositoryId: string) => `/api/v1/repositories/${repositoryId}/stats`,
+    dashboard: (repositoryId: string) => `/api/v1/repositories/${repositoryId}/dashboard`,
   },
   pullRequests: {
     list: '/api/v1/pull-requests',

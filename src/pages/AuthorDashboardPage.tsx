@@ -15,7 +15,6 @@ import { pullRequestService } from '@/features/pull-request/pullRequest.service'
 import type { Repository } from '@/features/repository/repository.types';
 import { repositoryService } from '@/features/repository/repository.service';
 import type { User } from '@/features/user/user.types';
-import { userService } from '@/features/user/user.service';
 import { useToast } from '@/hooks/useToast';
 import { MOCK_AUTHOR_ID, PULL_REQUEST_GRADE_LABELS, PULL_REQUEST_STATUS_LABELS } from '@/lib/constants';
 import { formatDateTime } from '@/lib/date';
@@ -77,9 +76,17 @@ export const AuthorDashboardPage = () => {
       return;
     }
 
-    const nextPullRequests = await pullRequestService.getPullRequests({ repositoryId: nextRepoId });
-    setPullRequests(nextPullRequests);
-    setSelectedId((current) => current ?? nextPullRequests[0]?.id ?? null);
+    const dashboard = await repositoryService.getRepositoryDashboard(nextRepoId);
+    setRepository(dashboard.repository);
+    setPullRequests(dashboard.pullRequests);
+    setUsers(dashboard.users);
+    setSelectedId((current) => {
+      if (current && dashboard.pullRequests.some((pullRequest) => pullRequest.id === current)) {
+        return current;
+      }
+
+      return dashboard.pullRequests[0]?.id ?? null;
+    });
   };
 
   useEffect(() => {
@@ -87,20 +94,16 @@ export const AuthorDashboardPage = () => {
 
     const fetchDashboard = async () => {
       setIsLoading(true);
-      const [nextRepository, nextPullRequests, nextUsers] = await Promise.all([
-        repositoryService.getRepositoryById(repoId),
-        pullRequestService.getPullRequests({ repositoryId: repoId }),
-        userService.getUsers(),
-      ]);
+      const dashboard = await repositoryService.getRepositoryDashboard(repoId);
 
       if (!mounted) {
         return;
       }
 
-      setRepository(nextRepository);
-      setPullRequests(nextPullRequests);
-      setUsers(nextUsers);
-      setSelectedId(nextPullRequests[0]?.id ?? null);
+      setRepository(dashboard.repository);
+      setPullRequests(dashboard.pullRequests);
+      setUsers(dashboard.users);
+      setSelectedId(dashboard.pullRequests[0]?.id ?? null);
       setIsLoading(false);
     };
 

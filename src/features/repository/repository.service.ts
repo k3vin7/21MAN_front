@@ -3,11 +3,14 @@ import type {
   RepositorySearchFilters,
   RecruitingAreaType,
 } from '@/features/repository/repository.types';
-import type { MergeHistoryEntry } from '@/features/pull-request/pullRequest.types';
+import type { MergeHistoryEntry, PullRequest } from '@/features/pull-request/pullRequest.types';
+import type { User } from '@/features/user/user.types';
 import { mergeHistoryMock } from '@/mocks/activities.mock';
+import { pullRequestsMock } from '@/mocks/pullRequests.mock';
 import { repositoriesMock } from '@/mocks/repositories.mock';
+import { usersMock } from '@/mocks/users.mock';
 import { apiClient, isApiEnabled } from '@/lib/apiClient';
-import { mapApiMergeHistoryEntry, mapApiRepository } from '@/lib/apiMappers';
+import { mapApiMergeHistoryEntry, mapApiPullRequest, mapApiRepository, mapApiUser } from '@/lib/apiMappers';
 import { API_PATHS } from '@/lib/apiPaths';
 import { cloneMock, mockDelay } from '@/lib/mock';
 
@@ -28,6 +31,19 @@ type ApiRepositoryStats = {
   merged_prs?: number;
   avg_review_days?: number;
   contributor_count?: number;
+};
+
+type ApiRepositoryDashboardResponse = {
+  repository?: Record<string, unknown>;
+  stats?: ApiRepositoryStats;
+  pull_requests?: unknown[];
+  users?: unknown[];
+};
+
+type RepositoryDashboard = {
+  repository: Repository | null;
+  pullRequests: PullRequest[];
+  users: User[];
 };
 
 const getActivityBucket = (lastActivity: string) => {
@@ -196,6 +212,35 @@ const getRepositoryWithStats = async (repositoryId: string) => {
   });
 };
 
+const mapApiRepositoryWithStats = (
+  repository: Record<string, unknown>,
+  stats?: ApiRepositoryStats | null,
+) => mapApiRepository({
+  ...repository,
+  pr_count: repository.pr_count ?? stats?.received_prs,
+  merge_count: repository.merge_count ?? stats?.merged_prs,
+  avg_review_days: repository.avg_review_days ?? stats?.avg_review_days,
+  contributor_count: repository.contributor_count ?? stats?.contributor_count,
+});
+
+const getApiRepositoryDashboard = async (repositoryId: string): Promise<RepositoryDashboard> => {
+  const response = await apiClient.get<ApiRepositoryDashboardResponse>(
+    API_PATHS.repositories.dashboard(repositoryId),
+  );
+  const repositoryPayload = response.repository ?? {};
+
+  return {
+    repository: mapApiRepositoryWithStats(repositoryPayload, response.stats),
+    pullRequests: (response.pull_requests ?? []).map((item) =>
+      mapApiPullRequest({
+        ...(item && typeof item === 'object' ? item : {}),
+        repo_id: repositoryId,
+      }),
+    ),
+    users: (response.users ?? []).map(mapApiUser),
+  };
+};
+
 const toApiRepositoryPayload = (repository: Repository) => ({
   title: repository.title,
   description: repository.description,
@@ -330,6 +375,22 @@ export const repositoryService = {
       () => getRepositoryWithStats(repositoryId),
       () => getMockRepositoryById(repositoryId),
     );
+  },
+
+  async getRepositoryDashboard(repositoryId: string): Promise<RepositoryDashboard> {
+    if (isApiEnabled) {
+      return getApiRepositoryDashboard(repositoryId);
+    }
+
+    const repository = await getMockRepositoryById(repositoryId);
+
+    return {
+      repository,
+      pullRequests: cloneMock(
+        pullRequestsMock.filter((pullRequest) => pullRequest.repositoryId === repositoryId),
+      ),
+      users: cloneMock(usersMock),
+    };
   },
 
   async createRepository(repository: Repository): Promise<Repository> {
