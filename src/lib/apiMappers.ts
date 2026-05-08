@@ -106,11 +106,10 @@ const buildRecruitingAreas = (value: unknown): RecruitingArea[] => {
 
 export const mapApiUser = (payload: unknown): User => {
   const user = asObject(payload);
-  const id = String(user.id ?? user.username ?? 'unknown');
-  const username = asString(user.username, id);
+  const username = asString(user.username, String(user.id ?? 'unknown'));
 
   return {
-    id,
+    id: username,
     username,
     displayName: asString(user.display_name, username),
     avatar: asString(user.avatar, `https://api.dicebear.com/9.x/notionists/svg?seed=${username}`),
@@ -146,7 +145,7 @@ export const mapApiRepository = (payload: unknown): Repository => {
     id: String(repository.id ?? ''),
     title: asString(repository.title, 'Untitled Repository'),
     thumbnail: asString(repository.thumbnail, DEFAULT_THUMBNAIL),
-    authorId: String(author.id ?? author.username ?? ''),
+    authorId: String(author.username ?? author.id ?? ''),
     description: asString(repository.description),
     genre: normalizeGenre(tags),
     workScale: 'MEDIUM' as WorkScale,
@@ -209,7 +208,7 @@ export const mapApiPullRequest = (payload: unknown): PullRequest => {
   return {
     id: String(pullRequest.id ?? pullRequest.pull_request_id ?? ''),
     repositoryId: String(repository.id ?? pullRequest.repo_id ?? pullRequest.repository_id ?? ''),
-    authorId: String(author.id ?? author.username ?? pullRequest.author_id ?? ''),
+    authorId: String(author.username ?? author.id ?? pullRequest.author_id ?? ''),
     title: asString(pullRequest.title, asString(analysis.generated_title, 'Untitled Pull Request')),
     originalContent: asString(pullRequest.raw_content),
     attachments: [],
@@ -252,5 +251,22 @@ export const mapApiPullRequest = (payload: unknown): PullRequest => {
       mergedAt: asString(pullRequest.merged_at ?? mergeInfo.merged_at) || null,
     },
     rejectReason: asString(rejectReason.detail) || null,
+  };
+};
+
+export const mapApiMergeHistoryEntry = (payload: unknown, repositoryId = '') => {
+  const merge = asObject(payload);
+  const pullRequest = asObject(merge.pull_request);
+  const contributor = asObject(merge.contributor);
+
+  return {
+    id: String(merge.id ?? ''),
+    repositoryId,
+    pullRequestId: String(pullRequest.id ?? ''),
+    contributorId: String(contributor.username ?? contributor.id ?? ''),
+    title: asString(pullRequest.title, asString(merge.credit_text, 'Merged contribution')),
+    grade: normalizeGrade(merge.final_grade),
+    mergedAt: asString(merge.merged_at, new Date().toISOString()),
+    summary: asString(merge.credit_text, asString(pullRequest.summary)),
   };
 };

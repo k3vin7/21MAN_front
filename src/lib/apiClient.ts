@@ -29,7 +29,7 @@ export class ApiError extends Error {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ?? '';
 const ACCESS_TOKEN_KEY = import.meta.env.VITE_ACCESS_TOKEN_KEY ?? 'worldbuild:access-token';
 
-export const isApiEnabled = Boolean(API_BASE_URL);
+export const isApiEnabled = import.meta.env.VITE_API_ENABLED === 'true' || Boolean(API_BASE_URL);
 
 const buildUrl = (path: string, query?: ApiRequestOptions['query']) => {
   const url = new URL(`${API_BASE_URL}${path}`, window.location.origin);
