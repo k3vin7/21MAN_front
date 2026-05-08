@@ -23,6 +23,8 @@ import { repositoryService } from '@/features/repository/repository.service';
 import type { FeaturedContributor, User } from '@/features/user/user.types';
 import { userService } from '@/features/user/user.service';
 import { RECOMMENDED_TAGS } from '@/lib/constants';
+import dinosaur from "@/assets/dinosaur.png";
+import ufo from "@/assets/ufo.png";
 
 const quickActions = [
   {
@@ -95,10 +97,20 @@ export const HomePage = () => {
 
   return (
     <div className="space-y-14">
+        <img
+          src={dinosaur}
+          alt="공룡"
+          className="absolute left-0 top-[380px] w-[700px] h-[700px] object-contain z-[0]"
+        />
+        <img
+          src={ufo}
+          alt="ufo"
+          className="absolute right-5 top-10 w-[500px] h-[500px] object-contain z-[0] rotate-12"
+        />
       <section className="relative min-h-[calc(100svh+12rem)]">
         <div className="mx-auto flex min-h-[calc(100svh-8rem)] max-w-4xl flex-col items-center justify-center pb-28 text-center">
           <h1 className="mx-auto max-w-4xl text-3xl font-semibold text-slate-950 sm:text-5xl">
-            원하는 세계관을 만들어 나가세요!
+            원하는 세계관에 뛰어드세요!
           </h1>
 
           <form className="sticky top-24 z-10 mt-10 w-full max-w-3xl" onSubmit={handleSubmit}>
@@ -106,13 +118,12 @@ export const HomePage = () => {
               세계관 검색
             </label>
             <div className="flex min-h-20 items-center gap-3 rounded-[2rem] border border-slate-200 bg-white px-4 py-3 text-left shadow-lg sm:rounded-full sm:px-5">
-              <button
+              <span
                 aria-label="검색 옵션 추가"
-                className="flex size-10 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
+                className="flex size-1 shrink-0 items-center justify-center rounded-full text-slate-500"
                 type="button"
               >
-                <Plus className="size-5" />
-              </button>
+              </span>
 
               <div className="relative min-w-0 flex-1">
                 <Search className="pointer-events-none absolute left-0 top-1/2 size-4 -translate-y-1/2 text-slate-400 sm:hidden" />
@@ -124,23 +135,6 @@ export const HomePage = () => {
                   type="search"
                   value={query}
                 />
-              </div>
-
-              <div className="hidden items-center gap-2 sm:flex">
-                <button
-                  className="inline-flex h-9 items-center gap-1 rounded-full px-3 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
-                  type="button"
-                >
-                  확장
-                  <ChevronDown className="size-4" />
-                </button>
-                <button
-                  aria-label="음성 검색"
-                  className="flex size-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
-                  type="button"
-                >
-                  <Mic className="size-5" />
-                </button>
               </div>
 
               <button
@@ -183,7 +177,7 @@ export const HomePage = () => {
           </div>
         </div>
 
-        <div className="absolute left-1/2 top-[calc(100svh-13rem)] flex -translate-x-1/2 flex-col items-center gap-3 text-sm text-slate-500">
+        <div className="absolute left-1/2 top-[calc(100svh-18rem)] flex -translate-x-1/2 flex-col items-center gap-3 text-sm text-slate-500">
           <span>스크롤해서 모집 중인 세계관 보기</span>
           <span className="flex size-10 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm">
             <ArrowDown className="size-4" />

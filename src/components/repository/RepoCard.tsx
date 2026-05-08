@@ -32,7 +32,6 @@ export const RepoCard = ({ repository, author, onClick }: RepoCardProps) => {
         loading="lazy"
         src={repository.thumbnail}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/90 to-white/20" />
 
       <div className="relative flex h-full min-h-[320px] flex-col justify-end p-5">
         <div className="flex flex-wrap gap-2">
