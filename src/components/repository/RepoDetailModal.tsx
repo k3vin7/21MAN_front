@@ -1,14 +1,9 @@
-import { ArrowRight, ExternalLink, GitPullRequest, Inbox } from 'lucide-react';
+import { BookOpen, ChevronRight, ExternalLink, GitPullRequest, Inbox } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Badge } from '@/components/common/Badge';
-import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
-import { RepoStatsBar } from '@/components/repository/RepoStatsBar';
-import { RecruitingAreaCard } from '@/components/repository/RecruitingAreaCard';
 import { useAuthStore } from '@/features/auth/auth.store';
 import type { Repository } from '@/features/repository/repository.types';
 import type { User } from '@/features/user/user.types';
-import { REPOSITORY_BADGE_LABELS } from '@/lib/constants';
 
 type RepoDetailModalProps = {
   repository: Repository | null;
@@ -17,7 +12,7 @@ type RepoDetailModalProps = {
   onClose: () => void;
 };
 
-export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDetailModalProps) => {
+export const RepoDetailModal = ({ repository, author: _author, isOpen, onClose }: RepoDetailModalProps) => {
   const currentUser = useAuthStore((state) => state.user);
 
   if (!repository) {
@@ -28,86 +23,99 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
   const isOwner = Boolean(
     currentUser &&
       (repository.authorId === currentUserId ||
-        repository.authorId === currentUser.username ||
-        author?.id === currentUserId ||
-        author?.username === currentUser.username),
+        repository.authorId === currentUser.username),
   );
 
   return (
     <Modal
       description={repository.description}
       footer={
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-          <Button onClick={onClose} variant="ghost">
-            닫기
-          </Button>
+        <div className="space-y-2">
           <Link
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50"
+            className="flex w-full items-center justify-between rounded-2xl bg-slate-50 px-5 py-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
             to={`/r/${repository.id}`}
           >
-            세계관 소개 보기
-            <ArrowRight className="size-4" />
+            <span className="flex items-center gap-3">
+              <BookOpen className="size-4 text-slate-400" />
+              이 작품 더 알아보기
+            </span>
+            <ChevronRight className="size-4 text-slate-400" />
           </Link>
-          {isOwner ? (
+          {isOwner && (
             <Link
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-accent-200 bg-accent-50 px-4 text-sm font-semibold text-accent-900 transition hover:border-accent-300 hover:bg-accent-100"
+              className="flex w-full items-center justify-between rounded-2xl bg-slate-600 px-5 py-4 text-sm font-semibold text-white transition hover:bg-slate-700"
               to={`/r/${repository.id}/dashboard`}
             >
-              <Inbox className="size-4" />
-              받은 제안 보기
+              <span className="flex items-center gap-3">
+                <Inbox className="size-4" />
+                이 작품에 기여하고 싶어하는 사람들
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white">원작자</span>
+                <ChevronRight className="size-4" />
+              </span>
             </Link>
-          ) : null}
+          )}
           <Link
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="flex w-full items-center justify-between rounded-2xl bg-slate-950 px-5 py-4 text-sm font-semibold text-white transition hover:bg-black"
             to={`/r/${repository.id}/pr/new`}
           >
-            <GitPullRequest className="size-4" />
-            창작 제안하기
+            <span className="flex items-center gap-3">
+              <GitPullRequest className="size-4" />
+              나도 참여할게요
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white">공동창작자</span>
+              <ChevronRight className="size-4" />
+            </span>
           </Link>
         </div>
       }
       isOpen={isOpen}
       onClose={onClose}
       size="lg"
-      title={repository.title}
     >
-      <div className="space-y-6">
-        <img
-          alt=""
-          className="h-56 w-full rounded-lg object-cover"
-          loading="lazy"
-          src={repository.thumbnail}
-        />
+      <div className="space-y-5">
+        {(repository.readme.worldOverview || repository.readme.intro) && (
+          <section className="rounded-2xl bg-slate-50 p-4">
+            <h3 className="text-xs font-semibold text-slate-400">세계관 소개</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">
+              {repository.readme.worldOverview || repository.readme.intro}
+            </p>
+          </section>
+        )}
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge tone="blue">{repository.genre}</Badge>
-          {repository.badges.map((badge) => (
-            <Badge key={badge} tone={badge === 'NEW' ? 'amber' : 'teal'}>
-              {REPOSITORY_BADGE_LABELS[badge]}
-            </Badge>
-          ))}
-          {author ? <Badge tone="default">@{author.username}</Badge> : null}
-        </div>
-
-        <RepoStatsBar repository={repository} />
-
-        <section>
-          <h3 className="text-base font-semibold text-slate-950">지금 받고 싶은 창작 제안</h3>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {repository.readme.recruitingAreas.map((area) => (
-              <RecruitingAreaCard key={area.id} area={area} />
-            ))}
-          </div>
-        </section>
-
-        {repository.externalLinks.length ? (
+        {repository.readme.coreRules.length > 0 && (
           <section>
-            <h3 className="text-base font-semibold text-slate-950">외부 링크</h3>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <h3 className="text-xs font-semibold text-slate-400">핵심 규칙</h3>
+            <ul className="mt-2 space-y-1">
+              {repository.readme.coreRules.slice(0, 3).map((rule, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                  <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent-400" />
+                  {rule}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {repository.readme.contributionGuidelines && (
+          <section className="rounded-2xl border border-accent-100 bg-accent-50 p-4">
+            <h3 className="text-xs font-semibold text-accent-700">기여 가이드</h3>
+            <p className="mt-2 text-sm leading-relaxed text-accent-900">
+              {repository.readme.contributionGuidelines}
+            </p>
+          </section>
+        )}
+
+        {repository.externalLinks.length > 0 && (
+          <section>
+            <h3 className="text-xs font-semibold text-slate-400">외부 링크</h3>
+            <div className="mt-2 flex flex-wrap gap-2">
               {repository.externalLinks.map((link) => (
                 <a
                   key={link.url}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-accent-300 hover:text-slate-950"
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
                   href={link.url}
                   rel="noreferrer"
                   target="_blank"
@@ -118,7 +126,7 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
               ))}
             </div>
           </section>
-        ) : null}
+        )}
       </div>
     </Modal>
   );

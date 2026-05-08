@@ -9,7 +9,7 @@ type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
 type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
@@ -67,24 +67,29 @@ export const Modal = ({
       <section
         aria-modal="true"
         className={cn(
-          'relative max-h-[86vh] w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-soft',
+          'relative max-h-[86vh] w-full overflow-hidden rounded-2xl bg-white shadow-xl',
           sizeClasses[size],
         )}
         role="dialog"
       >
-        <header className="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
-            {description ? <p className="mt-1 text-sm leading-6 text-slate-500">{description}</p> : null}
-          </div>
-          <Button aria-label="닫기" onClick={onClose} size="icon" variant="ghost">
-            <X className="size-4" />
-          </Button>
-        </header>
+        <button
+          aria-label="닫기"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-xl p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+        >
+          <X className="size-4" />
+        </button>
 
-        <div className="max-h-[calc(86vh-9rem)] overflow-y-auto p-5">{children}</div>
+        {(title || description) && (
+          <header className="px-7 pt-6 pb-4 pr-12">
+            {title && <h2 className="text-xl font-bold text-slate-900">{title}</h2>}
+            {description && <p className={`text-sm leading-relaxed text-slate-500 ${title ? 'mt-1.5' : ''}`}>{description}</p>}
+          </header>
+        )}
 
-        {footer ? <footer className="border-t border-slate-200 p-5">{footer}</footer> : null}
+        <div className={cn('overflow-y-auto px-7', (title || description) ? 'max-h-[calc(86vh-10rem)] pb-2' : 'max-h-[calc(86vh-5rem)] pt-8 pb-2')}>{children}</div>
+
+        {footer ? <footer className="px-7 py-5">{footer}</footer> : null}
       </section>
     </div>,
     document.body,

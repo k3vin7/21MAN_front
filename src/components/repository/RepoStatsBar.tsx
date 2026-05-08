@@ -1,61 +1,26 @@
-import { CalendarDays, GitMerge, GitPullRequest, Percent, Timer, Users } from 'lucide-react';
+import { CalendarDays, Users } from 'lucide-react';
 import type { Repository } from '@/features/repository/repository.types';
 import { formatDate } from '@/lib/date';
-import { formatNumber, formatPercent, formatReviewDays } from '@/lib/format';
+import { formatNumber } from '@/lib/format';
 
 type RepoStatsBarProps = {
   repository: Repository;
 };
 
 export const RepoStatsBar = ({ repository }: RepoStatsBarProps) => {
-  const stats = [
-    {
-      label: '창작 제안',
-      value: formatNumber(repository.stats.prCount),
-      icon: GitPullRequest,
-    },
-    {
-      label: '공식 반영',
-      value: formatNumber(repository.stats.mergeCount),
-      icon: GitMerge,
-    },
-    {
-      label: '반영률',
-      value: formatPercent(repository.stats.mergeRate),
-      icon: Percent,
-    },
-    {
-      label: 'Avg review',
-      value: formatReviewDays(repository.stats.avgReviewDays),
-      icon: Timer,
-    },
-    {
-      label: '공동창작자',
-      value: formatNumber(repository.stats.contributorCount),
-      icon: Users,
-    },
-    {
-      label: 'Last activity',
-      value: formatDate(repository.stats.lastActivity),
-      icon: CalendarDays,
-    },
-  ];
-
   return (
-    <dl className="grid overflow-hidden rounded-lg border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-      {stats.map((item) => {
-        const Icon = item.icon;
-
-        return (
-          <div key={item.label} className="border-b border-r border-slate-200 p-4 last:border-r-0 sm:last:border-b-0 xl:border-b-0">
-            <dt className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-500">
-              <Icon className="size-4 text-accent-600" />
-              {item.label}
-            </dt>
-            <dd className="mt-2 text-lg font-semibold text-slate-950">{item.value}</dd>
-          </div>
-        );
-      })}
-    </dl>
+    <div className="flex items-center gap-4 text-sm text-slate-500">
+      <span className="flex items-center gap-1.5">
+        <Users className="size-4" />
+        <span className="font-semibold text-slate-900">{formatNumber(repository.stats.contributorCount)}</span>
+        명 참여
+      </span>
+      <span className="text-slate-200">·</span>
+      <span className="flex items-center gap-1.5">
+        <CalendarDays className="size-4" />
+        최근 활동
+        <span className="font-semibold text-slate-900">{formatDate(repository.stats.lastActivity)}</span>
+      </span>
+    </div>
   );
 };
