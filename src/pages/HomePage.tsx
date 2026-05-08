@@ -117,7 +117,7 @@ export const HomePage = () => {
             <label className="sr-only" htmlFor="home-search">
               세계관 검색
             </label>
-            <div className="flex min-h-20 items-center gap-3 rounded-[2rem] border border-slate-200 bg-white px-4 py-3 text-left shadow-lg sm:rounded-full sm:px-5">
+            <div className="flex min-h-[16px] items-center gap-3 rounded-[2rem] border border-slate-200 bg-white px-4 py-2 text-left shadow-lg sm:rounded-full sm:px-5">
               <span
                 aria-label="검색 옵션 추가"
                 className="flex size-1 shrink-0 items-center justify-center rounded-full text-slate-500"
@@ -129,7 +129,7 @@ export const HomePage = () => {
                 <Search className="pointer-events-none absolute left-0 top-1/2 size-4 -translate-y-1/2 text-slate-400 sm:hidden" />
                 <input
                   id="home-search"
-                  className="h-12 w-full bg-transparent pl-6 pr-2 text-base text-slate-950 outline-none placeholder:text-slate-400 sm:pl-0"
+                  className="h-[16px] w-full bg-transparent pl-6 pr-2 text-base text-slate-950 outline-none placeholder:text-slate-400 sm:pl-0"
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="세계관, 장르, 모집 영역을 검색해보세요"
                   type="search"
@@ -139,7 +139,7 @@ export const HomePage = () => {
 
               <button
                 aria-label="검색 실행"
-                className="flex size-11 shrink-0 items-center justify-center rounded-full bg-slate-950 text-white transition hover:bg-slate-800"
+                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-950 text-white transition hover:bg-slate-800"
                 type="submit"
               >
                 <ArrowRight className="size-5" />
