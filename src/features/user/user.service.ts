@@ -11,6 +11,8 @@ import { mapApiUser } from '@/lib/apiMappers';
 import { API_PATHS } from '@/lib/apiPaths';
 import { cloneMock, mockDelay } from '@/lib/mock';
 
+const AUTH_USER_KEY = 'worldbuild:auth-user';
+
 const withApiFallback = async <T>(apiCall: () => Promise<T>, mockCall: () => Promise<T>) => {
   if (!isApiEnabled) {
     return mockCall();
@@ -38,9 +40,74 @@ const getMockUserByUsername = async (username: string) => {
   return user ? cloneMock(user) : null;
 };
 
+const readStoredAuthUser = (): User | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    const value = window.localStorage.getItem(AUTH_USER_KEY);
+    if (!value) {
+      return null;
+    }
+
+    const user = JSON.parse(value) as {
+      id: number | string;
+      username: string;
+      avatar?: string;
+      bio?: string;
+    };
+
+    return {
+      id: String(user.id),
+      username: user.username,
+      displayName: user.username,
+      avatar: user.avatar ?? `https://api.dicebear.com/9.x/notionists/svg?seed=${user.username}`,
+      bio: user.bio ?? '',
+      roles: ['AUTHOR', 'CONTRIBUTOR'],
+      stats: {
+        repositoriesOwned: 0,
+        contributionsTotal: 0,
+        majorMerges: 0,
+        normalMerges: 0,
+        minorMerges: 0,
+        mergeRate: 0,
+      },
+    };
+  } catch {
+    return null;
+  }
+};
+
 const getApiUserByUsername = async (username: string) => {
   const [user, contributorStats, authorStats] = await Promise.all([
     apiClient.get<Record<string, unknown>>(API_PATHS.users.detail(username), undefined, { auth: false }),
+    apiClient
+      .get<Record<string, unknown>>(API_PATHS.users.contributorStats(username), undefined, { auth: false })
+      .catch(() => null),
+    apiClient
+      .get<Record<string, unknown>>(API_PATHS.users.authorStats(username), undefined, { auth: false })
+      .catch(() => null),
+  ]);
+
+  return mapApiUser({
+    ...user,
+    ...contributorStats,
+    ...authorStats,
+    repository_count: authorStats?.repository_count,
+    total_prs: contributorStats?.total_prs,
+  });
+};
+
+const getApiCurrentUserProfile = async () => {
+  const user = await apiClient.get<Record<string, unknown>>(API_PATHS.auth.me);
+  const username = typeof user.username === 'string' ? user.username : '';
+
+  if (!username) {
+    return mapApiUser(user);
+  }
+
+  const [contributorStats, authorStats] = await Promise.all([
     apiClient
       .get<Record<string, unknown>>(API_PATHS.users.contributorStats(username), undefined, { auth: false })
       .catch(() => null),
@@ -75,6 +142,16 @@ export const userService = {
     return withApiFallback<User | null>(
       () => getApiUserByUsername(username),
       () => getMockUserByUsername(username),
+    );
+  },
+
+  async getCurrentUserProfile(): Promise<User | null> {
+    return withApiFallback<User | null>(
+      () => getApiCurrentUserProfile(),
+      async () => {
+        await mockDelay();
+        return readStoredAuthUser();
+      },
     );
   },
 
