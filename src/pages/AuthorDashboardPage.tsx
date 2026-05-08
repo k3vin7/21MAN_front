@@ -276,9 +276,9 @@ export const AuthorDashboardPage = () => {
   return (
     <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
       <aside className="space-y-4">
-        <section className="rounded-lg border border-white/10 bg-slate-900/70 p-4">
-          <h1 className="text-lg font-semibold text-white">{repository.title}</h1>
-          <p className="mt-2 text-sm text-slate-400">PR 검토 대시보드</p>
+        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <h1 className="text-lg font-semibold text-slate-950">{repository.title}</h1>
+          <p className="mt-2 text-sm text-slate-500">PR 검토 대시보드</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {queueFilters.map((filter) => (
               <Button
@@ -292,7 +292,7 @@ export const AuthorDashboardPage = () => {
             ))}
           </div>
           <select
-            className="mt-4 h-10 w-full rounded-lg border border-white/10 bg-slate-950/70 px-3 text-sm text-slate-200 outline-none focus:border-accent-300"
+            className="mt-4 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
             onChange={(event) => setSort(event.target.value as QueueSort)}
             value={sort}
           >
@@ -319,10 +319,10 @@ export const AuthorDashboardPage = () => {
         {!selectedPullRequest ? (
           <EmptyState title="검토할 PR을 선택하세요" description="왼쪽 큐에서 PR을 선택하면 상세 검토 패널이 열립니다." />
         ) : !canReadContent ? (
-          <div className="rounded-lg border border-amber-300/20 bg-amber-300/10 p-6">
-            <ShieldAlert className="size-6 text-amber-200" />
-            <h2 className="mt-4 text-xl font-semibold text-white">이 PR을 열람하면 영구 로그가 기록됩니다.</h2>
-            <p className="mt-3 text-sm leading-6 text-amber-50/80">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-6">
+            <ShieldAlert className="size-6 text-amber-600" />
+            <h2 className="mt-4 text-xl font-semibold text-slate-950">이 PR을 열람하면 영구 로그가 기록됩니다.</h2>
+            <p className="mt-3 text-sm leading-6 text-amber-900">
               열람 후 유사 설정 사용 시 컨트리뷰터가 도용 증거로 사용할 수 있습니다.
             </p>
             <div className="mt-6 flex gap-3">
@@ -334,7 +334,7 @@ export const AuthorDashboardPage = () => {
           </div>
         ) : (
           <div className="space-y-5">
-            <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+            <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -344,16 +344,16 @@ export const AuthorDashboardPage = () => {
                     </Badge>
                     <Badge tone="slate">{PULL_REQUEST_STATUS_LABELS[selectedPullRequest.status]}</Badge>
                   </div>
-                  <h2 className="mt-4 text-2xl font-semibold text-white">{selectedPullRequest.title}</h2>
+                  <h2 className="mt-4 text-2xl font-semibold text-slate-950">{selectedPullRequest.title}</h2>
                   {selectedAuthor ? (
                     <div className="mt-4 flex items-center gap-3">
                       <img
                         alt={`${selectedAuthor.displayName} avatar`}
-                        className="size-10 rounded-lg border border-white/10"
+                        className="size-10 rounded-lg border border-slate-200"
                         src={selectedAuthor.avatar}
                       />
                       <div>
-                        <p className="text-sm font-semibold text-white">@{selectedAuthor.username}</p>
+                        <p className="text-sm font-semibold text-slate-950">@{selectedAuthor.username}</p>
                         <p className="text-xs text-slate-500">
                           Merge rate {selectedAuthor.stats.mergeRate}% · Major {selectedAuthor.stats.majorMerges}
                         </p>
@@ -361,7 +361,7 @@ export const AuthorDashboardPage = () => {
                     </div>
                   ) : null}
                 </div>
-                <dl className="grid gap-2 text-sm text-slate-400">
+                <dl className="grid gap-2 text-sm text-slate-600">
                   <div>
                     <dt className="text-xs text-slate-500">Written</dt>
                     <dd>{formatDateTime(selectedPullRequest.timestamps.draftStartedAt)}</dd>
@@ -386,20 +386,20 @@ export const AuthorDashboardPage = () => {
               </div>
             </section>
 
-            <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-              <h3 className="text-lg font-semibold text-white">AI Summary</h3>
+            <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <h3 className="text-lg font-semibold text-slate-950">AI Summary</h3>
               <div className="mt-5">
                 <AiScoreBars grading={selectedPullRequest.aiGrading} />
               </div>
-              <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/50 p-4 text-sm leading-6 text-slate-300">
+              <p className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
                 {selectedPullRequest.aiGrading.rationale}
               </p>
             </section>
 
             <ConflictCheckCard pullRequest={selectedPullRequest} repository={repository} />
 
-            <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-              <h3 className="text-lg font-semibold text-white">Structured PR</h3>
+            <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <h3 className="text-lg font-semibold text-slate-950">Structured PR</h3>
               <dl className="mt-4 grid gap-4 text-sm">
                 <DetailItem label="핵심 제안" value={selectedPullRequest.structuredContent.coreIdea} />
                 <DetailItem label="관련 캐릭터" value={selectedPullRequest.structuredContent.relatedCharacters.join(', ') || '해당 없음'} />
@@ -410,16 +410,16 @@ export const AuthorDashboardPage = () => {
             </section>
 
             {selectedPullRequest.contributorOpinion ? (
-              <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-                <h3 className="text-lg font-semibold text-white">Contributor Opinion</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-300">
+              <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                <h3 className="text-lg font-semibold text-slate-950">Contributor Opinion</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
                   {selectedPullRequest.contributorOpinion.note}
                 </p>
               </section>
             ) : null}
 
-            <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-              <h3 className="text-lg font-semibold text-white">Final Grade Adjustment</h3>
+            <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <h3 className="text-lg font-semibold text-slate-950">Final Grade Adjustment</h3>
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <div>
                   <p className="text-sm text-slate-500">AI grade</p>
@@ -427,10 +427,10 @@ export const AuthorDashboardPage = () => {
                     <GradeBadge grade={selectedPullRequest.aiGrading.grade} />
                   </div>
                 </div>
-                <label className="text-sm font-medium text-slate-300">
+                <label className="text-sm font-medium text-slate-700">
                   Final grade
                   <select
-                    className="mt-2 h-10 w-full rounded-lg border border-white/10 bg-slate-950/70 px-3 text-sm text-slate-200 outline-none focus:border-accent-300"
+                    className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
                     onChange={(event) => setFinalGrade(event.target.value as PullRequestGrade)}
                     value={finalGrade}
                   >
@@ -460,8 +460,8 @@ export const AuthorDashboardPage = () => {
               )}
             </section>
 
-            <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-              <h3 className="text-lg font-semibold text-white">Actions</h3>
+            <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <h3 className="text-lg font-semibold text-slate-950">Actions</h3>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Button
                   disabled={gradeNoteMissing}
@@ -496,7 +496,7 @@ export const AuthorDashboardPage = () => {
               </div>
               <div className="mt-5 grid gap-3 md:grid-cols-[220px_minmax(0,1fr)]">
                 <select
-                  className="h-10 rounded-lg border border-white/10 bg-slate-950/70 px-3 text-sm text-slate-200 outline-none focus:border-accent-300"
+                  className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
                   onChange={(event) => setRejectCategory(event.target.value)}
                   value={rejectCategory}
                 >
@@ -507,7 +507,7 @@ export const AuthorDashboardPage = () => {
                   ))}
                 </select>
                 <input
-                  className="h-10 rounded-lg border border-white/10 bg-slate-950/70 px-3 text-sm text-slate-200 outline-none focus:border-accent-300"
+                  className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none placeholder:text-slate-400 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
                   onChange={(event) => setRejectReason(event.target.value)}
                   placeholder="Reject 사유"
                   value={rejectReason}
@@ -516,8 +516,8 @@ export const AuthorDashboardPage = () => {
             </section>
 
             {selectedPullRequest.status === 'ACCEPTED' ? (
-              <section className="rounded-lg border border-accent-300/20 bg-accent-300/10 p-5">
-                <h3 className="text-lg font-semibold text-white">AI가 공식 문서 반영 초안을 생성했습니다</h3>
+              <section className="rounded-lg border border-accent-200 bg-accent-50 p-5">
+                <h3 className="text-lg font-semibold text-slate-950">AI가 공식 문서 반영 초안을 생성했습니다</h3>
                 <Textarea
                   className="mt-4 min-h-48"
                   onChange={(event) => setMergePreview(event.target.value)}
@@ -548,8 +548,8 @@ type DetailItemProps = {
 const DetailItem = ({ label, value }: DetailItemProps) => {
   return (
     <div>
-      <dt className="font-medium text-slate-400">{label}</dt>
-      <dd className="mt-1 whitespace-pre-wrap leading-6 text-slate-200">{value}</dd>
+      <dt className="font-medium text-slate-500">{label}</dt>
+      <dd className="mt-1 whitespace-pre-wrap leading-6 text-slate-700">{value}</dd>
     </div>
   );
 };

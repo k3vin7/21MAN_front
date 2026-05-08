@@ -12,7 +12,7 @@ type RecruitingAreaCardProps = {
 
 export const RecruitingAreaCard = ({ area }: RecruitingAreaCardProps) => {
   return (
-    <article className="rounded-lg border border-white/10 bg-slate-900/60 p-4">
+    <article className="rounded-lg border border-slate-200 bg-slate-50 p-4">
       <div className="flex flex-wrap items-center gap-2">
         <Badge tone={area.status === 'ACTIVELY_RECRUITING' ? 'teal' : 'slate'}>
           {RECRUITING_STATUS_LABELS[area.status]}
@@ -22,8 +22,7 @@ export const RecruitingAreaCard = ({ area }: RecruitingAreaCardProps) => {
           난이도 {DIFFICULTY_LABELS[area.difficulty]}
         </Badge>
       </div>
-      <p className="mt-3 text-sm leading-6 text-slate-300">{area.description}</p>
+      <p className="mt-3 text-sm leading-6 text-slate-600">{area.description}</p>
     </article>
   );
 };
-

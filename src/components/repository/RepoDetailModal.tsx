@@ -30,14 +30,14 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
             닫기
           </Button>
           <Link
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 text-sm font-semibold text-slate-100 transition hover:border-white/20 hover:bg-white/10"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50"
             to={`/r/${repository.id}`}
           >
             상세 보기
             <ArrowRight className="size-4" />
           </Link>
           <Link
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-accent-500 px-4 text-sm font-semibold text-slate-950 transition hover:bg-accent-400"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
             to={`/r/${repository.id}/pr/new`}
           >
             <GitPullRequest className="size-4" />
@@ -54,6 +54,7 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
         <img
           alt=""
           className="h-56 w-full rounded-lg object-cover"
+          loading="lazy"
           src={repository.thumbnail}
         />
 
@@ -70,7 +71,7 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
         <RepoStatsBar repository={repository} />
 
         <section>
-          <h3 className="text-base font-semibold text-white">지금 받고 싶은 기여</h3>
+          <h3 className="text-base font-semibold text-slate-950">지금 받고 싶은 기여</h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {repository.readme.recruitingAreas.map((area) => (
               <RecruitingAreaCard key={area.id} area={area} />
@@ -80,12 +81,12 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
 
         {repository.externalLinks.length ? (
           <section>
-            <h3 className="text-base font-semibold text-white">외부 링크</h3>
+            <h3 className="text-base font-semibold text-slate-950">외부 링크</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {repository.externalLinks.map((link) => (
                 <a
                   key={link.url}
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 transition hover:border-accent-300/40 hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-accent-300 hover:text-slate-950"
                   href={link.url}
                   rel="noreferrer"
                   target="_blank"

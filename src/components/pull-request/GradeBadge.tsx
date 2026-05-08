@@ -8,9 +8,9 @@ type GradeBadgeProps = {
 };
 
 const gradeClasses: Record<PullRequestGrade, string> = {
-  MAJOR: 'border-amber-300/30 bg-amber-300/10 text-amber-200',
-  NORMAL: 'border-accent-300/30 bg-accent-300/10 text-accent-100',
-  MINOR: 'border-sky-300/30 bg-sky-300/10 text-sky-200',
+  MAJOR: 'border-amber-200 bg-amber-50 text-amber-800',
+  NORMAL: 'border-accent-200 bg-accent-50 text-accent-800',
+  MINOR: 'border-sky-200 bg-sky-50 text-sky-800',
 };
 
 export const GradeBadge = ({ grade, compact = false }: GradeBadgeProps) => {
@@ -26,4 +26,3 @@ export const GradeBadge = ({ grade, compact = false }: GradeBadgeProps) => {
     </span>
   );
 };
-

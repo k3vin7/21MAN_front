@@ -26,7 +26,7 @@ export const ContributionSummaryCard = ({
   };
 
   return (
-    <article className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex gap-4">
         <img
           alt=""
@@ -34,8 +34,8 @@ export const ContributionSummaryCard = ({
           src={repository.thumbnail}
         />
         <div className="min-w-0">
-          <h3 className="text-base font-semibold text-white">{repository.title}</h3>
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-400">{repository.description}</p>
+          <h3 className="text-base font-semibold text-slate-950">{repository.title}</h3>
+          <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">{repository.description}</p>
         </div>
       </div>
 
@@ -52,30 +52,29 @@ export const ContributionSummaryCard = ({
       </div>
 
       {majorMerge ? (
-        <div className="mt-5 rounded-lg border border-amber-300/20 bg-amber-300/10 p-4">
+        <div className="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <GradeBadge compact grade={majorMerge.finalGrade} />
-            <span className="text-sm text-amber-100">Major Merge preview</span>
+            <span className="text-sm text-amber-800">Major Merge preview</span>
           </div>
-          <h4 className="mt-3 text-sm font-semibold text-white">{majorMerge.title}</h4>
-          <p className="mt-2 text-sm leading-6 text-slate-300">{majorMerge.structuredContent.expectedEffect}</p>
-          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+          <h4 className="mt-3 text-sm font-semibold text-slate-950">{majorMerge.title}</h4>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{majorMerge.structuredContent.expectedEffect}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
             <span className="flex items-center gap-1">
               <GitMerge className="size-3.5" />
               {majorMerge.timestamps.mergedAt ? formatDate(majorMerge.timestamps.mergedAt) : 'Merge 대기'}
             </span>
-            <Link className="text-accent-200 hover:text-accent-100" to={`/r/${repository.id}/pr/${majorMerge.id}/review`}>
+            <Link className="text-accent-700 hover:text-accent-900" to={`/r/${repository.id}/pr/${majorMerge.id}/review`}>
               원본 PR 보기
             </Link>
           </div>
         </div>
       ) : (
-        <div className="mt-5 flex items-center gap-2 rounded-lg border border-white/10 bg-slate-950/50 p-4 text-sm text-slate-400">
-          <GitPullRequest className="size-4 text-accent-300" />
+        <div className="mt-5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
+          <GitPullRequest className="size-4 text-accent-600" />
           아직 public Major Merge가 없습니다.
         </div>
       )}
     </article>
   );
 };
-

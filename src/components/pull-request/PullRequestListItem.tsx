@@ -29,7 +29,7 @@ export const PullRequestListItem = ({ pullRequest, author }: PullRequestListItem
 
   return (
     <Link
-      className="block rounded-lg border border-white/10 bg-slate-900/70 p-4 transition hover:border-accent-300/30 hover:bg-slate-900"
+      className="block rounded-lg border border-slate-200 bg-white p-4 transition hover:border-accent-300 hover:bg-slate-50"
       to={`/r/${pullRequest.repositoryId}/pr/${pullRequest.id}/review`}
     >
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -43,14 +43,14 @@ export const PullRequestListItem = ({ pullRequest, author }: PullRequestListItem
             </Badge>
           </div>
 
-          <h3 className="mt-3 text-base font-semibold text-white">{pullRequest.title}</h3>
-          <p className="mt-2 text-sm leading-6 text-slate-400">
+          <h3 className="mt-3 text-base font-semibold text-slate-950">{pullRequest.title}</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
             {truncateText(pullRequest.structuredContent.expectedEffect, 120)}
           </p>
         </div>
 
         <div className="shrink-0 text-left lg:text-right">
-          <p className="text-sm text-slate-300">@{author?.username ?? 'unknown'}</p>
+          <p className="text-sm text-slate-600">@{author?.username ?? 'unknown'}</p>
           <p className="mt-1 text-xs text-slate-500">{formatDateTime(submittedAt)}</p>
         </div>
       </div>
@@ -73,4 +73,3 @@ export const PullRequestListItem = ({ pullRequest, author }: PullRequestListItem
     </Link>
   );
 };
-

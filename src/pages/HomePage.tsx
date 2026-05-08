@@ -1,7 +1,18 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { ArrowRight, GitPullRequest, Search, Sparkles, Users } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowRight,
+  ChevronDown,
+  Globe2,
+  GitPullRequest,
+  Mic,
+  PenLine,
+  Plus,
+  Search,
+  Sparkles,
+  Users,
+} from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/common/Skeleton';
 import { ContributorCard } from '@/components/contributor/ContributorCard';
@@ -12,6 +23,24 @@ import { repositoryService } from '@/features/repository/repository.service';
 import type { FeaturedContributor, User } from '@/features/user/user.types';
 import { userService } from '@/features/user/user.service';
 import { RECOMMENDED_TAGS } from '@/lib/constants';
+
+const quickActions = [
+  {
+    label: '캐릭터 모집',
+    tag: '캐릭터모집',
+    icon: Sparkles,
+  },
+  {
+    label: '에피소드 제안',
+    tag: '에피소드제안',
+    icon: PenLine,
+  },
+  {
+    label: '세계관 찾기',
+    tag: '지역문화',
+    icon: Globe2,
+  },
+];
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -65,46 +94,87 @@ export const HomePage = () => {
   };
 
   return (
-    <div className="space-y-12">
-      <section className="grid min-h-[520px] items-center gap-8 py-10 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-300">
-            Collaborative Worldbuilding
-          </p>
-          <h1 className="mt-5 max-w-4xl text-4xl font-semibold text-white sm:text-6xl">
-            여러분의 첫 크레딧은 여기서 시작됩니다
+    <div className="space-y-14">
+      <section className="relative min-h-[calc(100svh+12rem)]">
+        <div className="mx-auto flex min-h-[calc(100svh-8rem)] max-w-4xl flex-col items-center justify-center pb-28 text-center">
+          <h1 className="mx-auto max-w-4xl text-3xl font-semibold text-slate-950 sm:text-5xl">
+            원하는 세계관을 만들어 나가세요!
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-            다른 창작자의 세계관에 기여하고, 내 창작 이력을 쌓는 공동창작 플랫폼.
-          </p>
 
-          <form className="mt-8 max-w-2xl" onSubmit={handleSubmit}>
+          <form className="sticky top-24 z-10 mt-10 w-full max-w-3xl" onSubmit={handleSubmit}>
             <label className="sr-only" htmlFor="home-search">
               세계관 검색
             </label>
-            <div className="flex flex-col gap-3 rounded-lg border border-white/10 bg-slate-900/80 p-2 sm:flex-row">
-              <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+            <div className="flex min-h-20 items-center gap-3 rounded-[2rem] border border-slate-200 bg-white px-4 py-3 text-left shadow-lg sm:rounded-full sm:px-5">
+              <button
+                aria-label="검색 옵션 추가"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
+                type="button"
+              >
+                <Plus className="size-5" />
+              </button>
+
+              <div className="relative min-w-0 flex-1">
+                <Search className="pointer-events-none absolute left-0 top-1/2 size-4 -translate-y-1/2 text-slate-400 sm:hidden" />
                 <input
                   id="home-search"
-                  className="h-12 w-full rounded-md border border-transparent bg-slate-950/70 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-accent-300/60"
+                  className="h-12 w-full bg-transparent pl-6 pr-2 text-base text-slate-950 outline-none placeholder:text-slate-400 sm:pl-0"
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="전통설화, SF, 캐릭터 모집..."
+                  placeholder="세계관, 장르, 모집 영역을 검색해보세요"
                   type="search"
                   value={query}
                 />
               </div>
-              <Button className="h-12" rightIcon={<ArrowRight className="size-4" />} type="submit">
-                검색
-              </Button>
+
+              <div className="hidden items-center gap-2 sm:flex">
+                <button
+                  className="inline-flex h-9 items-center gap-1 rounded-full px-3 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
+                  type="button"
+                >
+                  확장
+                  <ChevronDown className="size-4" />
+                </button>
+                <button
+                  aria-label="음성 검색"
+                  className="flex size-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
+                  type="button"
+                >
+                  <Mic className="size-5" />
+                </button>
+              </div>
+
+              <button
+                aria-label="검색 실행"
+                className="flex size-11 shrink-0 items-center justify-center rounded-full bg-slate-950 text-white transition hover:bg-slate-800"
+                type="submit"
+              >
+                <ArrowRight className="size-5" />
+              </button>
+            </div>
+
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+
+                return (
+                  <Link
+                    key={action.label}
+                    className="inline-flex h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-5 text-sm text-slate-600 shadow-sm transition hover:border-accent-300 hover:bg-accent-50 hover:text-slate-950"
+                    to={`/search?tag=${encodeURIComponent(action.tag)}`}
+                  >
+                    <Icon className="size-4 text-accent-600" />
+                    {action.label}
+                  </Link>
+                );
+              })}
             </div>
           </form>
 
-          <div className="mt-5 flex flex-wrap gap-2">
-            {RECOMMENDED_TAGS.map((tag) => (
+          <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
+            {RECOMMENDED_TAGS.slice(0, 5).map((tag) => (
               <Link
                 key={tag}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 transition hover:border-accent-300/40 hover:text-white"
+                className="rounded-full px-3 py-1.5 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
                 to={`/search?tag=${encodeURIComponent(tag)}`}
               >
                 #{tag}
@@ -113,33 +183,39 @@ export const HomePage = () => {
           </div>
         </div>
 
-        <aside className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-          <Sparkles className="size-6 text-accent-300" />
-          <h2 className="mt-4 text-lg font-semibold text-white">오늘의 기여 흐름</h2>
-          <div className="mt-5 space-y-4 text-sm text-slate-300">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <span>모집 중인 영역</span>
-              <strong className="text-white">24</strong>
-            </div>
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <span>이번 주 Merge</span>
-              <strong className="text-white">5</strong>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>평균 리뷰</span>
-              <strong className="text-white">2.8일</strong>
-            </div>
-          </div>
-        </aside>
+        <div className="absolute left-1/2 top-[calc(100svh-13rem)] flex -translate-x-1/2 flex-col items-center gap-3 text-sm text-slate-500">
+          <span>스크롤해서 모집 중인 세계관 보기</span>
+          <span className="flex size-10 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm">
+            <ArrowDown className="size-4" />
+          </span>
+        </div>
+      </section>
+
+      <section className="grid gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3">
+        <div className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          <span className="flex items-center gap-2">
+            <Sparkles className="size-4 text-accent-600" />
+            모집 중인 영역
+          </span>
+          <strong className="text-slate-950">24</strong>
+        </div>
+        <div className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          <span>이번 주 Merge</span>
+          <strong className="text-slate-950">5</strong>
+        </div>
+        <div className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          <span>평균 리뷰</span>
+          <strong className="text-slate-950">2.8일</strong>
+        </div>
       </section>
 
       <section>
         <div className="flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-semibold text-white">지금 기여자를 찾는 세계관</h2>
-            <p className="mt-2 text-sm text-slate-400">카드를 눌러 README와 모집 영역을 먼저 훑어볼 수 있습니다.</p>
+            <h2 className="text-2xl font-semibold text-slate-950">지금 기여자를 찾는 세계관</h2>
+            <p className="mt-2 text-sm text-slate-500">카드를 눌러 README와 모집 영역을 먼저 훑어볼 수 있습니다.</p>
           </div>
-          <Link className="hidden text-sm font-medium text-accent-200 hover:text-accent-100 sm:inline" to="/search">
+          <Link className="hidden text-sm font-medium text-accent-700 hover:text-accent-900 sm:inline" to="/search">
             전체 보기
           </Link>
         </div>
@@ -162,10 +238,10 @@ export const HomePage = () => {
       <section>
         <div className="flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-semibold text-white">이번 주 주목받는 컨트리뷰터</h2>
-            <p className="mt-2 text-sm text-slate-400">팬이 아니라 공동창작자로 남는 사람들입니다.</p>
+            <h2 className="text-2xl font-semibold text-slate-950">이번 주 주목받는 컨트리뷰터</h2>
+            <p className="mt-2 text-sm text-slate-500">팬이 아니라 공동창작자로 남는 사람들입니다.</p>
           </div>
-          <Users className="hidden size-6 text-accent-300 sm:block" />
+          <Users className="hidden size-6 text-accent-600 sm:block" />
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -178,14 +254,14 @@ export const HomePage = () => {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <article className="rounded-lg border border-white/10 bg-slate-900/70 p-6">
-          <GitPullRequest className="size-6 text-accent-300" />
-          <h2 className="mt-4 text-xl font-semibold text-white">컨트리뷰터로 시작</h2>
-          <p className="mt-3 text-sm leading-6 text-slate-400">
+        <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <GitPullRequest className="size-6 text-accent-600" />
+          <h2 className="mt-4 text-xl font-semibold text-slate-950">컨트리뷰터로 시작</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-500">
             다른 사람 세계관에 기여하면서 창작 이력을 쌓아보세요.
           </p>
           <Link
-            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-200 hover:text-accent-100"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-700 hover:text-accent-900"
             to="/search"
           >
             세계관 둘러보기
@@ -193,14 +269,14 @@ export const HomePage = () => {
           </Link>
         </article>
 
-        <article className="rounded-lg border border-white/10 bg-slate-900/70 p-6">
-          <Sparkles className="size-6 text-accent-300" />
-          <h2 className="mt-4 text-xl font-semibold text-white">원작자로 시작</h2>
-          <p className="mt-3 text-sm leading-6 text-slate-400">
+        <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <Sparkles className="size-6 text-accent-600" />
+          <h2 className="mt-4 text-xl font-semibold text-slate-950">원작자로 시작</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-500">
             내 세계관을 등록하고 함께 키워갈 동료를 만나보세요.
           </p>
           <Link
-            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-200 hover:text-accent-100"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-700 hover:text-accent-900"
             to="/r/new"
           >
             세계관 등록하기
@@ -218,4 +294,3 @@ export const HomePage = () => {
     </div>
   );
 };
-

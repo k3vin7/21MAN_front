@@ -153,7 +153,7 @@ export const RepositoryTabs = ({
               ))}
             </div>
             <select
-              className="h-9 rounded-lg border border-white/10 bg-slate-950/70 px-3 text-sm text-slate-200 outline-none focus:border-accent-300"
+              className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
               onChange={(event) => setPullRequestSort(event.target.value as PullRequestSort)}
               value={pullRequestSort}
             >
@@ -190,7 +190,7 @@ export const RepositoryTabs = ({
         <div className="space-y-4">
           <div className="flex justify-end">
             <select
-              className="h-9 rounded-lg border border-white/10 bg-slate-950/70 px-3 text-sm text-slate-200 outline-none focus:border-accent-300"
+              className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
               onChange={(event) => setContributorSort(event.target.value as ContributorSort)}
               value={contributorSort}
             >
@@ -200,7 +200,7 @@ export const RepositoryTabs = ({
           </div>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {contributorSummaries.map((summary) => (
-              <article key={summary.user.id} className="rounded-lg border border-white/10 bg-slate-900/70 p-4">
+              <article key={summary.user.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                 <ContributorBadge
                   meta={`${formatNumber(summary.contributionCount)} contributions`}
                   user={summary.user}
@@ -226,14 +226,14 @@ export const RepositoryTabs = ({
               const contributor = getUser(users, entry.contributorId);
 
               return (
-                <article key={entry.id} className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+                <article key={entry.id} className="rounded-lg border border-slate-200 bg-slate-50 p-5">
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                     <div>
                       <GradeBadge compact grade={entry.grade} />
-                      <h3 className="mt-3 text-base font-semibold text-white">{entry.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-400">{entry.summary}</p>
+                      <h3 className="mt-3 text-base font-semibold text-slate-950">{entry.title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">{entry.summary}</p>
                     </div>
-                    <div className="text-sm text-slate-400 lg:text-right">
+                    <div className="text-sm text-slate-500 lg:text-right">
                       <p>@{contributor?.username ?? 'unknown'}</p>
                       <p className="mt-1">{formatDate(entry.mergedAt)}</p>
                     </div>

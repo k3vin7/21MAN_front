@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
     font-family:
       'SUIT Variable',
       'Pretendard Variable',
@@ -12,15 +12,15 @@
       'Noto Sans KR',
       system-ui,
       sans-serif;
-    background-color: #020617;
-    color: #e2e8f0;
+    background-color: #ffffff;
+    color: #0f172a;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   * {
-    @apply border-slate-800;
+    @apply border-slate-200;
   }
 
   html,
@@ -30,11 +30,8 @@
   }
 
   body {
-    @apply bg-slate-950 text-slate-100;
-    background-image:
-      radial-gradient(circle at top, rgba(20, 184, 166, 0.14), transparent 32%),
-      radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.12), transparent 28%),
-      linear-gradient(180deg, rgba(2, 6, 23, 0.98), rgba(2, 6, 23, 1));
+    @apply bg-white text-slate-950;
+    background-image: none;
   }
 
   a {
@@ -48,15 +45,14 @@
   }
 
   .surface-panel {
-    @apply rounded-3xl border border-white/10 bg-slate-900/70 shadow-soft backdrop-blur;
+    @apply rounded-3xl border border-slate-200 bg-white shadow-soft;
   }
 
   .surface-muted {
-    @apply rounded-2xl border border-white/10 bg-slate-900/40;
+    @apply rounded-2xl border border-slate-200 bg-slate-50;
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.28em] text-accent-300/90;
+    @apply text-xs font-semibold uppercase tracking-[0.28em] text-accent-700;
   }
 }
-

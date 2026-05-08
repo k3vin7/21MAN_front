@@ -20,7 +20,7 @@ export const Tabs = <T extends string>({ items, value, onValueChange, className 
 
   return (
     <div className={className}>
-      <div className="flex gap-1 overflow-x-auto rounded-lg border border-white/10 bg-slate-950/50 p-1">
+      <div className="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-1">
         {items.map((item) => {
           const isActive = item.value === activeItem.value;
 
@@ -29,7 +29,7 @@ export const Tabs = <T extends string>({ items, value, onValueChange, className 
               key={item.value}
               className={cn(
                 'inline-flex h-9 shrink-0 items-center gap-2 rounded-md px-3 text-sm font-medium transition',
-                isActive ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200',
+                isActive ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-500 hover:bg-white hover:text-slate-950',
               )}
               onClick={() => onValueChange(item.value)}
               type="button"
@@ -45,4 +45,3 @@ export const Tabs = <T extends string>({ items, value, onValueChange, className 
     </div>
   );
 };
-

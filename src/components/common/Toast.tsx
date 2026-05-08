@@ -4,10 +4,10 @@ import { Button } from '@/components/common/Button';
 import { cn } from '@/lib/cn';
 
 const toneClasses: Record<ToastTone, string> = {
-  default: 'border-white/10 bg-slate-900 text-slate-100',
-  success: 'border-accent-400/30 bg-accent-950 text-accent-50',
-  warning: 'border-amber-400/30 bg-amber-950 text-amber-50',
-  error: 'border-rose-400/30 bg-rose-950 text-rose-50',
+  default: 'border-slate-200 bg-white text-slate-900',
+  success: 'border-accent-200 bg-accent-50 text-accent-900',
+  warning: 'border-amber-200 bg-amber-50 text-amber-900',
+  error: 'border-rose-200 bg-rose-50 text-rose-900',
 };
 
 export const Toast = () => {
@@ -46,4 +46,3 @@ export const Toast = () => {
     </div>
   );
 };
-

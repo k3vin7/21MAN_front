@@ -42,21 +42,20 @@ export const RepoStatsBar = ({ repository }: RepoStatsBarProps) => {
   ];
 
   return (
-    <dl className="grid overflow-hidden rounded-lg border border-white/10 bg-slate-900/70 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+    <dl className="grid overflow-hidden rounded-lg border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       {stats.map((item) => {
         const Icon = item.icon;
 
         return (
-          <div key={item.label} className="border-b border-r border-white/10 p-4 last:border-r-0 sm:last:border-b-0 xl:border-b-0">
+          <div key={item.label} className="border-b border-r border-slate-200 p-4 last:border-r-0 sm:last:border-b-0 xl:border-b-0">
             <dt className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-500">
-              <Icon className="size-4 text-accent-300" />
+              <Icon className="size-4 text-accent-600" />
               {item.label}
             </dt>
-            <dd className="mt-2 text-lg font-semibold text-white">{item.value}</dd>
+            <dd className="mt-2 text-lg font-semibold text-slate-950">{item.value}</dd>
           </div>
         );
       })}
     </dl>
   );
 };
-

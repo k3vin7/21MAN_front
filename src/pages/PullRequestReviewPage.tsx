@@ -77,11 +77,11 @@ export const PullRequestReviewPage = () => {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-4xl space-y-4">
-        <section className="rounded-lg border border-white/10 bg-slate-900/70 p-6">
-          <h1 className="text-2xl font-semibold text-white">AI가 PR을 분석했습니다</h1>
+        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <h1 className="text-2xl font-semibold text-slate-950">AI가 PR을 분석했습니다</h1>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {loadingSteps.map((step) => (
-              <div key={step} className="rounded-lg border border-white/10 bg-slate-950/50 p-4 text-sm text-slate-300">
+              <div key={step} className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
                 {step}
               </div>
             ))}
@@ -96,7 +96,7 @@ export const PullRequestReviewPage = () => {
     return (
       <EmptyState
         action={
-          <Link className="rounded-lg bg-accent-500 px-4 py-2 text-sm font-semibold text-slate-950" to={`/r/${repoId}/pr/new`}>
+          <Link className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" to={`/r/${repoId}/pr/new`}>
             새 PR 작성
           </Link>
         }
@@ -147,20 +147,20 @@ export const PullRequestReviewPage = () => {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <Link
-        className="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white"
+        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-950"
         to={`/r/${pullRequest.repositoryId}/pr/new`}
       >
         <ArrowLeft className="size-4" />
         Back to edit
       </Link>
 
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-300">AI Review</p>
-        <h1 className="mt-4 text-3xl font-semibold text-white">AI가 PR을 분석했습니다</h1>
-        <p className="mt-3 text-sm leading-6 text-slate-400">내용을 확인하고 제출하세요.</p>
+      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">AI Review</p>
+        <h1 className="mt-4 text-3xl font-semibold text-slate-950">AI가 PR을 분석했습니다</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-500">내용을 확인하고 제출하세요.</p>
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <Input label="PR 제목" onChange={(event) => setTitle(event.target.value)} value={title} />
         <div className="mt-4 flex flex-wrap gap-2">
           {pullRequest.contributionTypes.map((type) => (
@@ -169,13 +169,13 @@ export const PullRequestReviewPage = () => {
             </Badge>
           ))}
         </div>
-        <p className="mt-4 text-sm leading-6 text-slate-300">{pullRequest.structuredContent.expectedEffect}</p>
+        <p className="mt-4 text-sm leading-6 text-slate-600">{pullRequest.structuredContent.expectedEffect}</p>
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-3">
-          <FileText className="size-5 text-accent-300" />
-          <h2 className="text-lg font-semibold text-white">구조화된 PR</h2>
+          <FileText className="size-5 text-accent-700" />
+          <h2 className="text-lg font-semibold text-slate-950">구조화된 PR</h2>
         </div>
         <dl className="mt-5 grid gap-4">
           <StructuredItem label="핵심 제안" value={pullRequest.structuredContent.coreIdea} />
@@ -188,33 +188,33 @@ export const PullRequestReviewPage = () => {
           원문 {showOriginal ? '닫기' : '보기'}
         </Button>
         {showOriginal ? (
-          <p className="mt-4 whitespace-pre-wrap rounded-lg border border-white/10 bg-slate-950/50 p-4 text-sm leading-7 text-slate-300">
+          <p className="mt-4 whitespace-pre-wrap rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-700">
             {pullRequest.originalContent}
           </p>
         ) : null}
       </section>
 
-      <section className="rounded-lg border border-accent-300/20 bg-slate-900/80 p-5">
+      <section className="rounded-lg border border-accent-200 bg-accent-50 p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-white">AI 기여 등급</h2>
-            <p className="mt-1 text-sm text-slate-400">사용자 표시 등급: {gradeKorean[pullRequest.aiGrading.grade]}</p>
+            <h2 className="text-lg font-semibold text-slate-950">AI 기여 등급</h2>
+            <p className="mt-1 text-sm text-slate-600">사용자 표시 등급: {gradeKorean[pullRequest.aiGrading.grade]}</p>
           </div>
           <div className="flex items-center gap-3">
             <GradeBadge grade={pullRequest.aiGrading.grade} />
-            <span className="text-2xl font-semibold text-white">{pullRequest.aiGrading.totalScore}/100</span>
+            <span className="text-2xl font-semibold text-slate-950">{pullRequest.aiGrading.totalScore}/100</span>
           </div>
         </div>
         <div className="mt-5">
           <AiScoreBars grading={pullRequest.aiGrading} />
         </div>
-        <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/50 p-4 text-sm leading-6 text-slate-300">
+        <p className="mt-5 rounded-lg border border-accent-100 bg-white p-4 text-sm leading-6 text-slate-700">
           {pullRequest.aiGrading.rationale}
         </p>
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-        <h2 className="text-lg font-semibold text-white">AI 판정에 동의하시나요?</h2>
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-semibold text-slate-950">AI 판정에 동의하시나요?</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           <Button onClick={() => setAgreesWithAI(true)} variant={agreesWithAI ? 'primary' : 'secondary'}>
             동의합니다
@@ -271,7 +271,7 @@ export const PullRequestReviewPage = () => {
         onClose={() => setConfirmOpen(false)}
         title="PR을 제출할까요?"
       >
-        <p className="text-sm leading-6 text-slate-300">
+        <p className="text-sm leading-6 text-slate-600">
           제출 후 작성 시각과 제출 시각이 기록되며, 원작자가 열람하면 열람 로그도 추가됩니다.
         </p>
       </Modal>
@@ -287,9 +287,8 @@ type StructuredItemProps = {
 const StructuredItem = ({ label, value }: StructuredItemProps) => {
   return (
     <div>
-      <dt className="text-sm font-medium text-slate-400">{label}</dt>
-      <dd className="mt-1 text-sm leading-6 text-slate-200">{value}</dd>
+      <dt className="text-sm font-medium text-slate-500">{label}</dt>
+      <dd className="mt-1 text-sm leading-6 text-slate-700">{value}</dd>
     </div>
   );
 };
-
