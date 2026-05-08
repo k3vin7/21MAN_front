@@ -28,27 +28,14 @@ export const RepoCard = ({ repository, author, onClick }: RepoCardProps) => {
     >
       <img
         alt=""
-        className="absolute inset-0 size-full object-cover opacity-25 transition duration-500 group-hover:scale-105 group-hover:opacity-35"
+        className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105 group-hover:opacity-35"
         loading="lazy"
         src={repository.thumbnail}
       />
+      <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/20 to-transparent" />
 
       <div className="relative flex h-full min-h-[320px] flex-col justify-end p-5">
-        <div className="flex flex-wrap gap-2">
-          {repository.badges.slice(0, 2).map((badge) => (
-            <Badge key={badge} tone={badge === 'NEW' ? 'amber' : 'teal'}>
-              {REPOSITORY_BADGE_LABELS[badge]}
-            </Badge>
-          ))}
-        </div>
-
-        <div className="mt-4">
-          <p className="text-sm font-medium text-accent-700">{repository.genre} · {WORK_SCALE_LABELS[repository.workScale]}</p>
-          <h3 className="mt-2 text-xl font-semibold text-slate-950">{repository.title}</h3>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{truncateText(repository.description, 88)}</p>
-        </div>
-
-        <div className="mt-5 translate-y-2 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+        <div className="translate-y-2 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
           <div className="rounded-lg border border-slate-200 bg-white/85 p-4 backdrop-blur">
             <p className="text-sm text-slate-600">
               by <span className="font-semibold text-slate-950">@{author?.username ?? 'unknown'}</span>
@@ -82,7 +69,19 @@ export const RepoCard = ({ repository, author, onClick }: RepoCardProps) => {
             </div>
           </div>
         </div>
-      </div>
+            <div className="flex flex-wrap gap-2 mt-7">
+              {repository.badges.slice(0, 2).map((badge) => (
+                <Badge key={badge} tone={badge === 'NEW' ? 'amber' : 'teal'}>
+                  {REPOSITORY_BADGE_LABELS[badge]}
+                </Badge>
+              ))}
+            </div>
+
+            <div className="flex mt-2">
+                <h3 className="mt-2 text-xl font-bold text-slate-950">{repository.title}</h3>
+                <p className="flex ml-2 items-end text-sm font-medium text-accent-700">{repository.genre} · {WORK_SCALE_LABELS[repository.workScale]}</p>
+            </div>
+        </div>
     </button>
   );
 };

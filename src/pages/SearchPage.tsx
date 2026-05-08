@@ -269,7 +269,7 @@ export const SearchPage = () => {
         <p className="text-sm text-slate-500">총 {repositories.length}개의 세계관을 찾았습니다.</p>
 
         {isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-2">
             {Array.from({ length: 8 }).map((_, index) => (
               <Skeleton key={index} className="h-80" />
             ))}
