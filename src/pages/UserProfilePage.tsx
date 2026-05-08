@@ -79,7 +79,7 @@ export const UserProfilePage = () => {
   }, [currentUser?.username, username]);
 
   const ownedRepositories = user
-    ? repositories.filter((repository) => repository.authorId === user.id)
+    ? repositories.filter((repository) => repository.authorId === user.id || repository.authorId === user.username)
     : [];
 
   const contributionGroups = useMemo(() => {
@@ -96,7 +96,7 @@ export const UserProfilePage = () => {
   }, [pullRequests, repositories, user]);
 
   const selectedAuthor = selectedRepository
-    ? users.find((item) => item.id === selectedRepository.authorId)
+    ? users.find((item) => item.id === selectedRepository.authorId || item.username === selectedRepository.authorId)
     : undefined;
   const officialCredits = user
     ? user.stats.majorMerges + user.stats.normalMerges + user.stats.minorMerges

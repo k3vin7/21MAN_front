@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/common/Skeleton';
 import { RepoStatsBar } from '@/components/repository/RepoStatsBar';
 import { RepositoryTabs } from '@/components/repository/RepositoryTabs';
+import { useAuthStore } from '@/features/auth/auth.store';
 import type { MergeHistoryEntry, PullRequest } from '@/features/pull-request/pullRequest.types';
 import { pullRequestService } from '@/features/pull-request/pullRequest.service';
 import type { Repository } from '@/features/repository/repository.types';
@@ -20,6 +21,7 @@ import {
 
 export const RepositoryDetailPage = () => {
   const { repoId } = useParams();
+  const currentUser = useAuthStore((state) => state.user);
   const [repository, setRepository] = useState<Repository | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
@@ -37,19 +39,30 @@ export const RepositoryDetailPage = () => {
 
     const fetchRepositoryDetail = async () => {
       setIsLoading(true);
-      const [nextRepository, nextUsers, nextPullRequests, nextMergeHistory] = await Promise.all([
-        repositoryService.getRepositoryById(repoId),
+      const nextRepository = await repositoryService.getRepositoryById(repoId);
+      const authorId = nextRepository?.authorId;
+      const authorProfilePromise = authorId
+        ? currentUser?.username === authorId
+          ? userService.getCurrentUserProfile()
+          : userService.getUserByUsername(authorId)
+        : Promise.resolve(null);
+      const [nextUsers, nextPullRequests, nextMergeHistory, authorProfile] = await Promise.all([
         userService.getUsers(),
         pullRequestService.getPullRequests({ repositoryId: repoId }),
         repositoryService.getRepositoryMergeHistory(repoId),
+        authorProfilePromise,
       ]);
 
       if (!mounted) {
         return;
       }
 
+      const mergedUsers = authorProfile && !nextUsers.some((user) => user.id === authorProfile.id)
+        ? [authorProfile, ...nextUsers]
+        : nextUsers;
+
       setRepository(nextRepository);
-      setUsers(nextUsers);
+      setUsers(mergedUsers);
       setPullRequests(nextPullRequests);
       setMergeHistory(nextMergeHistory);
       setIsLoading(false);
@@ -60,7 +73,7 @@ export const RepositoryDetailPage = () => {
     return () => {
       mounted = false;
     };
-  }, [repoId]);
+  }, [repoId, currentUser?.username]);
 
   if (isLoading) {
     return (
@@ -89,7 +102,7 @@ export const RepositoryDetailPage = () => {
     );
   }
 
-  const author = users.find((user) => user.id === repository.authorId);
+  const author = users.find((user) => user.id === repository.authorId || user.username === repository.authorId);
 
   return (
     <div className="space-y-6">

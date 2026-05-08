@@ -1,10 +1,11 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/features/auth/auth.store';
 import type { Repository, RecruitingAreaType, WorkScale } from '@/features/repository/repository.types';
 import { useRepositoryStore } from '@/features/repository/repository.store';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/useToast';
-import { MOCK_AUTHOR_ID, RECOMMENDED_TAGS } from '@/lib/constants';
+import { RECOMMENDED_TAGS } from '@/lib/constants';
 
 type DraftItem = {
   id: string;
@@ -89,6 +90,7 @@ const lines = (value: string) => value.split('\n').map((line) => line.trim()).fi
 export const RepositoryWizard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const currentUser = useAuthStore((state) => state.user);
   const createRepository = useRepositoryStore((state) => state.createRepository);
   const [draft, setDraft, clearDraft] = useLocalStorage<SimpleRepositoryDraft>(
     wizardStorageKey,
@@ -185,7 +187,7 @@ export const RepositoryWizard = () => {
     setIsPublishing(true);
 
     try {
-      const repository = buildRepositoryFromDraft(draft);
+      const repository = buildRepositoryFromDraft(draft, currentUser?.username);
       const createdRepository = await createRepository(repository);
 
       if (!createdRepository) {
@@ -402,7 +404,7 @@ export const RepositoryWizard = () => {
   );
 };
 
-const buildRepositoryFromDraft = (draft: SimpleRepositoryDraft): Repository => {
+const buildRepositoryFromDraft = (draft: SimpleRepositoryDraft, authorId?: string): Repository => {
   const now = new Date().toISOString();
   const coreRules = lines(draft.worldRulesText);
   const forbiddenSettings = lines(draft.forbiddenSettingsText);
@@ -413,7 +415,7 @@ const buildRepositoryFromDraft = (draft: SimpleRepositoryDraft): Repository => {
     id: createRepositoryId(draft.title),
     title: draft.title.trim(),
     thumbnail: draft.thumbnail.trim() || defaultThumbnail,
-    authorId: MOCK_AUTHOR_ID,
+    authorId: authorId || 'current-user',
     description: draft.description.trim() || draft.worldOverview.trim(),
     genre: draft.tags.includes('SF') ? 'SF' : '판타지',
     workScale,

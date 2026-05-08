@@ -129,6 +129,16 @@ export const mapApiUser = (payload: unknown): User => {
 export const mapApiRepository = (payload: unknown): Repository => {
   const repository = asObject(payload);
   const author = asObject(repository.author);
+  const authorId = String(
+    author.username ??
+      repository.author_username ??
+      repository.owner_username ??
+      repository.created_by_username ??
+      author.id ??
+      repository.author_id ??
+      repository.owner_id ??
+      '',
+  );
   const readme = asObject(repository.readme);
   const tags = asStringArray(repository.tags);
   const recruitingAreas = buildRecruitingAreas(repository.recruiting_areas);
@@ -145,7 +155,7 @@ export const mapApiRepository = (payload: unknown): Repository => {
     id: String(repository.id ?? ''),
     title: asString(repository.title, 'Untitled Repository'),
     thumbnail: asString(repository.thumbnail, DEFAULT_THUMBNAIL),
-    authorId: String(author.username ?? author.id ?? ''),
+    authorId,
     description: asString(repository.description),
     genre: normalizeGenre(tags),
     workScale: 'MEDIUM' as WorkScale,
