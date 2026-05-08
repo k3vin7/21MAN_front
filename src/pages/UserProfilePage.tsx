@@ -23,6 +23,7 @@ export const UserProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [contributionRepositories, setContributionRepositories] = useState<Repository[]>([]);
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
   const [activeTab, setActiveTab] = useState<ProfileTab>('contribution');
   const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
@@ -50,6 +51,21 @@ export const UserProfilePage = () => {
               authorUsername: nextUser.username,
             })
           : [];
+        const contributionRepositoryIds = Array.from(
+          new Set(
+            nextPullRequests
+              .filter((pullRequest) => pullRequest.status === 'MERGED')
+              .map((pullRequest) => pullRequest.repositoryId)
+              .filter(Boolean),
+          ),
+        );
+        const nextContributionRepositories = (
+          await Promise.all(
+            contributionRepositoryIds.map((repositoryId) =>
+              repositoryService.getRepositoryById(repositoryId).catch(() => null),
+            ),
+          )
+        ).filter((repository): repository is Repository => Boolean(repository));
 
         if (!mounted) {
           return;
@@ -58,6 +74,7 @@ export const UserProfilePage = () => {
         setUser(nextUser);
         setUsers(nextUsers);
         setRepositories(nextRepositories);
+        setContributionRepositories(nextContributionRepositories);
         setPullRequests(nextPullRequests);
       } catch {
         if (!mounted) {
@@ -67,6 +84,7 @@ export const UserProfilePage = () => {
         setUser(null);
         setUsers([]);
         setRepositories([]);
+        setContributionRepositories([]);
         setPullRequests([]);
       } finally {
         if (mounted) {
@@ -89,7 +107,7 @@ export const UserProfilePage = () => {
       return [];
     }
 
-    return repositories
+    return contributionRepositories
       .map((repository) => ({
         repository,
         pullRequests: pullRequests.filter(
@@ -98,7 +116,7 @@ export const UserProfilePage = () => {
         ),
       }))
       .filter((group) => group.pullRequests.length > 0);
-  }, [pullRequests, repositories, user]);
+  }, [contributionRepositories, pullRequests, user]);
 
   const selectedAuthor = selectedRepository
     ? users.find(
