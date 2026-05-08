@@ -1,10 +1,7 @@
 import { useState } from 'react';
-import { BarChart3, LinkIcon } from 'lucide-react';
 import { Badge } from '@/components/common/Badge';
-import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Tabs, type TabItem } from '@/components/common/Tabs';
-import { ContributorBadge } from '@/components/contributor/ContributorBadge';
 import { GradeBadge } from '@/components/pull-request/GradeBadge';
 import { PullRequestListItem } from '@/components/pull-request/PullRequestListItem';
 import { RepositoryReadme } from '@/components/repository/RepositoryReadme';
@@ -12,12 +9,10 @@ import type { MergeHistoryEntry, PullRequest, PullRequestStatus } from '@/featur
 import type { Repository } from '@/features/repository/repository.types';
 import type { User } from '@/features/user/user.types';
 import { MOCK_CURRENT_USER_ID } from '@/lib/constants';
-import { formatDate, formatDateTime } from '@/lib/date';
-import { formatNumber } from '@/lib/format';
+import { formatDate } from '@/lib/date';
 
-type RepositoryTabValue = 'readme' | 'pullRequests' | 'contributors' | 'mergeHistory' | 'insights';
+type RepositoryTabValue = 'readme' | 'pullRequests' | 'mergeHistory';
 type PullRequestSort = 'recent' | 'grade' | 'recommended';
-type ContributorSort = 'count' | 'recent';
 
 type RepositoryTabsProps = {
   repository: Repository;
@@ -45,7 +40,8 @@ const filterOptions: Array<{
 
 const closedStatuses: PullRequestStatus[] = ['ACCEPTED', 'MERGED', 'REJECTED'];
 
-const getUser = (users: User[], userId: string) => users.find((user) => user.id === userId || user.username === userId);
+const getUser = (users: User[], userId: string) =>
+  users.find((user) => user.id === userId || user.username === userId);
 
 export const RepositoryTabs = ({
   repository,
@@ -56,71 +52,29 @@ export const RepositoryTabs = ({
   const [activeTab, setActiveTab] = useState<RepositoryTabValue>('readme');
   const [activePrFilters, setActivePrFilters] = useState<string[]>(['OPEN']);
   const [pullRequestSort, setPullRequestSort] = useState<PullRequestSort>('recent');
-  const [contributorSort, setContributorSort] = useState<ContributorSort>('count');
 
   const filteredPullRequests = pullRequests
     .filter((pullRequest) => {
-      if (!activePrFilters.length) {
-        return true;
-      }
-
+      if (!activePrFilters.length) return true;
       const mineOnly = activePrFilters.includes('MINE');
-      const statusFilters = activePrFilters.filter((filter) => filter !== 'MINE');
+      const statusFilters = activePrFilters.filter((f) => f !== 'MINE');
       const statusMatches = statusFilters.length
-        ? statusFilters.some((filter) => {
-        if (filter === 'CLOSED') {
-          return closedStatuses.includes(pullRequest.status);
-        }
-
-        return pullRequest.status === filter;
-      })
+        ? statusFilters.some((filter) =>
+            filter === 'CLOSED'
+              ? closedStatuses.includes(pullRequest.status)
+              : pullRequest.status === filter,
+          )
         : true;
       const mineMatches = mineOnly ? pullRequest.authorId === MOCK_CURRENT_USER_ID : true;
-
       return statusMatches && mineMatches;
     })
     .sort((a, b) => {
-      if (pullRequestSort === 'grade') {
-        return gradeRank[b.finalGrade] - gradeRank[a.finalGrade];
-      }
-
-      if (pullRequestSort === 'recommended') {
-        return b.aiGrading.totalScore - a.aiGrading.totalScore;
-      }
-
+      if (pullRequestSort === 'grade') return gradeRank[b.finalGrade] - gradeRank[a.finalGrade];
+      if (pullRequestSort === 'recommended') return b.aiGrading.totalScore - a.aiGrading.totalScore;
       return (
         new Date(b.timestamps.submittedAt ?? b.timestamps.draftStartedAt).getTime() -
         new Date(a.timestamps.submittedAt ?? a.timestamps.draftStartedAt).getTime()
       );
-    });
-
-  const contributorSummaries = users
-    .map((user) => {
-      const authored = pullRequests.filter(
-        (pullRequest) => pullRequest.authorId === user.id || pullRequest.authorId === user.username,
-      );
-      const merged = authored.filter((pullRequest) => pullRequest.status === 'MERGED');
-      const recentTime = Math.max(
-        0,
-        ...authored.map((pullRequest) =>
-          new Date(pullRequest.timestamps.submittedAt ?? pullRequest.timestamps.draftStartedAt).getTime(),
-        ),
-      );
-
-      return {
-        user,
-        contributionCount: authored.length,
-        majorMergeCount: merged.filter((pullRequest) => pullRequest.finalGrade === 'MAJOR').length,
-        recentTime,
-      };
-    })
-    .filter((summary) => summary.contributionCount > 0)
-    .sort((a, b) => {
-      if (contributorSort === 'recent') {
-        return b.recentTime - a.recentTime;
-      }
-
-      return b.contributionCount - a.contributionCount;
     });
 
   const toggleFilter = (filter: string) => {
@@ -132,30 +86,34 @@ export const RepositoryTabs = ({
   const tabs: TabItem<RepositoryTabValue>[] = [
     {
       value: 'readme',
-      label: '세계관 문서',
+      label: '작품 소개',
       content: <RepositoryReadme repository={repository} />,
     },
     {
       value: 'pullRequests',
-      label: '창작 제안',
+      label: '모인 제안',
       badge: <Badge tone="slate">{pullRequests.length}</Badge>,
       content: (
         <div className="space-y-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap gap-2">
               {filterOptions.map((option) => (
-                <Button
+                <button
                   key={option.value}
+                  type="button"
                   onClick={() => toggleFilter(option.value)}
-                  size="sm"
-                  variant={activePrFilters.includes(option.value) ? 'primary' : 'secondary'}
+                  className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                    activePrFilters.includes(option.value)
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                  }`}
                 >
                   {option.label}
-                </Button>
+                </button>
               ))}
             </div>
             <select
-              className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
+              className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
               onChange={(event) => setPullRequestSort(event.target.value as PullRequestSort)}
               value={pullRequestSort}
             >
@@ -177,91 +135,46 @@ export const RepositoryTabs = ({
             </div>
           ) : (
             <EmptyState
-              title="조건에 맞는 창작 제안이 없습니다"
-              description="다른 상태 필터를 선택하거나 내 제안 필터를 해제해보세요."
+              icon={null}
+              title="아직 제안이 없네요"
+              description="다른 필터를 선택해보거나 첫 번째 제안자가 되어보세요."
             />
           )}
         </div>
       ),
     },
     {
-      value: 'contributors',
-      label: '공동창작자',
-      badge: <Badge tone="slate">{contributorSummaries.length}</Badge>,
-      content: (
-        <div className="space-y-4">
-          <div className="flex justify-end">
-            <select
-              className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
-              onChange={(event) => setContributorSort(event.target.value as ContributorSort)}
-              value={contributorSort}
-            >
-              <option value="count">참여 많은순</option>
-              <option value="recent">최근 활동순</option>
-            </select>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {contributorSummaries.map((summary) => (
-              <article key={summary.user.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                <ContributorBadge
-                  meta={`창작 제안 ${formatNumber(summary.contributionCount)}건`}
-                  user={summary.user}
-                />
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Badge tone="teal">제안 {formatNumber(summary.contributionCount)}</Badge>
-                  <Badge tone="amber">주요 공식 반영 {formatNumber(summary.majorMergeCount)}</Badge>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      ),
-    },
-    {
       value: 'mergeHistory',
-      label: '공식 반영 기록',
+      label: '반영된 것들',
       badge: <Badge tone="slate">{mergeHistory.length}</Badge>,
       content: (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {mergeHistory.length ? (
             mergeHistory.map((entry) => {
               const contributor = getUser(users, entry.contributorId);
-
               return (
-                <article key={entry.id} className="rounded-lg border border-slate-200 bg-slate-50 p-5">
+                <article key={entry.id} className="rounded-2xl bg-slate-50 p-5">
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                     <div>
                       <GradeBadge compact grade={entry.grade} />
-                      <h3 className="mt-3 text-base font-semibold text-slate-950">{entry.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-600">{entry.summary}</p>
+                      <h3 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h3>
+                      <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{entry.summary}</p>
                     </div>
-                    <div className="text-sm text-slate-500 lg:text-right">
+                    <div className="shrink-0 text-sm text-slate-400 lg:text-right">
                       <p>@{contributor?.username ?? 'unknown'}</p>
                       <p className="mt-1">{formatDate(entry.mergedAt)}</p>
                     </div>
-                  </div>
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <LinkIcon className="size-3.5" />
-                    <span>/r/{entry.repositoryId}/pr/{entry.pullRequestId}/review</span>
                   </div>
                 </article>
               );
             })
           ) : (
-            <EmptyState title="아직 공식 반영 기록이 없습니다" description="첫 공식 반영이 생기면 이곳에 타임라인이 쌓입니다." />
+            <EmptyState
+              title="아직 반영된 제안이 없어요"
+              description="첫 번째 제안이 반영되면 여기에 기록돼요."
+            />
           )}
         </div>
-      ),
-    },
-    {
-      value: 'insights',
-      label: 'Insights',
-      content: (
-        <EmptyState
-          icon={<BarChart3 className="size-5" />}
-          title="데이터를 수집 중입니다"
-          description="창작 참여 패턴, 검토 속도, 공식 반영 품질 지표는 더 많은 활동이 쌓이면 제공됩니다."
-        />
       ),
     },
   ];

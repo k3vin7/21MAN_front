@@ -76,6 +76,13 @@ export const RepoDetailModal = ({ repository, author: _author, isOpen, onClose }
       size="lg"
     >
       <div className="space-y-5">
+        <img
+          alt=""
+          className="h-52 w-full rounded-2xl object-cover"
+          loading="lazy"
+          src={repository.thumbnail}
+        />
+
         {(repository.readme.worldOverview || repository.readme.intro) && (
           <section className="rounded-2xl bg-slate-50 p-4">
             <h3 className="text-xs font-semibold text-slate-400">세계관 소개</h3>

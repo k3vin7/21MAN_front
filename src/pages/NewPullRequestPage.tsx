@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ImagePlus, Paperclip, Sparkles } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Badge } from '@/components/common/Badge';
-import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/common/Skeleton';
-import { Textarea } from '@/components/common/Textarea';
-import { LicenseNotice } from '@/components/pull-request/LicenseNotice';
 import { TimestampGuard } from '@/components/pull-request/TimestampGuard';
 import type { PullRequestDraftInput } from '@/features/pull-request/pullRequest.types';
 import { pullRequestService } from '@/features/pull-request/pullRequest.service';
@@ -49,69 +45,48 @@ export const NewPullRequestPage = () => {
 
   useEffect(() => {
     let mounted = true;
-
     const fetchContext = async () => {
       setIsLoading(true);
       const nextRepository = await repositoryService.getRepositoryById(repoId);
       const nextAuthor = nextRepository ? await userService.getUserById(nextRepository.authorId) : null;
-
-      if (!mounted) {
-        return;
-      }
-
+      if (!mounted) return;
       setRepository(nextRepository);
       setAuthor(nextAuthor);
       setIsLoading(false);
     };
-
     fetchContext();
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [repoId]);
 
-  useEffect(() => {
-    setDraft(storedDraft);
-  }, [storageKey]);
+  useEffect(() => { setDraft(storedDraft); }, [storageKey]);
 
   useEffect(() => {
-    if (!draft.content && !draft.title && !draft.contributionTypes.length) {
-      return;
-    }
-
-    const lastSavedAt = new Date().toISOString();
-    setStoredDraft({ ...debouncedDraft, lastSavedAt });
-    setSaveStatus('마지막 저장: 방금 전');
+    if (!draft.content && !draft.title && !draft.contributionTypes.length) return;
+    setStoredDraft({ ...debouncedDraft, lastSavedAt: new Date().toISOString() });
+    setSaveStatus('방금 저장했어요');
   }, [debouncedDraft, setStoredDraft]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
-      if (!draft.content && !draft.title && !draft.contributionTypes.length) {
-        return;
-      }
-
+      if (!draft.content && !draft.title && !draft.contributionTypes.length) return;
       setStoredDraft({ ...draft, lastSavedAt: new Date().toISOString() });
-      setSaveStatus('마지막 저장: 방금 전');
+      setSaveStatus('방금 저장했어요');
     }, 30000);
-
     return () => window.clearInterval(intervalId);
   }, [draft, setStoredDraft]);
 
-  if (isLoading) {
-    return <Skeleton className="mx-auto h-[720px] max-w-4xl" />;
-  }
+  if (isLoading) return <Skeleton className="mx-auto h-[720px] max-w-2xl" />;
 
   if (!repository) {
     return (
       <EmptyState
         action={
-          <Link className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" to="/search">
-            검색으로 이동
+          <Link className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white" to="/search">
+            작품 찾으러 가기
           </Link>
         }
-        title="창작 제안을 보낼 세계관을 찾지 못했습니다"
-        description="mock data에 없는 세계관 ID입니다."
+        title="작품을 찾지 못했어요"
+        description="다른 작품에 먼저 참여해보세요."
       />
     );
   }
@@ -121,7 +96,7 @@ export const NewPullRequestPage = () => {
   );
 
   const updateDraft = (next: Partial<DraftState>) => {
-    setSaveStatus('자동 저장 중');
+    setSaveStatus('저장 중...');
     setDraft((current) => ({
       ...current,
       ...next,
@@ -132,26 +107,22 @@ export const NewPullRequestPage = () => {
   };
 
   const toggleContributionType = (type: RecruitingAreaType) => {
-    const nextTypes = draft.contributionTypes.includes(type)
-      ? draft.contributionTypes.filter((item) => item !== type)
-      : [...draft.contributionTypes, type];
-
-    updateDraft({ contributionTypes: nextTypes });
+    updateDraft({
+      contributionTypes: draft.contributionTypes.includes(type)
+        ? draft.contributionTypes.filter((item) => item !== type)
+        : [...draft.contributionTypes, type],
+    });
   };
 
   const handleTemporarySave = () => {
     setStoredDraft({ ...draft, lastSavedAt: new Date().toISOString() });
-    setSaveStatus('마지막 저장: 방금 전');
+    setSaveStatus('방금 저장했어요');
   };
 
   const handleAnalyze = async () => {
-    if (!draft.content.trim()) {
-      return;
-    }
-
+    if (!draft.content.trim()) return;
     setIsAnalyzing(true);
     handleTemporarySave();
-
     const input: PullRequestDraftInput = {
       repositoryId: repository.id,
       authorId: MOCK_CURRENT_USER_ID,
@@ -162,123 +133,139 @@ export const NewPullRequestPage = () => {
           ? draft.contributionTypes
           : [recruitingAreas[0]?.type ?? 'CHARACTER'],
     };
-
     const pullRequest = await pullRequestService.createAiReviewedPullRequest(input);
     navigate(`/r/${repository.id}/pr/${pullRequest.id}/review`);
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-2xl space-y-4">
       <Link
-        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-950"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-400 transition hover:text-slate-700"
         to={`/r/${repository.id}`}
       >
         <ArrowLeft className="size-4" />
-        작품으로 돌아가기
+        돌아가기
       </Link>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">창작 제안</p>
-        <h1 className="mt-4 text-3xl font-semibold text-slate-950">이 세계관에 창작 제안하기</h1>
-        <p className="mt-3 text-sm leading-6 text-slate-500">
-          @{author?.username ?? 'unknown'} 의 세계관에 창작 제안을 보냅니다.
-        </p>
-      </section>
-
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-950">이 작품의 금지 설정을 확인하셨나요?</h2>
-            <Link className="mt-2 inline-flex text-sm font-medium text-accent-700 hover:text-accent-900" to={`/r/${repository.id}`}>
-              세계관 문서 확인하기
-            </Link>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {repository.readme.forbiddenSettings.slice(0, 2).map((setting) => (
-              <Badge key={setting} tone="amber">
-                {setting}
-              </Badge>
-            ))}
-          </div>
+      {/* Hero — 작품 맥락 */}
+      <div className="relative overflow-hidden rounded-2xl">
+        <img
+          alt=""
+          className="absolute inset-0 size-full object-cover opacity-40"
+          src={repository.thumbnail}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-slate-900/20" />
+        <div className="relative px-7 py-8">
+          <p className="text-xs font-semibold uppercase tracking-wider text-white/50">작품에 기여하기</p>
+          <h1 className="mt-2 text-3xl font-bold text-white">{repository.title}</h1>
+          {author && (
+            <div className="mt-4 flex items-center gap-2.5">
+              <img
+                alt={author.displayName}
+                className="size-7 rounded-full object-cover ring-2 ring-white/20"
+                src={author.avatar}
+              />
+              <span className="text-sm text-white/70">@{author.username} 작가님 작품에 기여하기</span>
+            </div>
+          )}
         </div>
+      </div>
 
-        <div className="mt-5">
-          <p className="text-sm font-medium text-slate-700">현재 모집 영역</p>
+      {/* 금지 설정 경고 */}
+      {repository.readme.forbiddenSettings.length > 0 && (
+        <div className="rounded-2xl bg-amber-50 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-500">작가님이 원하지 않는 것들</p>
+          <ul className="mt-2 space-y-1">
+            {repository.readme.forbiddenSettings.slice(0, 2).map((setting) => (
+              <li key={setting} className="flex items-start gap-2 text-sm text-amber-800">
+                <span className="mt-2 size-1 shrink-0 rounded-full bg-amber-400" />
+                {setting}
+              </li>
+            ))}
+          </ul>
+          <Link className="mt-3 inline-flex text-xs text-amber-500 hover:text-amber-700" to={`/r/${repository.id}`}>
+            작품 규칙 전체 보기
+          </Link>
+        </div>
+      )}
+
+      {/* 모집 영역 선택 */}
+      {recruitingAreas.length > 0 && (
+        <div className="rounded-2xl bg-white px-5 py-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">작가님이 찾는 건</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {recruitingAreas.map((area) => (
               <button
                 key={area.id}
-                className={`rounded-lg border px-3 py-2 text-sm transition ${
-                  draft.contributionTypes.includes(area.type)
-                    ? 'border-accent-300 bg-accent-50 text-accent-900'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950'
-                }`}
-                onClick={() => toggleContributionType(area.type)}
                 type="button"
+                onClick={() => toggleContributionType(area.type)}
+                className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                  draft.contributionTypes.includes(area.type)
+                    ? 'bg-slate-900 text-white'
+                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                }`}
               >
                 {RECRUITING_AREA_LABELS[area.type]}
               </button>
             ))}
           </div>
         </div>
-      </section>
+      )}
 
-      <LicenseNotice />
+      {/* 작성 폼 */}
+      <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
+        <div className="px-5 pt-5">
+          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400" htmlFor="pr-title">
+            제목을 붙여볼까요?
+          </label>
+          <input
+            id="pr-title"
+            className="mt-2 h-11 w-full rounded-xl border border-slate-100 bg-slate-50 px-3 text-sm text-slate-900 outline-none placeholder:text-slate-300 focus:border-accent-400 focus:bg-white focus:ring-2 focus:ring-accent-400/15 transition"
+            onChange={(event) => updateDraft({ title: event.target.value })}
+            placeholder="예: 마법 아카데미에 신입 교수 한 명 추가"
+            value={draft.title}
+          />
+        </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <label className="text-sm font-medium text-slate-700" htmlFor="pr-title">
-          제안 제목
-        </label>
-        <input
-          id="pr-title"
-          className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none placeholder:text-slate-400 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
-          onChange={(event) => updateDraft({ title: event.target.value })}
-          placeholder="예: 강릉 환승령에 바람표 검표원 추가"
-          value={draft.title}
-        />
-
-        <div className="mt-5">
-          <Textarea
-            className="min-h-[400px]"
-            helperText="어떤 종류든 자유롭게 쓰세요. AI가 창작 제안 양식으로 정리하고 등급을 판정합니다."
-            label="자유 작성"
+        <div className="px-5 pt-5">
+          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400" htmlFor="pr-content">
+            뭐든 자유롭게 써주세요
+          </label>
+          <textarea
+            id="pr-content"
+            className="mt-2 w-full resize-none rounded-xl border border-slate-100 bg-slate-50 px-3 py-3 text-sm leading-7 text-slate-900 outline-none placeholder:text-slate-300 focus:border-accent-400 focus:bg-white focus:ring-2 focus:ring-accent-400/15 transition min-h-[320px]"
             onChange={(event) => updateDraft({ content: event.target.value })}
-            placeholder={`예시: ${repository.title}에서 아직 비어 있는 장소 하나를 제안하고 싶습니다. 이 장소는 기존 규칙과 이렇게 연결됩니다...`}
+            placeholder={`이 작품에 어떤 걸 제안하고 싶은지 편하게 써주세요.\n\n예) ${repository.title}에 새로운 캐릭터를 추가하고 싶어요. 이 캐릭터는...`}
             value={draft.content}
           />
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
-            <span>{draft.content.length.toLocaleString('ko-KR')}자</span>
-            <span>{saveStatus}</span>
-          </div>
         </div>
-      </section>
 
-      <section className="rounded-lg border border-dashed border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-950">첨부</h2>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Button leftIcon={<ImagePlus className="size-4" />} variant="secondary">
-            이미지 추가
-          </Button>
-          <Button leftIcon={<Paperclip className="size-4" />} variant="secondary">
-            파일 추가
-          </Button>
+        <div className="flex items-center justify-between px-5 py-3 text-xs text-slate-300">
+          <span>{draft.content.length.toLocaleString('ko-KR')}자</span>
+          <span>{saveStatus}</span>
         </div>
-      </section>
+      </div>
 
       <TimestampGuard draftStartedAt={draft.firstTypingAt} />
 
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-        <Button onClick={handleTemporarySave} variant="secondary">
-          임시 저장
-        </Button>
-        <Button
-          isLoading={isAnalyzing}
-          leftIcon={<Sparkles className="size-4" />}
+      {/* 액션 */}
+      <div className="space-y-2 pb-6">
+        <button
+          type="button"
           onClick={handleAnalyze}
-          disabled={!draft.content.trim()}
+          disabled={!draft.content.trim() || isAnalyzing}
+          className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-900 py-4 text-base font-bold text-white transition hover:bg-slate-800 disabled:opacity-30"
         >
-          AI 분석 받기
-        </Button>
+          <Sparkles className="size-5" />
+          {isAnalyzing ? '분석 중...' : 'AI한테 다듬어달라고 하기'}
+        </button>
+        <button
+          type="button"
+          onClick={handleTemporarySave}
+          className="flex w-full items-center justify-center rounded-2xl py-3 text-sm text-slate-400 transition hover:text-slate-600"
+        >
+          나중에 마저 쓸게요
+        </button>
       </div>
     </div>
   );
