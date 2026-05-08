@@ -33,7 +33,7 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
             className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50"
             to={`/r/${repository.id}`}
           >
-            상세 보기
+            세계관 소개 보기
             <ArrowRight className="size-4" />
           </Link>
           <Link
@@ -41,7 +41,7 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
             to={`/r/${repository.id}/pr/new`}
           >
             <GitPullRequest className="size-4" />
-            기여하기
+            창작 제안하기
           </Link>
         </div>
       }
@@ -71,7 +71,7 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
         <RepoStatsBar repository={repository} />
 
         <section>
-          <h3 className="text-base font-semibold text-slate-950">지금 받고 싶은 기여</h3>
+          <h3 className="text-base font-semibold text-slate-950">지금 받고 싶은 창작 제안</h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {repository.readme.recruitingAreas.map((area) => (
               <RecruitingAreaCard key={area.id} area={area} />

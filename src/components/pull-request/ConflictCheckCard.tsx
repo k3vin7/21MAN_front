@@ -44,7 +44,7 @@ export const ConflictCheckCard = ({ pullRequest, repository }: ConflictCheckCard
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-950">충돌 검사</h2>
-          <p className="mt-1 text-sm text-slate-500">AI가 기존 README와 PR 내용을 대조한 mock 결과입니다.</p>
+          <p className="mt-1 text-sm text-slate-500">AI가 기존 세계관 문서와 창작 제안 내용을 대조한 mock 결과입니다.</p>
         </div>
         <Badge tone={riskTone[risk]}>충돌 위험 {CONFLICT_RISK_LABELS[risk]}</Badge>
       </div>

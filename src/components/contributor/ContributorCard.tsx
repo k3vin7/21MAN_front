@@ -27,7 +27,7 @@ export const ContributorCard = ({ user, featured }: ContributorCardProps) => {
         {featured ? <Badge tone="teal">{featured.mainField}</Badge> : null}
         <Badge tone="amber">
           <Award className="mr-1 size-3" />
-          Major {formatNumber(user.stats.majorMerges)}
+          주요 반영 {formatNumber(user.stats.majorMerges)}
         </Badge>
       </div>
 
@@ -35,7 +35,7 @@ export const ContributorCard = ({ user, featured }: ContributorCardProps) => {
 
       <div className="mt-5 flex items-center gap-2 text-sm text-slate-600">
         <GitMerge className="size-4 text-accent-600" />
-        총 기여 {formatNumber(user.stats.contributionsTotal)}개
+        참여 이력 {formatNumber(user.stats.contributionsTotal)}개
       </div>
     </article>
   );

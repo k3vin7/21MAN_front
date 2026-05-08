@@ -57,26 +57,26 @@ export const REPOSITORY_SORT_LABELS: Record<RepositorySortOption, string> = {
   RECOMMENDED: '추천순',
   RECENT: '최근 활동순',
   POPULAR: '인기순',
-  MERGE_RATE: '머지율순',
-  FAST_REVIEW: '빠른 리뷰순',
+  MERGE_RATE: '반영률순',
+  FAST_REVIEW: '빠른 검토순',
   NEW_FIRST: '신생작 우선',
 };
 
 export const PULL_REQUEST_STATUS_LABELS: Record<PullRequestStatus, string> = {
   DRAFT: '초안',
   AI_REVIEWED: 'AI 분석 완료',
-  OPEN: '열림',
+  OPEN: '접수됨',
   REVIEWING: '검토 중',
-  CHANGES_REQUESTED: '변경 요청',
-  ACCEPTED: '수락',
-  MERGED: '머지됨',
-  REJECTED: '거절',
+  CHANGES_REQUESTED: '수정 요청됨',
+  ACCEPTED: '채택됨',
+  MERGED: '공식 반영됨',
+  REJECTED: '반려',
 };
 
 export const PULL_REQUEST_GRADE_LABELS: Record<PullRequestGrade, string> = {
-  MAJOR: 'Major',
-  NORMAL: 'Normal',
-  MINOR: 'Minor',
+  MAJOR: '핵심 제안',
+  NORMAL: '일반 제안',
+  MINOR: '작은 제안',
 };
 
 export const CONFLICT_RISK_LABELS: Record<ConflictRisk, string> = {
@@ -86,8 +86,8 @@ export const CONFLICT_RISK_LABELS: Record<ConflictRisk, string> = {
 };
 
 export const VISIBILITY_LABELS: Record<PullRequestVisibility, string> = {
-  PUBLIC: 'Public',
-  PRIVATE: 'Private',
+  PUBLIC: '공개 제안',
+  PRIVATE: '비공개 제안',
 };
 
 export const MOCK_CURRENT_USER_ID = 'user-haneul';

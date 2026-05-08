@@ -35,7 +35,7 @@ export const StepExternalLinks = ({ draft, updateDraft }: RepositoryWizardStepPr
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-slate-950">External Links</h2>
+          <h2 className="text-lg font-semibold text-slate-950">외부 링크</h2>
           <p className="mt-1 text-sm text-slate-500">작품 원문, 설정 문서, SNS를 연결할 수 있습니다.</p>
         </div>
         <Button leftIcon={<Plus className="size-4" />} onClick={addLink} variant="secondary">
@@ -47,7 +47,7 @@ export const StepExternalLinks = ({ draft, updateDraft }: RepositoryWizardStepPr
         {draft.externalLinks.map((link) => (
           <div key={link.id} className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 md:grid-cols-[180px_minmax(0,1fr)_auto]">
             <label className="text-sm font-medium text-slate-700">
-              Link type
+              링크 유형
               <select
                 className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
                 onChange={(event) => updateLink(link.id, { type: event.target.value })}

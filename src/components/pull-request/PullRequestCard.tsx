@@ -3,7 +3,7 @@ import { Badge } from '@/components/common/Badge';
 import { GradeBadge } from '@/components/pull-request/GradeBadge';
 import type { PullRequest } from '@/features/pull-request/pullRequest.types';
 import type { User } from '@/features/user/user.types';
-import { CONFLICT_RISK_LABELS, PULL_REQUEST_STATUS_LABELS } from '@/lib/constants';
+import { CONFLICT_RISK_LABELS, PULL_REQUEST_STATUS_LABELS, VISIBILITY_LABELS } from '@/lib/constants';
 import { formatDateTime } from '@/lib/date';
 import { cn } from '@/lib/cn';
 
@@ -36,7 +36,7 @@ export const PullRequestCard = ({ pullRequest, author, selected = false, onClick
         <GradeBadge compact grade={pullRequest.finalGrade} />
         <Badge tone={pullRequest.visibility === 'PRIVATE' ? 'amber' : 'blue'}>
           <VisibilityIcon className="mr-1 size-3" />
-          {pullRequest.visibility}
+          {VISIBILITY_LABELS[pullRequest.visibility]}
         </Badge>
       </div>
       <h3 className="mt-3 line-clamp-2 text-sm font-semibold text-slate-950">{pullRequest.title}</h3>

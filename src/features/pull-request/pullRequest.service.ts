@@ -488,11 +488,11 @@ export const pullRequestService = {
         } else if (decision === 'REJECT') {
           await apiClient.post(API_PATHS.pullRequests.reject(pullRequestId), {
             category: 'OTHER',
-            detail: note || '거절 사유가 입력되지 않았습니다.',
+            detail: note || '반려 사유가 입력되지 않았습니다.',
           });
         } else {
           await apiClient.post(API_PATHS.pullRequests.merge(pullRequestId), {
-            credit_text: note || '공식 세계관에 반영된 기여입니다.',
+            credit_text: note || '공식 세계관에 반영된 창작 제안입니다.',
             readme_apply_note: note,
             comment: note,
             final_grade: finalGrade,

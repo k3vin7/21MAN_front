@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const footerLinks = [
-  { to: '/search', label: '레포지토리 탐색' },
+  { to: '/search', label: '세계관 탐색' },
   { to: '/r/new', label: '새 세계관 열기' },
   { to: '/u/ink-mason', label: '크리에이터 프로필' },
 ];
@@ -13,7 +13,7 @@ export const Footer = () => {
         <div>
           <p className="text-sm font-semibold text-slate-950">WorldBuild</p>
           <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-            원작자와 컨트리뷰터가 하나의 세계관을 함께 다듬는 공동창작 플랫폼.
+            원작자와 공동창작자가 하나의 세계관을 함께 다듬는 공동창작 플랫폼.
           </p>
         </div>
 

@@ -7,7 +7,7 @@ type AiScoreBarsProps = {
 };
 
 const scoreItems = [
-  { key: 'scope', label: 'Scope', description: '기여 범위' },
+  { key: 'scope', label: 'Scope', description: '제안 범위' },
   { key: 'permanence', label: 'Permanence', description: '영구 반영성' },
   { key: 'cascade', label: 'Cascade', description: '후속 영향' },
   { key: 'alignment', label: 'Alignment', description: '세계관 정합성' },

@@ -6,7 +6,7 @@ export const usersMock: User[] = [
     username: 'ink-mason',
     displayName: '한아라',
     avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=ink-mason',
-    bio: '전통 설화와 근미래 도시를 엮는 원작자. 기여자의 해석을 공식 세계관의 일부로 남기는 데 관심이 많습니다.',
+    bio: '전통 설화와 근미래 도시를 엮는 원작자. 공동창작자의 해석을 공식 세계관의 일부로 남기는 데 관심이 많습니다.',
     roles: ['AUTHOR', 'CONTRIBUTOR'],
     links: [
       { type: 'portfolio', url: 'https://worldbuild.example/ink-mason' },
@@ -59,7 +59,7 @@ export const usersMock: User[] = [
     username: 'map-weaver',
     displayName: '이하늘',
     avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=map-weaver',
-    bio: '지역 세력, 항로, 도시 구조를 설계하는 컨트리뷰터. 지도를 이야기로 바꾸는 작업을 좋아합니다.',
+    bio: '지역 세력, 항로, 도시 구조를 설계하는 공동창작자. 지도를 이야기로 바꾸는 작업을 좋아합니다.',
     roles: ['CONTRIBUTOR'],
     stats: {
       repositoriesOwned: 0,
@@ -75,7 +75,7 @@ export const usersMock: User[] = [
     username: 'scene-smith',
     displayName: '정유리',
     avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=scene-smith',
-    bio: '짧고 선명한 에피소드와 캐릭터 관계 변화를 제안합니다. 감정선이 필요한 PR에서 강합니다.',
+    bio: '짧고 선명한 에피소드와 캐릭터 관계 변화를 제안합니다. 감정선이 필요한 창작 제안에서 강합니다.',
     roles: ['CONTRIBUTOR'],
     links: [{ type: 'portfolio', url: 'https://worldbuild.example/scene-smith' }],
     stats: {
@@ -92,7 +92,7 @@ export const usersMock: User[] = [
     username: 'contour-leaf',
     displayName: '윤서',
     avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=contour-leaf',
-    bio: '콘티와 외전 아이디어를 통해 공식 세계관의 빈 공간을 채우는 신예 컨트리뷰터입니다.',
+    bio: '콘티와 외전 아이디어를 통해 공식 세계관의 빈 공간을 채우는 신예 공동창작자입니다.',
     roles: ['CONTRIBUTOR'],
     stats: {
       repositoriesOwned: 0,
@@ -109,7 +109,7 @@ export const featuredContributorsMock: FeaturedContributor[] = [
   {
     userId: 'user-haneul',
     mainField: '지역 설정',
-    weeklyHighlights: ['폐항 도시 세력도 Major Merge', '항로 충돌 규칙 개선'],
+    weeklyHighlights: ['폐항 도시 세력도 주요 공식 반영', '항로 충돌 규칙 개선'],
   },
   {
     userId: 'user-yuri',
@@ -124,7 +124,6 @@ export const featuredContributorsMock: FeaturedContributor[] = [
   {
     userId: 'user-seo',
     mainField: '콘티',
-    weeklyHighlights: ['프롤로그 콘티 Normal Merge', '외전 컷 구성 제안'],
+    weeklyHighlights: ['프롤로그 콘티 공식 반영', '외전 컷 구성 제안'],
   },
 ];
-

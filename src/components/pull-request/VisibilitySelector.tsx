@@ -10,16 +10,16 @@ type VisibilitySelectorProps = {
 const options = [
   {
     value: 'PUBLIC' as const,
-    label: 'Public',
+    label: '공개 제안',
     description: '다른 사용자가 보고 반응할 수 있습니다.',
     guide: '목격자가 많아 원작성 증명에 더 유리합니다.',
     icon: Eye,
   },
   {
     value: 'PRIVATE' as const,
-    label: 'Private',
+    label: '비공개 제안',
     description: '원작자와 작성자만 볼 수 있습니다.',
-    guide: '목격자는 적지만 타임스탬프는 남고, Merge 이력은 공개될 수 있습니다.',
+    guide: '목격자는 적지만 타임스탬프는 남고, 공식 반영 기록은 공개될 수 있습니다.',
     icon: LockKeyhole,
   },
 ];

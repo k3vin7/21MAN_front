@@ -6,7 +6,7 @@ type AgreementChecklistProps = {
 const agreements = [
   {
     id: 'ip',
-    label: 'Merge 시 IP는 원작자에게 귀속됨에 동의',
+    label: '공식 반영 시 IP는 원작자에게 귀속됨에 동의',
   },
   {
     id: 'credit',

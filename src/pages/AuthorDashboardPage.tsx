@@ -32,13 +32,13 @@ type QueueFilter =
 type QueueSort = 'recent' | 'grade' | 'risk';
 
 const queueFilters: Array<{ label: string; value: QueueFilter }> = [
-  { label: '새 PR', value: 'NEW' },
-  { label: 'Public PR', value: 'PUBLIC' },
-  { label: 'Private PR', value: 'PRIVATE' },
-  { label: '충돌 위험 PR', value: 'CONFLICT' },
-  { label: '인기 PR', value: 'POPULAR' },
-  { label: '변경 요청 중', value: 'CHANGES_REQUESTED' },
-  { label: 'Merge 대기', value: 'MERGE_READY' },
+  { label: '새 창작 제안', value: 'NEW' },
+  { label: '공개 제안', value: 'PUBLIC' },
+  { label: '비공개 제안', value: 'PRIVATE' },
+  { label: '충돌 위험 제안', value: 'CONFLICT' },
+  { label: '인기 제안', value: 'POPULAR' },
+  { label: '수정 요청 중', value: 'CHANGES_REQUESTED' },
+  { label: '공식 반영 대기', value: 'MERGE_READY' },
 ];
 
 const gradeRank: Record<PullRequestGrade, number> = {
@@ -234,10 +234,10 @@ export const AuthorDashboardPage = () => {
       toast({
         title:
           decision === 'ACCEPT'
-            ? 'PR을 수락했습니다'
+            ? '창작 제안을 채택했습니다'
             : decision === 'REQUEST_CHANGES'
-              ? '변경 요청으로 표시했습니다'
-              : 'PR을 거절했습니다',
+              ? '수정 요청으로 표시했습니다'
+              : '창작 제안을 반려했습니다',
         tone: decision === 'REJECT' ? 'warning' : 'success',
       });
     }
@@ -258,8 +258,8 @@ export const AuthorDashboardPage = () => {
     if (updated) {
       await refreshPullRequests(updated.repositoryId);
       toast({
-        title: 'Merge가 확정되었습니다',
-        description: 'mock merge history에 공식 반영 이력이 추가되었습니다.',
+        title: '공식 반영이 확정되었습니다',
+        description: '공식 반영 기록에 새 이력이 추가되었습니다.',
         tone: 'success',
       });
     }
@@ -270,7 +270,7 @@ export const AuthorDashboardPage = () => {
   }
 
   if (!repository) {
-    return <EmptyState title="대시보드를 열 수 없습니다" description="mock data에 없는 repository입니다." />;
+    return <EmptyState title="대시보드를 열 수 없습니다" description="mock data에 없는 세계관입니다." />;
   }
 
   return (
@@ -278,7 +278,7 @@ export const AuthorDashboardPage = () => {
       <aside className="space-y-4">
         <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
           <h1 className="text-lg font-semibold text-slate-950">{repository.title}</h1>
-          <p className="mt-2 text-sm text-slate-500">PR 검토 대시보드</p>
+          <p className="mt-2 text-sm text-slate-500">창작 제안 검토 대시보드</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {queueFilters.map((filter) => (
               <Button
@@ -317,13 +317,13 @@ export const AuthorDashboardPage = () => {
 
       <section className="min-w-0">
         {!selectedPullRequest ? (
-          <EmptyState title="검토할 PR을 선택하세요" description="왼쪽 큐에서 PR을 선택하면 상세 검토 패널이 열립니다." />
+          <EmptyState title="검토할 창작 제안을 선택하세요" description="왼쪽 제안함에서 창작 제안을 선택하면 상세 검토 패널이 열립니다." />
         ) : !canReadContent ? (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-6">
             <ShieldAlert className="size-6 text-amber-600" />
-            <h2 className="mt-4 text-xl font-semibold text-slate-950">이 PR을 열람하면 영구 로그가 기록됩니다.</h2>
+            <h2 className="mt-4 text-xl font-semibold text-slate-950">이 창작 제안을 열람하면 영구 로그가 기록됩니다.</h2>
             <p className="mt-3 text-sm leading-6 text-amber-900">
-              열람 후 유사 설정 사용 시 컨트리뷰터가 도용 증거로 사용할 수 있습니다.
+              열람 후 유사 설정 사용 시 공동창작자가 도용 증거로 사용할 수 있습니다.
             </p>
             <div className="mt-6 flex gap-3">
               <Button onClick={handleRead}>열람합니다</Button>
@@ -340,7 +340,7 @@ export const AuthorDashboardPage = () => {
                   <div className="flex flex-wrap items-center gap-2">
                     <GradeBadge grade={finalGrade} />
                     <Badge tone={selectedPullRequest.visibility === 'PRIVATE' ? 'amber' : 'blue'}>
-                      {selectedPullRequest.visibility}
+                      {selectedPullRequest.visibility === 'PRIVATE' ? '비공개 제안' : '공개 제안'}
                     </Badge>
                     <Badge tone="slate">{PULL_REQUEST_STATUS_LABELS[selectedPullRequest.status]}</Badge>
                   </div>
@@ -355,7 +355,7 @@ export const AuthorDashboardPage = () => {
                       <div>
                         <p className="text-sm font-semibold text-slate-950">@{selectedAuthor.username}</p>
                         <p className="text-xs text-slate-500">
-                          Merge rate {selectedAuthor.stats.mergeRate}% · Major {selectedAuthor.stats.majorMerges}
+                          반영률 {selectedAuthor.stats.mergeRate}% · 주요 반영 {selectedAuthor.stats.majorMerges}
                         </p>
                       </div>
                     </div>
@@ -363,11 +363,11 @@ export const AuthorDashboardPage = () => {
                 </div>
                 <dl className="grid gap-2 text-sm text-slate-600">
                   <div>
-                    <dt className="text-xs text-slate-500">Written</dt>
+                    <dt className="text-xs text-slate-500">작성 시작</dt>
                     <dd>{formatDateTime(selectedPullRequest.timestamps.draftStartedAt)}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs text-slate-500">Submitted</dt>
+                    <dt className="text-xs text-slate-500">제출</dt>
                     <dd>
                       {selectedPullRequest.timestamps.submittedAt
                         ? formatDateTime(selectedPullRequest.timestamps.submittedAt)
@@ -375,7 +375,7 @@ export const AuthorDashboardPage = () => {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-xs text-slate-500">First viewed</dt>
+                    <dt className="text-xs text-slate-500">처음 열람</dt>
                     <dd>
                       {selectedPullRequest.timestamps.firstViewedByAuthorAt
                         ? formatDateTime(selectedPullRequest.timestamps.firstViewedByAuthorAt)
@@ -387,7 +387,7 @@ export const AuthorDashboardPage = () => {
             </section>
 
             <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-950">AI Summary</h3>
+              <h3 className="text-lg font-semibold text-slate-950">AI 요약</h3>
               <div className="mt-5">
                 <AiScoreBars grading={selectedPullRequest.aiGrading} />
               </div>
@@ -399,7 +399,7 @@ export const AuthorDashboardPage = () => {
             <ConflictCheckCard pullRequest={selectedPullRequest} repository={repository} />
 
             <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-950">Structured PR</h3>
+              <h3 className="text-lg font-semibold text-slate-950">정리된 창작 제안</h3>
               <dl className="mt-4 grid gap-4 text-sm">
                 <DetailItem label="핵심 제안" value={selectedPullRequest.structuredContent.coreIdea} />
                 <DetailItem label="관련 캐릭터" value={selectedPullRequest.structuredContent.relatedCharacters.join(', ') || '해당 없음'} />
@@ -411,7 +411,7 @@ export const AuthorDashboardPage = () => {
 
             {selectedPullRequest.contributorOpinion ? (
               <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-semibold text-slate-950">Contributor Opinion</h3>
+                <h3 className="text-lg font-semibold text-slate-950">공동창작자 의견</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">
                   {selectedPullRequest.contributorOpinion.note}
                 </p>
@@ -419,16 +419,16 @@ export const AuthorDashboardPage = () => {
             ) : null}
 
             <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-950">Final Grade Adjustment</h3>
+              <h3 className="text-lg font-semibold text-slate-950">최종 등급 조정</h3>
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <div>
-                  <p className="text-sm text-slate-500">AI grade</p>
+                  <p className="text-sm text-slate-500">AI 등급</p>
                   <div className="mt-2">
                     <GradeBadge grade={selectedPullRequest.aiGrading.grade} />
                   </div>
                 </div>
                 <label className="text-sm font-medium text-slate-700">
-                  Final grade
+                  최종 등급
                   <select
                     className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
                     onChange={(event) => setFinalGrade(event.target.value as PullRequestGrade)}
@@ -446,14 +446,14 @@ export const AuthorDashboardPage = () => {
                 <Textarea
                   className="mt-4"
                   error={gradeNoteMissing ? 'AI 등급과 다르게 조정하는 경우 사유가 필요합니다.' : undefined}
-                  label="Author grading note"
+                  label="등급 조정 사유"
                   onChange={(event) => setAuthorNote(event.target.value)}
                   value={authorNote}
                 />
               ) : (
                 <Textarea
                   className="mt-4"
-                  label="Author note"
+                  label="원작자 메모"
                   onChange={(event) => setAuthorNote(event.target.value)}
                   value={authorNote}
                 />
@@ -461,14 +461,14 @@ export const AuthorDashboardPage = () => {
             </section>
 
             <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-950">Actions</h3>
+              <h3 className="text-lg font-semibold text-slate-950">처리</h3>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Button
                   disabled={gradeNoteMissing}
                   leftIcon={<CheckCircle2 className="size-4" />}
                   onClick={() => handleDecision('ACCEPT')}
                 >
-                  Accept
+                  채택
                 </Button>
                 <Button
                   disabled={gradeNoteMissing}
@@ -476,14 +476,14 @@ export const AuthorDashboardPage = () => {
                   onClick={() => handleDecision('REQUEST_CHANGES')}
                   variant="secondary"
                 >
-                  Request Changes
+                  수정 요청
                 </Button>
                 <Button
                   leftIcon={<Pause className="size-4" />}
                   onClick={() => toast({ title: '검토 보류로 표시했습니다', tone: 'default' })}
                   variant="secondary"
                 >
-                  Hold
+                  보류
                 </Button>
                 <Button
                   disabled={gradeNoteMissing || rejectMissing}
@@ -491,7 +491,7 @@ export const AuthorDashboardPage = () => {
                   onClick={() => handleDecision('REJECT')}
                   variant="danger"
                 >
-                  Reject
+                  반려
                 </Button>
               </div>
               <div className="mt-5 grid gap-3 md:grid-cols-[220px_minmax(0,1fr)]">
@@ -509,7 +509,7 @@ export const AuthorDashboardPage = () => {
                 <input
                   className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none placeholder:text-slate-400 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
                   onChange={(event) => setRejectReason(event.target.value)}
-                  placeholder="Reject 사유"
+                  placeholder="반려 사유"
                   value={rejectReason}
                 />
               </div>
@@ -529,7 +529,7 @@ export const AuthorDashboardPage = () => {
                   leftIcon={<GitMerge className="size-4" />}
                   onClick={handleMerge}
                 >
-                  Merge 확정
+                  공식 반영 확정
                 </Button>
               </section>
             ) : null}
