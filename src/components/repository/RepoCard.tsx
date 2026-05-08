@@ -79,7 +79,7 @@ export const RepoCard = ({ repository, author, onClick }: RepoCardProps) => {
 
             <div className="flex mt-2">
                 <h3 className="mt-2 text-xl font-bold text-slate-950">{repository.title}</h3>
-                <p className="flex ml-2 items-end text-sm font-medium text-accent-700">{repository.genre} · {WORK_SCALE_LABELS[repository.workScale]}</p>
+                <p className="flex ml-3 items-end text-sm font-medium text-accent-700 transition opacity-0 group-hover:opacity-100">{repository.genre} · {WORK_SCALE_LABELS[repository.workScale]}</p>
             </div>
         </div>
     </button>

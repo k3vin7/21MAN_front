@@ -111,7 +111,7 @@ export const Header = () => {
           </div>
 
           {showGlobalSearch ? (
-            <div className="w-full border-t border-slate-100 px-4 py-2.5">
+            <div className="w-full border-slate-100 px-4 py-2.5">
               <form className="mx-auto flex max-w-xl items-center gap-2" onSubmit={handleSubmit}>
                 <label className="sr-only" htmlFor="global-search">
                   세계관 검색
