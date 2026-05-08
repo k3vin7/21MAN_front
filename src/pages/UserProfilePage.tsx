@@ -202,13 +202,21 @@ export const UserProfilePage = () => {
                 />
               ))
             ) : (
-              <CreditEmptyState />
+              <ProfileEmptyState
+                title="아직 참여 이력이 없습니다"
+                description="세계관에 창작 제안을 보내고 원작자가 공식 반영하면 이곳에 기록됩니다."
+              />
             )}
           </div>
         ) : ownedRepositories.length ? (
           <RepoGrid onRepoClick={setSelectedRepository} repositories={ownedRepositories} users={users} />
         ) : (
-          <EmptyState title="소유한 세계관이 없습니다" description="원작자로 세계관을 열면 이곳에 표시됩니다." />
+          <div className="grid gap-4 xl:grid-cols-2">
+            <ProfileEmptyState
+              title="소유한 세계관이 없습니다"
+              description="원작자로 세계관을 열면 이곳에 표시됩니다."
+            />
+          </div>
         )}
       </section>
 
@@ -246,13 +254,17 @@ const ProfileTabButton = ({
   );
 };
 
-const CreditEmptyState = () => {
+const ProfileEmptyState = ({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) => {
   return (
     <div className="rounded-2xl bg-slate-50 p-8">
-      <h3 className="text-xl font-semibold text-slate-950">아직 참여 이력이 없습니다</h3>
-      <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-        세계관에 창작 제안을 보내고 원작자가 공식 반영하면 이곳에 기록됩니다.
-      </p>
+      <h3 className="text-xl font-semibold text-slate-950">{title}</h3>
+      <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">{description}</p>
     </div>
   );
 };

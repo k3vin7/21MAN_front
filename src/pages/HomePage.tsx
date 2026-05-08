@@ -94,7 +94,7 @@ export const HomePage = () => {
             <label className="sr-only" htmlFor="home-search">
               세계관 검색
             </label>
-            <div className="flex h-14 items-center gap-3 rounded-2xl bg-slate-100 px-4 text-left transition focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-950/10">
+            <div className="flex h-14 items-center gap-3 rounded-full bg-slate-100 pl-4 px-2 text-left transition focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-950/10">
               <Search className="size-5 shrink-0 text-slate-400" />
               <div className="relative min-w-0 flex-1">
                 <input

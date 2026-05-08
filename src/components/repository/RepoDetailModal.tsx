@@ -1,10 +1,11 @@
-import { ArrowRight, ExternalLink, GitPullRequest } from 'lucide-react';
+import { ArrowRight, ExternalLink, GitPullRequest, Inbox } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
 import { RepoStatsBar } from '@/components/repository/RepoStatsBar';
 import { RecruitingAreaCard } from '@/components/repository/RecruitingAreaCard';
+import { useAuthStore } from '@/features/auth/auth.store';
 import type { Repository } from '@/features/repository/repository.types';
 import type { User } from '@/features/user/user.types';
 import { REPOSITORY_BADGE_LABELS } from '@/lib/constants';
@@ -17,9 +18,20 @@ type RepoDetailModalProps = {
 };
 
 export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDetailModalProps) => {
+  const currentUser = useAuthStore((state) => state.user);
+
   if (!repository) {
     return null;
   }
+
+  const currentUserId = currentUser ? String(currentUser.id) : '';
+  const isOwner = Boolean(
+    currentUser &&
+      (repository.authorId === currentUserId ||
+        repository.authorId === currentUser.username ||
+        author?.id === currentUserId ||
+        author?.username === currentUser.username),
+  );
 
   return (
     <Modal
@@ -36,6 +48,15 @@ export const RepoDetailModal = ({ repository, author, isOpen, onClose }: RepoDet
             세계관 소개 보기
             <ArrowRight className="size-4" />
           </Link>
+          {isOwner ? (
+            <Link
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-accent-200 bg-accent-50 px-4 text-sm font-semibold text-accent-900 transition hover:border-accent-300 hover:bg-accent-100"
+              to={`/r/${repository.id}/dashboard`}
+            >
+              <Inbox className="size-4" />
+              받은 제안 보기
+            </Link>
+          ) : null}
           <Link
             className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
             to={`/r/${repository.id}/pr/new`}
