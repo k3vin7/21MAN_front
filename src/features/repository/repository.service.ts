@@ -17,6 +17,12 @@ type ApiListResponse = {
   items?: unknown[];
 };
 
+type ApiSearchResponse = {
+  repositories?: {
+    items?: unknown[];
+  };
+};
+
 type ApiRepositoryStats = {
   received_prs?: number;
   merged_prs?: number;
@@ -238,6 +244,50 @@ export const repositoryService = {
         return sortRepositories(filteredRepositories, filters?.sort);
       },
       () => getMockRepositories(filters),
+    );
+  },
+
+  async searchRepositories(filters?: RepositorySearchFilters): Promise<Repository[]> {
+    return withApiFallback(
+      async () => {
+        const response = await apiClient.get<ApiSearchResponse>(
+          API_PATHS.search.global,
+          {
+            q: filters?.query,
+            type: 'repository',
+            tag: filters?.tag,
+            sort: getApiSort(filters?.sort),
+            page: 1,
+            size: 100,
+          },
+          { auth: false },
+        );
+        const apiRepositories = (response.repositories?.items ?? []).map(mapApiRepository);
+        const filteredRepositories = filterRepositories(apiRepositories, filters);
+
+        return sortRepositories(filteredRepositories, filters?.sort);
+      },
+      () => getMockRepositories(filters),
+    );
+  },
+
+  async getUserRepositories(username: string): Promise<Repository[]> {
+    return withApiFallback(
+      async () => {
+        const response = await apiClient.get<ApiListResponse>(
+          API_PATHS.users.repositories(username),
+          { page: 1, size: 100 },
+          { auth: false },
+        );
+        return (response.items ?? []).map(mapApiRepository);
+      },
+      async () => {
+        await mockDelay();
+        const userRepos = repositories.filter(
+          (repo) => repo.authorId === username,
+        );
+        return cloneMock(userRepos);
+      },
     );
   },
 

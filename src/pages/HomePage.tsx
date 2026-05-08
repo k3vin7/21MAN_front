@@ -84,7 +84,7 @@ export const HomePage = () => {
         />
         <div className="relative z-10 mx-auto flex min-h-[calc(100svh-10rem)] max-w-2xl flex-col items-center justify-center pb-16 text-center">
           <h1 className="mx-auto text-3xl font-bold leading-tight tracking-normal text-slate-950 sm:text-4xl">
-            좋아하는 웹툰 세계에 참여하세요!
+            좋아하는 웹툰 세계에 기여하세요!
           </h1>
           <p className="mt-4 max-w-xl text-base leading-7 text-slate-500">
             캐릭터, 에피소드, 설정을 제안하고 원작자가 채택하면 내 참여 이력으로 남습니다.

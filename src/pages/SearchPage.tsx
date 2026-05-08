@@ -75,7 +75,7 @@ export const SearchPage = () => {
     const fetchSearchData = async () => {
       setIsLoading(true);
       const [nextRepositories, nextUsers] = await Promise.all([
-        repositoryService.getRepositories(filters),
+        repositoryService.searchRepositories(filters),
         userService.getUsers(),
       ]);
 

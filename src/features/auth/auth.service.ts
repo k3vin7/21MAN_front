@@ -176,7 +176,15 @@ export const authService = {
 
   async me(accessToken: string): Promise<AuthUser> {
     if (isApiEnabled) {
-      return apiClient.get<AuthUser>(API_PATHS.auth.me);
+      const raw = await apiClient.get<Record<string, unknown>>(API_PATHS.auth.me);
+      return {
+        id: raw.id as number,
+        email: String(raw.email ?? ''),
+        username: String(raw.username ?? ''),
+        avatar: String(raw.avatar ?? raw.avatar_url ?? ''),
+        bio: raw.bio ? String(raw.bio) : undefined,
+        created_at: String(raw.created_at ?? ''),
+      };
     }
 
     await mockDelay();

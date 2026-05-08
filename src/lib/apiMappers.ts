@@ -122,12 +122,13 @@ const buildRecruitingAreas = (value: unknown): RecruitingArea[] => {
 export const mapApiUser = (payload: unknown): User => {
   const user = asObject(payload);
   const username = asString(user.username, String(user.id ?? 'unknown'));
+  const avatar = asString(user.avatar ?? user.avatar_url, '');
 
   return {
     id: String(user.id ?? username),
     username,
     displayName: asString(user.display_name, username),
-    avatar: asString(user.avatar, `https://api.dicebear.com/9.x/notionists/svg?seed=${username}`),
+    avatar: avatar || `https://api.dicebear.com/9.x/notionists/svg?seed=${username}`,
     bio: asString(user.bio),
     roles: ['AUTHOR', 'CONTRIBUTOR'],
     stats: {
@@ -287,11 +288,12 @@ export const mapApiMergeHistoryEntry = (payload: unknown, repositoryId = '') => 
   const merge = asObject(payload);
   const pullRequest = asObject(merge.pull_request);
   const contributor = asObject(merge.contributor);
+  const pullRequestId = String(pullRequest.id ?? merge.pull_request_id ?? '');
 
   return {
     id: String(merge.id ?? ''),
     repositoryId,
-    pullRequestId: String(pullRequest.id ?? ''),
+    pullRequestId,
     contributorId: String(contributor.username ?? contributor.id ?? ''),
     title: asString(pullRequest.title, asString(merge.credit_text, '공식 반영된 창작 제안')),
     grade: normalizeGrade(merge.final_grade),

@@ -39,9 +39,10 @@ export const UserProfilePage = () => {
         const nextUser = isCurrentUserProfile
           ? await userService.getCurrentUserProfile()
           : await userService.getUserByUsername(username);
+        const targetUsername = nextUser?.username ?? username;
         const [nextUsers, nextRepositories] = await Promise.all([
           userService.getUsers(),
-          repositoryService.getRepositories(),
+          repositoryService.getUserRepositories(targetUsername),
         ]);
         const nextPullRequests = nextUser
           ? await pullRequestService.getPullRequests({
@@ -81,11 +82,7 @@ export const UserProfilePage = () => {
     };
   }, [currentUser?.username, username]);
 
-  const ownedRepositories = user
-    ? repositories.filter(
-        (repository) => repository.authorId === user.id || repository.authorId === user.username,
-      )
-    : [];
+  const ownedRepositories = repositories;
 
   const contributionGroups = useMemo(() => {
     if (!user) {
