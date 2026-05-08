@@ -121,7 +121,6 @@ export const HomePage = () => {
               <span
                 aria-label="검색 옵션 추가"
                 className="flex size-1 shrink-0 items-center justify-center rounded-full text-slate-500"
-                type="button"
               >
               </span>
 

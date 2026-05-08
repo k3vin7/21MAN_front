@@ -55,7 +55,7 @@ const normalizeGenre = (tags: string[]): RepositoryGenre => {
     return 'SF';
   }
 
-  return '?먰?吏';
+  return '판타지';
 };
 
 const normalizeStatus = (status: unknown): PullRequestStatus => {
