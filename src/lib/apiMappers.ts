@@ -48,6 +48,7 @@ const normalizeRecruitingAreaType = (value: unknown): RecruitingAreaType => {
   const map: Record<string, RecruitingAreaType> = {
     CHARACTER: 'CHARACTER',
     CHARACTER_ADD: 'CHARACTER',
+    CHARACTER_MODIFY: 'CHARACTER',
     EPISODE: 'EPISODE',
     EPISODE_ADD: 'EPISODE',
     EVENT_EPISODE: 'EPISODE',

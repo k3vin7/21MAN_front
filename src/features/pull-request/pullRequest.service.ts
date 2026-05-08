@@ -122,6 +122,10 @@ const replaceCachedPullRequest = (next: PullRequest) => {
     : [next, ...pullRequests];
 };
 
+const getCachedRepositoryId = (pullRequestId: string) => {
+  return pullRequests.find((item) => item.id === pullRequestId)?.repositoryId;
+};
+
 const getMockPullRequests = async (filters: PullRequestFilters = {}) => {
   await mockDelay();
   const result = pullRequests.filter((pullRequest) => {
@@ -155,13 +159,14 @@ const getMockPullRequestById = async (pullRequestId: string) => {
   return pullRequest ? cloneMock(pullRequest) : null;
 };
 
-const getApiPullRequestById = async (pullRequestId: string) => {
+const getApiPullRequestById = async (pullRequestId: string, repositoryId?: string) => {
   const detail = await apiClient.get<Record<string, unknown>>(API_PATHS.pullRequests.detail(pullRequestId));
   const analysis = await apiClient
     .get<Record<string, unknown>>(API_PATHS.pullRequests.aiAnalysis(pullRequestId))
     .catch(() => null);
   const pullRequest = mapApiPullRequest({
     ...detail,
+    repo_id: detail.repo_id ?? detail.repository_id ?? repositoryId,
     ai_analysis: analysis,
   });
 
@@ -169,18 +174,53 @@ const getApiPullRequestById = async (pullRequestId: string) => {
   return pullRequest;
 };
 
+const mapApiPullRequestWithRepositoryId = (payload: unknown, repositoryId?: string) => {
+  if (!repositoryId) {
+    return mapApiPullRequest(payload);
+  }
+
+  return mapApiPullRequest({
+    ...(payload && typeof payload === 'object' ? payload : {}),
+    repo_id: repositoryId,
+  });
+};
+
+const getApiPullRequestListItems = async (items: unknown[], repositoryId?: string) => {
+  const basePullRequests = items.map((item) => mapApiPullRequestWithRepositoryId(item, repositoryId));
+
+  return Promise.all(
+    basePullRequests.map(async (pullRequest) => {
+      const detail = await getApiPullRequestById(
+        pullRequest.id,
+        pullRequest.repositoryId || repositoryId,
+      ).catch(() => null);
+
+      return detail ?? pullRequest;
+    }),
+  );
+};
+
 export const pullRequestService = {
   async getPullRequests(filters: PullRequestFilters = {}): Promise<PullRequest[]> {
     return withApiFallback(
       async () => {
-        const response = await apiClient.get<ApiListResponse>(API_PATHS.pullRequests.list, {
-          repo_id: filters.repositoryId,
-          author: filters.authorUsername ?? filters.authorId,
-          status: filters.statuses?.map(getApiStatus),
-          page: 1,
-          size: 100,
-        });
-        const apiPullRequests = (response.items ?? []).map(mapApiPullRequest);
+        const status = filters.statuses?.map(getApiStatus);
+        const query = { status, page: 1, size: 100 };
+        const response = filters.repositoryId
+          ? await apiClient.get<ApiListResponse>(
+              API_PATHS.repositories.pullRequests(filters.repositoryId),
+              query,
+            )
+          : filters.authorUsername
+            ? await apiClient.get<ApiListResponse>(
+                API_PATHS.users.pullRequests(filters.authorUsername),
+                query,
+              )
+            : await apiClient.get<ApiListResponse>(API_PATHS.pullRequests.list, {
+                ...query,
+                author: filters.authorId,
+              });
+        const apiPullRequests = await getApiPullRequestListItems(response.items ?? [], filters.repositoryId);
 
         apiPullRequests.forEach(replaceCachedPullRequest);
         return cloneMock(
@@ -197,7 +237,7 @@ export const pullRequestService = {
 
   async getPullRequestById(pullRequestId: string): Promise<PullRequest | null> {
     return withApiFallback<PullRequest | null>(
-      () => getApiPullRequestById(pullRequestId),
+      () => getApiPullRequestById(pullRequestId, getCachedRepositoryId(pullRequestId)),
       () => getMockPullRequestById(pullRequestId),
     );
   },
@@ -291,7 +331,7 @@ export const pullRequestService = {
                 submittedAt,
               },
             }
-          : await getApiPullRequestById(pullRequestId);
+          : await getApiPullRequestById(pullRequestId, getCachedRepositoryId(pullRequestId));
 
         replaceCachedPullRequest(updated);
         return cloneMock(updated);
@@ -331,7 +371,7 @@ export const pullRequestService = {
         }
 
         const current = pullRequests.find((item) => item.id === pullRequestId) ??
-          await getApiPullRequestById(pullRequestId);
+          await getApiPullRequestById(pullRequestId, getCachedRepositoryId(pullRequestId));
         const updated = {
           ...current,
           title: update.title ?? current.title,
@@ -376,7 +416,7 @@ export const pullRequestService = {
     return writeWithApiOnly<PullRequest | null>(
       async () => {
         const now = new Date().toISOString();
-        const current = await getApiPullRequestById(pullRequestId);
+        const current = await getApiPullRequestById(pullRequestId, getCachedRepositoryId(pullRequestId));
         const updated = {
           ...current,
           status: current.status === 'OPEN' ? 'REVIEWING' as PullRequestStatus : current.status,
@@ -499,7 +539,7 @@ export const pullRequestService = {
           });
         }
 
-        return getApiPullRequestById(pullRequestId);
+        return getApiPullRequestById(pullRequestId, getCachedRepositoryId(pullRequestId));
       },
       applyLocalDecision,
     );

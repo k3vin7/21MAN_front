@@ -279,7 +279,12 @@ export const repositoryService = {
           { page: 1, size: 100 },
           { auth: false },
         );
-        return (response.items ?? []).map(mapApiRepository);
+        return (response.items ?? []).map((item) =>
+          mapApiRepository({
+            ...(item && typeof item === 'object' ? item : {}),
+            author: { username },
+          }),
+        );
       },
       async () => {
         await mockDelay();
