@@ -16,9 +16,9 @@ import type {
 
 export const APP_NAME = 'WorldBuild';
 
-export const GENRES: RepositoryGenre[] = ['판타지', 'SF', '전통설화', '현대', '무협'];
+export const GENRES: RepositoryGenre[] = ['로맨스', '판타지', '액션', '일상', '스릴러'];
 
-export const RECOMMENDED_TAGS = ['전통설화', '판타지', '지역문화', '캐릭터모집', '에피소드제안'];
+export const RECOMMENDED_TAGS = ['로맨스', '판타지', '액션', '일상', '스릴러'];
 
 export const RECRUITING_AREA_LABELS: Record<RecruitingAreaType, string> = {
   CHARACTER: '캐릭터',

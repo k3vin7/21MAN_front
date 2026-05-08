@@ -1,6 +1,6 @@
 export type RepositoryBadge = 'ACTIVE_AUTHOR' | 'NEW' | 'FAST_REVIEW';
 
-export type RepositoryGenre = '판타지' | 'SF' | '전통설화' | '현대' | '무협';
+export type RepositoryGenre = '로맨스' | '판타지' | '액션' | '일상' | '스릴러';
 
 export type WorkScale = 'SHORT' | 'MEDIUM' | 'LONG';
 
