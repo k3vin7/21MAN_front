@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { LogOut, Search, UserRound } from 'lucide-react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/common/Button';
 import { useAuthStore } from '@/features/auth/auth.store';
 import { useToast } from '@/hooks/useToast';
@@ -51,7 +51,13 @@ export const Header = () => {
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
       <div className="shell py-0">
         <div className="flex flex-col items-center gap-0">
-          <div className="relative flex w-full items-center justify-between gap-3 overflow-x-auto py-3 lg:min-h-[4rem] lg:justify-end">
+          <div className="relative flex w-full items-center justify-between gap-3 overflow-x-auto py-3 lg:min-h-[4rem] lg:justify-between">
+            <Link to="/" className="flex shrink-0 items-center gap-2">
+              <img src="/logo.png" alt="서랍" className="h-8 w-auto" />
+              <span style={{ fontFamily: "'GmarketSans', sans-serif" }} className="text-xl font-bold text-slate-950">
+                서랍
+              </span>
+            </Link>
             <nav className="flex shrink-0 flex-nowrap items-center justify-start gap-2 sm:gap-4 lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:justify-center lg:gap-6">
               {navigationItems.map((item) => (
                 <NavLink
