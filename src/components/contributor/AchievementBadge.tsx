@@ -10,10 +10,10 @@ type AchievementBadgeProps = {
 };
 
 const toneClasses: Record<Achievement['tone'], string> = {
-  teal: 'border-accent-300/30 bg-accent-300/10 text-accent-100',
-  amber: 'border-amber-300/30 bg-amber-300/10 text-amber-100',
-  blue: 'border-sky-300/30 bg-sky-300/10 text-sky-100',
-  rose: 'border-rose-300/30 bg-rose-300/10 text-rose-100',
+  teal: 'border-accent-200 bg-accent-50 text-accent-800',
+  amber: 'border-amber-200 bg-amber-50 text-amber-800',
+  blue: 'border-sky-200 bg-sky-50 text-sky-800',
+  rose: 'border-rose-200 bg-rose-50 text-rose-700',
 };
 
 export const AchievementBadge = ({ achievement, selected = false, onClick }: AchievementBadgeProps) => {
@@ -22,16 +22,15 @@ export const AchievementBadge = ({ achievement, selected = false, onClick }: Ach
       className={cn(
         'rounded-lg border p-4 text-left transition hover:-translate-y-0.5',
         toneClasses[achievement.tone],
-        selected && 'ring-2 ring-white/30',
+        selected && 'ring-2 ring-slate-300',
       )}
       onClick={onClick}
       type="button"
     >
       <Award className="size-5" />
-      <h3 className="mt-3 text-sm font-semibold text-white">{achievement.title}</h3>
+      <h3 className="mt-3 text-sm font-semibold text-slate-950">{achievement.title}</h3>
       <p className="mt-2 text-sm leading-6 opacity-80">{achievement.description}</p>
       <p className="mt-3 text-xs opacity-70">{formatDate(achievement.earnedAt)}</p>
     </button>
   );
 };
-

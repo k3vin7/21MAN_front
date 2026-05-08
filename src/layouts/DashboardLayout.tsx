@@ -26,7 +26,7 @@ export const DashboardLayout = () => {
           </div>
           <div>
             <p className="eyebrow">Author Space</p>
-            <h1 className="mt-2 text-lg font-semibold text-white">{repoId}</h1>
+            <h1 className="mt-2 text-lg font-semibold text-slate-950">{repoId}</h1>
           </div>
         </div>
 
@@ -37,17 +37,17 @@ export const DashboardLayout = () => {
             return (
               <div key={section.label} className="surface-muted p-4">
                 <div className="flex items-center gap-3">
-                  <Icon className="size-4 text-accent-300" />
-                  <p className="font-medium text-slate-100">{section.label}</p>
+                  <Icon className="size-4 text-accent-700" />
+                  <p className="font-medium text-slate-900">{section.label}</p>
                 </div>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{section.description}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-500">{section.description}</p>
               </div>
             );
           })}
         </div>
 
         <NavLink
-          className="mt-6 inline-flex rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 hover:border-accent-400/40 hover:text-white"
+          className="mt-6 inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:border-accent-300 hover:text-slate-950"
           to={`/r/${repoId}`}
         >
           레포지토리 상세로 돌아가기
@@ -60,4 +60,3 @@ export const DashboardLayout = () => {
     </div>
   );
 };
-

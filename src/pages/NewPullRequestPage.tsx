@@ -106,7 +106,7 @@ export const NewPullRequestPage = () => {
     return (
       <EmptyState
         action={
-          <Link className="rounded-lg bg-accent-500 px-4 py-2 text-sm font-semibold text-slate-950" to="/search">
+          <Link className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" to="/search">
             검색으로 이동
           </Link>
         }
@@ -170,26 +170,26 @@ export const NewPullRequestPage = () => {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <Link
-        className="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white"
+        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-950"
         to={`/r/${repository.id}`}
       >
         <ArrowLeft className="size-4" />
         작품으로 돌아가기
       </Link>
 
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-300">New Pull Request</p>
-        <h1 className="mt-4 text-3xl font-semibold text-white">이 세계관에 기여하기</h1>
-        <p className="mt-3 text-sm leading-6 text-slate-400">
+      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">New Pull Request</p>
+        <h1 className="mt-4 text-3xl font-semibold text-slate-950">이 세계관에 기여하기</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-500">
           @{author?.username ?? 'unknown'} 의 세계관에 PR을 보냅니다.
         </p>
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-white">이 작품의 금지 설정을 확인하셨나요?</h2>
-            <Link className="mt-2 inline-flex text-sm font-medium text-accent-200 hover:text-accent-100" to={`/r/${repository.id}`}>
+            <h2 className="text-lg font-semibold text-slate-950">이 작품의 금지 설정을 확인하셨나요?</h2>
+            <Link className="mt-2 inline-flex text-sm font-medium text-accent-700 hover:text-accent-900" to={`/r/${repository.id}`}>
               README 확인하기
             </Link>
           </div>
@@ -203,15 +203,15 @@ export const NewPullRequestPage = () => {
         </div>
 
         <div className="mt-5">
-          <p className="text-sm font-medium text-slate-200">현재 모집 영역</p>
+          <p className="text-sm font-medium text-slate-700">현재 모집 영역</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {recruitingAreas.map((area) => (
               <button
                 key={area.id}
                 className={`rounded-lg border px-3 py-2 text-sm transition ${
                   draft.contributionTypes.includes(area.type)
-                    ? 'border-accent-300/50 bg-accent-300/10 text-accent-100'
-                    : 'border-white/10 bg-slate-950/50 text-slate-300 hover:border-white/20'
+                    ? 'border-accent-300 bg-accent-50 text-accent-900'
+                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950'
                 }`}
                 onClick={() => toggleContributionType(area.type)}
                 type="button"
@@ -225,13 +225,13 @@ export const NewPullRequestPage = () => {
 
       <LicenseNotice />
 
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-        <label className="text-sm font-medium text-slate-200" htmlFor="pr-title">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <label className="text-sm font-medium text-slate-700" htmlFor="pr-title">
           PR 제목
         </label>
         <input
           id="pr-title"
-          className="mt-2 h-11 w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 text-sm text-white outline-none focus:border-accent-300"
+          className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none placeholder:text-slate-400 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
           onChange={(event) => updateDraft({ title: event.target.value })}
           placeholder="예: 강릉 환승령에 바람표 검표원 추가"
           value={draft.title}
@@ -253,8 +253,8 @@ export const NewPullRequestPage = () => {
         </div>
       </section>
 
-      <section className="rounded-lg border border-dashed border-white/10 bg-slate-900/50 p-5">
-        <h2 className="text-lg font-semibold text-white">첨부</h2>
+      <section className="rounded-lg border border-dashed border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-semibold text-slate-950">첨부</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           <Button leftIcon={<ImagePlus className="size-4" />} variant="secondary">
             이미지 추가
@@ -283,4 +283,3 @@ export const NewPullRequestPage = () => {
     </div>
   );
 };
-

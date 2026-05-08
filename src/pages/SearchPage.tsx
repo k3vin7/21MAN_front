@@ -128,11 +128,11 @@ export const SearchPage = () => {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <aside className="h-fit rounded-lg border border-white/10 bg-slate-900/70 p-4 lg:sticky lg:top-28">
+      <aside className="h-fit rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-28">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="size-4 text-accent-300" />
-            <h1 className="text-base font-semibold text-white">필터</h1>
+            <SlidersHorizontal className="size-4 text-accent-600" />
+            <h1 className="text-base font-semibold text-slate-950">필터</h1>
           </div>
           <Button leftIcon={<X className="size-4" />} onClick={resetFilters} size="icon" variant="ghost">
             초기화
@@ -204,14 +204,14 @@ export const SearchPage = () => {
       <section className="min-w-0 space-y-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-sm font-medium text-accent-200">
+            <p className="text-sm font-medium text-accent-700">
               {activeQuery ? `"${activeQuery}" 검색 결과` : '전체 세계관'}
             </p>
-            <h1 className="mt-2 text-3xl font-semibold text-white">세계관 탐색</h1>
+            <h1 className="mt-2 text-3xl font-semibold text-slate-950">세계관 탐색</h1>
           </div>
 
           <select
-            className="h-10 rounded-lg border border-white/10 bg-slate-950/70 px-3 text-sm text-slate-200 outline-none focus:border-accent-300"
+            className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
             onChange={(event) =>
               setFilters((current) => ({
                 ...current,
@@ -266,7 +266,7 @@ export const SearchPage = () => {
           </Button>
         </div>
 
-        <p className="text-sm text-slate-400">총 {repositories.length}개의 세계관을 찾았습니다.</p>
+        <p className="text-sm text-slate-500">총 {repositories.length}개의 세계관을 찾았습니다.</p>
 
         {isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
@@ -316,10 +316,10 @@ type FilterInputProps = {
 
 const FilterCheckbox = ({ label, checked, onChange }: FilterInputProps) => {
   return (
-    <label className="flex cursor-pointer items-center gap-3 text-sm text-slate-300">
+    <label className="flex cursor-pointer items-center gap-3 text-sm text-slate-700">
       <input
         checked={checked}
-        className="size-4 rounded border-white/20 bg-slate-950 text-accent-500 focus:ring-accent-400"
+        className="size-4 rounded border-slate-300 bg-white text-accent-600 focus:ring-accent-500"
         onChange={onChange}
         type="checkbox"
       />
@@ -330,10 +330,10 @@ const FilterCheckbox = ({ label, checked, onChange }: FilterInputProps) => {
 
 const FilterRadio = ({ label, checked, onChange }: FilterInputProps) => {
   return (
-    <label className="flex cursor-pointer items-center gap-3 text-sm text-slate-300">
+    <label className="flex cursor-pointer items-center gap-3 text-sm text-slate-700">
       <input
         checked={checked}
-        className="size-4 border-white/20 bg-slate-950 text-accent-500 focus:ring-accent-400"
+        className="size-4 border-slate-300 bg-white text-accent-600 focus:ring-accent-500"
         onChange={onChange}
         name="merge-rate"
         type="radio"

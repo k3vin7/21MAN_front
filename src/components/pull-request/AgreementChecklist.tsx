@@ -30,14 +30,14 @@ export const AgreementChecklist = ({ value, onChange }: AgreementChecklistProps)
   };
 
   return (
-    <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-      <h2 className="text-lg font-semibold text-white">제출 전 동의</h2>
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-slate-950">제출 전 동의</h2>
       <div className="mt-4 space-y-3">
         {agreements.map((agreement) => (
-          <label key={agreement.id} className="flex cursor-pointer items-center gap-3 text-sm text-slate-300">
+          <label key={agreement.id} className="flex cursor-pointer items-center gap-3 text-sm text-slate-700">
             <input
               checked={value.includes(agreement.id)}
-              className="size-4 rounded border-white/20 bg-slate-950 text-accent-500 focus:ring-accent-400"
+              className="size-4 rounded border-slate-300 bg-white text-accent-600 focus:ring-accent-500"
               onChange={() => toggleAgreement(agreement.id)}
               type="checkbox"
             />
@@ -48,4 +48,3 @@ export const AgreementChecklist = ({ value, onChange }: AgreementChecklistProps)
     </section>
   );
 };
-

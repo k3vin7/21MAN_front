@@ -40,11 +40,11 @@ export const ConflictCheckCard = ({ pullRequest, repository }: ConflictCheckCard
   ];
 
   return (
-    <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-white">충돌 검사</h2>
-          <p className="mt-1 text-sm text-slate-400">AI가 기존 README와 PR 내용을 대조한 mock 결과입니다.</p>
+          <h2 className="text-lg font-semibold text-slate-950">충돌 검사</h2>
+          <p className="mt-1 text-sm text-slate-500">AI가 기존 README와 PR 내용을 대조한 mock 결과입니다.</p>
         </div>
         <Badge tone={riskTone[risk]}>충돌 위험 {CONFLICT_RISK_LABELS[risk]}</Badge>
       </div>
@@ -54,16 +54,16 @@ export const ConflictCheckCard = ({ pullRequest, repository }: ConflictCheckCard
           const Icon = check.icon;
 
           return (
-            <div key={check.label} className="flex gap-3 rounded-lg border border-white/10 bg-slate-950/50 p-3">
-              <Icon className={check.passed ? 'mt-0.5 size-4 text-accent-300' : 'mt-0.5 size-4 text-amber-300'} />
-              <p className="text-sm leading-6 text-slate-300">{check.label}</p>
+            <div key={check.label} className="flex gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <Icon className={check.passed ? 'mt-0.5 size-4 text-accent-600' : 'mt-0.5 size-4 text-amber-600'} />
+              <p className="text-sm leading-6 text-slate-700">{check.label}</p>
             </div>
           );
         })}
       </div>
 
       {risk !== 'LOW' ? (
-        <p className="mt-4 rounded-lg border border-amber-300/20 bg-amber-300/10 p-3 text-sm leading-6 text-amber-100">
+        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-900">
           빠진 세부 정보가 있습니다. 관련 인물, 장소, 기존 규칙과의 차이를 리뷰 전에 더 분명히 적으면
           원작자 검토가 쉬워집니다.
         </p>
@@ -71,4 +71,3 @@ export const ConflictCheckCard = ({ pullRequest, repository }: ConflictCheckCard
     </section>
   );
 };
-

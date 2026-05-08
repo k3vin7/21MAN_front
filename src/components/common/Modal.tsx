@@ -60,22 +60,22 @@ export const Modal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
         aria-label="모달 닫기"
-        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
         onClick={onClose}
         type="button"
       />
       <section
         aria-modal="true"
         className={cn(
-          'relative max-h-[86vh] w-full overflow-hidden rounded-lg border border-white/10 bg-slate-950 shadow-soft',
+          'relative max-h-[86vh] w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-soft',
           sizeClasses[size],
         )}
         role="dialog"
       >
-        <header className="flex items-start justify-between gap-4 border-b border-white/10 p-5">
+        <header className="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
           <div>
-            <h2 className="text-lg font-semibold text-white">{title}</h2>
-            {description ? <p className="mt-1 text-sm leading-6 text-slate-400">{description}</p> : null}
+            <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
+            {description ? <p className="mt-1 text-sm leading-6 text-slate-500">{description}</p> : null}
           </div>
           <Button aria-label="닫기" onClick={onClose} size="icon" variant="ghost">
             <X className="size-4" />
@@ -84,10 +84,9 @@ export const Modal = ({
 
         <div className="max-h-[calc(86vh-9rem)] overflow-y-auto p-5">{children}</div>
 
-        {footer ? <footer className="border-t border-white/10 p-5">{footer}</footer> : null}
+        {footer ? <footer className="border-t border-slate-200 p-5">{footer}</footer> : null}
       </section>
     </div>,
     document.body,
   );
 };
-

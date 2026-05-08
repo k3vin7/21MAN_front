@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 export const Card = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={cn('rounded-lg border border-white/10 bg-slate-900/70 shadow-soft backdrop-blur', className)}
+      className={cn('rounded-lg border border-slate-200 bg-white shadow-soft', className)}
       {...props}
     />
   );
@@ -15,11 +15,11 @@ export const CardHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElemen
 };
 
 export const CardTitle = ({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) => {
-  return <h3 className={cn('text-base font-semibold text-white', className)} {...props} />;
+  return <h3 className={cn('text-base font-semibold text-slate-950', className)} {...props} />;
 };
 
 export const CardDescription = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => {
-  return <p className={cn('text-sm leading-6 text-slate-400', className)} {...props} />;
+  return <p className={cn('text-sm leading-6 text-slate-500', className)} {...props} />;
 };
 
 export const CardContent = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
@@ -29,4 +29,3 @@ export const CardContent = ({ className, ...props }: HTMLAttributes<HTMLDivEleme
 export const CardFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
   return <div className={cn('flex items-center gap-3 p-5 pt-3', className)} {...props} />;
 };
-

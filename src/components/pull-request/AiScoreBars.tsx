@@ -24,15 +24,15 @@ export const AiScoreBars = ({ grading, compact = false }: AiScoreBarsProps) => {
         return (
           <div key={item.key}>
             <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="font-medium text-slate-200">
+              <span className="font-medium text-slate-700">
                 {item.label}
                 {!compact ? <span className="ml-2 text-xs font-normal text-slate-500">{item.description}</span> : null}
               </span>
-              <span className="text-slate-400">{score}/20</span>
+              <span className="text-slate-500">{score}/20</span>
             </div>
-            <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-800">
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
               <div
-                className="h-full rounded-full bg-accent-400"
+                className="h-full rounded-full bg-accent-600"
                 style={{ width: `${percentage}%` }}
               />
             </div>
@@ -42,4 +42,3 @@ export const AiScoreBars = ({ grading, compact = false }: AiScoreBarsProps) => {
     </div>
   );
 };
-

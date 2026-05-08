@@ -26,8 +26,8 @@ const options = [
 
 export const VisibilitySelector = ({ value, onChange }: VisibilitySelectorProps) => {
   return (
-    <section className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-      <h2 className="text-lg font-semibold text-white">공개 범위</h2>
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-slate-950">공개 범위</h2>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         {options.map((option) => {
           const Icon = option.icon;
@@ -38,7 +38,7 @@ export const VisibilitySelector = ({ value, onChange }: VisibilitySelectorProps)
               key={option.value}
               className={cn(
                 'cursor-pointer rounded-lg border p-4 transition',
-                selected ? 'border-accent-300/50 bg-accent-300/10' : 'border-white/10 bg-slate-950/50 hover:border-white/20',
+                selected ? 'border-accent-300 bg-accent-50' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
               )}
             >
               <input
@@ -48,10 +48,10 @@ export const VisibilitySelector = ({ value, onChange }: VisibilitySelectorProps)
                 type="radio"
               />
               <div className="flex items-center gap-3">
-                <Icon className={selected ? 'size-5 text-accent-200' : 'size-5 text-slate-400'} />
-                <span className="font-semibold text-white">{option.label}</span>
+                <Icon className={selected ? 'size-5 text-accent-700' : 'size-5 text-slate-500'} />
+                <span className="font-semibold text-slate-950">{option.label}</span>
               </div>
-              <p className="mt-3 text-sm leading-6 text-slate-300">{option.description}</p>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{option.description}</p>
               <p className="mt-2 text-xs leading-5 text-slate-500">{option.guide}</p>
             </label>
           );
@@ -60,4 +60,3 @@ export const VisibilitySelector = ({ value, onChange }: VisibilitySelectorProps)
     </section>
   );
 };
-

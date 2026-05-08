@@ -9,8 +9,8 @@ const days = Array.from({ length: 35 }, (_, index) => index);
 
 export const ActivityGraph = ({ activities }: ActivityGraphProps) => {
   return (
-    <div className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
-      <h3 className="text-base font-semibold text-white">Activity Graph</h3>
+    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <h3 className="text-base font-semibold text-slate-950">Activity Graph</h3>
       <div className="mt-4 grid grid-cols-7 gap-2">
         {days.map((day) => {
           const count = activities.filter((_, index) => index % 35 === day % 35).length;
@@ -19,8 +19,8 @@ export const ActivityGraph = ({ activities }: ActivityGraphProps) => {
             <div
               key={day}
               className={cn(
-                'aspect-square rounded-sm border border-white/5',
-                count > 1 ? 'bg-accent-300' : count === 1 ? 'bg-accent-500/60' : 'bg-slate-800',
+                'aspect-square rounded-sm border border-slate-200',
+                count > 1 ? 'bg-accent-400' : count === 1 ? 'bg-accent-200' : 'bg-slate-100',
               )}
               title={`${count} activities`}
             />
@@ -31,4 +31,3 @@ export const ActivityGraph = ({ activities }: ActivityGraphProps) => {
     </div>
   );
 };
-

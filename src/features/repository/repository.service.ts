@@ -7,6 +7,8 @@ import { mergeHistoryMock } from '@/mocks/activities.mock';
 import { repositoriesMock } from '@/mocks/repositories.mock';
 import { cloneMock, mockDelay } from '@/lib/mock';
 
+let repositories = cloneMock(repositoriesMock);
+
 const getActivityBucket = (lastActivity: string) => {
   const diff = Date.now() - new Date(lastActivity).getTime();
   const days = diff / (1000 * 60 * 60 * 24);
@@ -103,15 +105,15 @@ const sortRepositories = (repositories: Repository[], sort: RepositorySearchFilt
 export const repositoryService = {
   async getRepositories(filters?: RepositorySearchFilters): Promise<Repository[]> {
     await mockDelay();
-    const repositories = filterRepositories(repositoriesMock, filters);
+    const filteredRepositories = filterRepositories(repositories, filters);
 
-    return cloneMock(sortRepositories(repositories, filters?.sort));
+    return cloneMock(sortRepositories(filteredRepositories, filters?.sort));
   },
 
   async getFeaturedRepositories(limit = 4): Promise<Repository[]> {
     await mockDelay();
     const featured = sortRepositories(
-      repositoriesMock.filter((repository) =>
+      repositories.filter((repository) =>
         repository.readme.recruitingAreas.some((area) => area.status === 'ACTIVELY_RECRUITING'),
       ),
       'RECOMMENDED',
@@ -122,9 +124,16 @@ export const repositoryService = {
 
   async getRepositoryById(repositoryId: string): Promise<Repository | null> {
     await mockDelay();
-    const repository = repositoriesMock.find((item) => item.id === repositoryId);
+    const repository = repositories.find((item) => item.id === repositoryId);
 
     return repository ? cloneMock(repository) : null;
+  },
+
+  async createRepository(repository: Repository): Promise<Repository> {
+    await mockDelay();
+    repositories = [repository, ...repositories.filter((item) => item.id !== repository.id)];
+
+    return cloneMock(repository);
   },
 
   async getRepositoryMergeHistory(repositoryId: string): Promise<MergeHistoryEntry[]> {

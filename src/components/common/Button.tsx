@@ -14,9 +14,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-accent-500 text-slate-950 hover:bg-accent-400 focus-visible:ring-accent-300',
-  secondary: 'border border-white/10 bg-white/5 text-slate-100 hover:border-white/20 hover:bg-white/10',
-  ghost: 'text-slate-300 hover:bg-white/5 hover:text-white',
+  primary: 'bg-slate-950 text-white hover:bg-slate-800 focus-visible:ring-slate-300',
+  secondary: 'border border-slate-200 bg-white text-slate-800 hover:border-slate-300 hover:bg-slate-50',
+  ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-950',
   danger: 'bg-rose-500 text-white hover:bg-rose-400 focus-visible:ring-rose-300',
 };
 
@@ -47,7 +47,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex shrink-0 items-center justify-center gap-2 rounded-lg font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50',
+          'inline-flex shrink-0 items-center justify-center gap-2 rounded-lg font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:opacity-50',
           variantClasses[variant],
           sizeClasses[size],
           className,
@@ -65,4 +65,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
-

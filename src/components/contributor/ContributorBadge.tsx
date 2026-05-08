@@ -12,14 +12,13 @@ export const ContributorBadge = ({ user, meta, className }: ContributorBadgeProp
     <div className={cn('flex min-w-0 items-center gap-3', className)}>
       <img
         alt={`${user.displayName} avatar`}
-        className="size-9 shrink-0 rounded-lg border border-white/10 bg-slate-800"
+        className="size-9 shrink-0 rounded-lg border border-slate-200 bg-slate-100"
         src={user.avatar}
       />
       <div className="min-w-0">
-        <p className="truncate text-sm font-semibold text-white">@{user.username}</p>
+        <p className="truncate text-sm font-semibold text-slate-950">@{user.username}</p>
         {meta ? <p className="truncate text-xs text-slate-500">{meta}</p> : null}
       </div>
     </div>
   );
 };
-

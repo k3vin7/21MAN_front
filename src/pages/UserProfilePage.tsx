@@ -106,7 +106,7 @@ export const UserProfilePage = () => {
     return (
       <EmptyState
         action={
-          <Link className="rounded-lg bg-accent-500 px-4 py-2 text-sm font-semibold text-slate-950" to="/search">
+          <Link className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" to="/search">
             세계관 탐색
           </Link>
         }
@@ -156,8 +156,8 @@ export const UserProfilePage = () => {
           <div className="space-y-3">
             {activities.length ? (
               activities.map((activity) => (
-                <article key={activity.id} className="rounded-lg border border-white/10 bg-slate-900/70 p-4">
-                  <p className="text-sm font-semibold text-white">{activity.title}</p>
+                <article key={activity.id} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="text-sm font-semibold text-slate-950">{activity.title}</p>
                   <p className="mt-2 text-xs text-slate-500">{formatDateTime(activity.occurredAt)}</p>
                 </article>
               ))
@@ -184,11 +184,11 @@ export const UserProfilePage = () => {
               />
             ))}
           </div>
-          <aside className="h-fit rounded-lg border border-white/10 bg-slate-900/70 p-5">
-            <h3 className="text-base font-semibold text-white">Badge detail</h3>
+          <aside className="h-fit rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 className="text-base font-semibold text-slate-950">Badge detail</h3>
             {selectedAchievement ? (
-              <div className="mt-4 text-sm leading-6 text-slate-300">
-                <p className="font-semibold text-white">{selectedAchievement.title}</p>
+              <div className="mt-4 text-sm leading-6 text-slate-600">
+                <p className="font-semibold text-slate-950">{selectedAchievement.title}</p>
                 <p className="mt-2">{selectedAchievement.description}</p>
                 <p className="mt-3 text-slate-500">{formatDateTime(selectedAchievement.earnedAt)}</p>
               </div>
@@ -203,12 +203,12 @@ export const UserProfilePage = () => {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <section className="rounded-lg border border-white/10 bg-slate-900/70 p-6">
+      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
             <img
               alt={`${user.displayName} avatar`}
-              className="size-28 rounded-lg border border-white/10 bg-slate-800"
+              className="size-28 rounded-lg border border-slate-200 bg-slate-100"
               src={user.avatar}
             />
             <div>
@@ -216,15 +216,15 @@ export const UserProfilePage = () => {
                 {user.roles.includes('AUTHOR') ? <Badge tone="teal">원작자</Badge> : null}
                 {user.roles.includes('CONTRIBUTOR') ? <Badge tone="blue">컨트리뷰터</Badge> : null}
               </div>
-              <h1 className="mt-4 text-3xl font-semibold text-white">@{user.username}</h1>
-              <p className="mt-1 text-lg text-slate-300">{user.displayName}</p>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">{user.bio}</p>
+              <h1 className="mt-4 text-3xl font-semibold text-slate-950">@{user.username}</h1>
+              <p className="mt-1 text-lg text-slate-600">{user.displayName}</p>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-500">{user.bio}</p>
               {user.links?.length ? (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {user.links.map((link) => (
                     <a
                       key={link.url}
-                      className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 transition hover:border-accent-300/40 hover:text-white"
+                      className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-accent-300 hover:text-slate-950"
                       href={link.url}
                       rel="noreferrer"
                       target="_blank"
@@ -264,7 +264,7 @@ export const UserProfilePage = () => {
         <StatCard label="Repository" value={user.stats.repositoriesOwned} />
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-slate-950/40 p-4 md:p-5">
+      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:p-5">
         <Tabs items={tabs} onValueChange={setActiveTab} value={activeTab} />
       </section>
 
@@ -285,10 +285,9 @@ type StatCardProps = {
 
 const StatCard = ({ label, value }: StatCardProps) => {
   return (
-    <article className="rounded-lg border border-white/10 bg-slate-900/70 p-5">
+    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-3xl font-semibold text-white">{formatNumber(value)}</p>
+      <p className="mt-2 text-3xl font-semibold text-slate-950">{formatNumber(value)}</p>
     </article>
   );
 };
-

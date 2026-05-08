@@ -27,7 +27,7 @@ export const PullRequestCard = ({ pullRequest, author, selected = false, onClick
     <button
       className={cn(
         'w-full rounded-lg border p-4 text-left transition',
-        selected ? 'border-accent-300/50 bg-accent-300/10' : 'border-white/10 bg-slate-900/70 hover:border-white/20',
+        selected ? 'border-accent-300 bg-accent-50' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
       )}
       onClick={onClick}
       type="button"
@@ -39,7 +39,7 @@ export const PullRequestCard = ({ pullRequest, author, selected = false, onClick
           {pullRequest.visibility}
         </Badge>
       </div>
-      <h3 className="mt-3 line-clamp-2 text-sm font-semibold text-white">{pullRequest.title}</h3>
+      <h3 className="mt-3 line-clamp-2 text-sm font-semibold text-slate-950">{pullRequest.title}</h3>
       <p className="mt-2 text-xs text-slate-500">@{author?.username ?? 'unknown'}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         <Badge tone="slate">{PULL_REQUEST_STATUS_LABELS[pullRequest.status]}</Badge>
@@ -53,4 +53,3 @@ export const PullRequestCard = ({ pullRequest, author, selected = false, onClick
     </button>
   );
 };
-

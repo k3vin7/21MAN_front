@@ -17,6 +17,7 @@ type RepositoryState = {
   fetchRepositories: (filters?: RepositorySearchFilters) => Promise<void>;
   fetchFeaturedRepositories: () => Promise<void>;
   fetchRepositoryById: (repositoryId: string) => Promise<Repository | null>;
+  createRepository: (repository: Repository) => Promise<Repository | null>;
   selectRepository: (repository: Repository | null) => void;
 };
 
@@ -81,8 +82,24 @@ export const useRepositoryStore = create<RepositoryState>((set, get) => ({
     }
   },
 
+  createRepository: async (repository) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const createdRepository = await repositoryService.createRepository(repository);
+      set((state) => ({
+        repositories: [createdRepository, ...state.repositories.filter((item) => item.id !== createdRepository.id)],
+        selectedRepository: createdRepository,
+        isLoading: false,
+      }));
+      return createdRepository;
+    } catch {
+      set({ error: '레포지토리를 생성하지 못했습니다.', isLoading: false });
+      return null;
+    }
+  },
+
   selectRepository: (repository) => {
     set({ selectedRepository: repository });
   },
 }));
-
