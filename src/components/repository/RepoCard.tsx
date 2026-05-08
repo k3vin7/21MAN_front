@@ -1,13 +1,6 @@
-import { GitMerge, GitPullRequest, Timer, Users } from 'lucide-react';
-import { Badge } from '@/components/common/Badge';
 import type { Repository } from '@/features/repository/repository.types';
 import type { User } from '@/features/user/user.types';
-import {
-  RECRUITING_AREA_LABELS,
-  REPOSITORY_BADGE_LABELS,
-  WORK_SCALE_LABELS,
-} from '@/lib/constants';
-import { formatPercent, formatReviewDays, truncateText } from '@/lib/format';
+import { WORK_SCALE_LABELS } from '@/lib/constants';
 
 type RepoCardProps = {
   repository: Repository;
@@ -16,72 +9,40 @@ type RepoCardProps = {
 };
 
 export const RepoCard = ({ repository, author, onClick }: RepoCardProps) => {
-  const activeAreas = repository.readme.recruitingAreas.filter(
-    (area) => area.status === 'ACTIVELY_RECRUITING',
-  );
-
   return (
     <button
-      className="group relative min-h-[320px] overflow-hidden rounded-lg border border-slate-200 bg-white text-left shadow-soft transition hover:-translate-y-1 hover:border-accent-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-300"
+      className="group relative min-h-[320px] w-full overflow-hidden rounded-2xl bg-white text-left shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-300"
       onClick={() => onClick(repository)}
       type="button"
     >
       <img
         alt=""
-        className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105 group-hover:opacity-35"
+        className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105"
         loading="lazy"
         src={repository.thumbnail}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-      <div className="relative flex h-full min-h-[320px] flex-col justify-end p-5">
-        <div className="translate-y-2 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
-          <div className="rounded-lg border border-slate-200 bg-white/85 p-4 backdrop-blur">
-            <p className="text-sm text-slate-600">
-              by <span className="font-semibold text-slate-950">@{author?.username ?? 'unknown'}</span>
-            </p>
+      <div className="absolute left-3 top-3 flex items-center gap-2">
+        <span className="rounded-full bg-black/50 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+          {repository.genre}
+        </span>
+      </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-3 text-sm text-slate-600">
-              <span className="flex items-center gap-2">
-                <GitPullRequest className="size-4 text-accent-600" />
-                제안 {repository.stats.prCount}
-              </span>
-              <span className="flex items-center gap-2">
-                <GitMerge className="size-4 text-accent-600" />
-                공식 반영 {repository.stats.mergeCount}
-              </span>
-              <span className="flex items-center gap-2">
-                <Users className="size-4 text-accent-600" />
-                {formatPercent(repository.stats.mergeRate)}
-              </span>
-              <span className="flex items-center gap-2">
-                <Timer className="size-4 text-accent-600" />
-                {formatReviewDays(repository.stats.avgReviewDays)}
-              </span>
-            </div>
+      {repository.badges.includes('NEW') && (
+        <span className="absolute right-3 top-3 rounded-full bg-amber-400 px-2.5 py-1 text-xs font-semibold text-amber-900">
+          신규
+        </span>
+      )}
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              {activeAreas.slice(0, 3).map((area) => (
-                <Badge key={area.id} tone="blue">
-                  {RECRUITING_AREA_LABELS[area.type]}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </div>
-            <div className="flex flex-wrap gap-2 mt-7">
-              {repository.badges.slice(0, 2).map((badge) => (
-                <Badge key={badge} tone={badge === 'NEW' ? 'amber' : 'teal'}>
-                  {REPOSITORY_BADGE_LABELS[badge]}
-                </Badge>
-              ))}
-            </div>
-
-            <div className="flex mt-2">
-                <h3 className="mt-2 text-xl font-bold text-slate-950">{repository.title}</h3>
-                <p className="flex ml-3 items-end text-sm font-medium text-accent-700 transition opacity-0 group-hover:opacity-100">{repository.genre} · {WORK_SCALE_LABELS[repository.workScale]}</p>
-            </div>
-        </div>
+      <div className="absolute inset-x-0 bottom-0 p-5">
+        <p className="text-xs text-white/60">@{author?.username ?? 'unknown'}</p>
+        <h3 className="mt-1 text-lg font-bold text-white line-clamp-1">{repository.title}</h3>
+        {repository.description && (
+          <p className="mt-1 text-sm text-white/70 line-clamp-2">{repository.description}</p>
+        )}
+        <p className="mt-2 text-xs text-white/50">{WORK_SCALE_LABELS[repository.workScale]}</p>
+      </div>
     </button>
   );
 };
