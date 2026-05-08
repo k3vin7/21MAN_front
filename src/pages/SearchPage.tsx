@@ -105,9 +105,12 @@ export const SearchPage = () => {
   return (
     <div className="space-y-5">
       <section className="min-w-0 space-y-5">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-semibold text-slate-950">기여 가능한 작품</h1>
+            <h1 className="text-2xl font-bold text-slate-900">기여 가능한 작품</h1>
+            <p className="mt-1 text-sm text-slate-400">
+              {isLoading ? '불러오는 중...' : `총 ${repositories.length}개의 작품${activeQuery ? ` · "${activeQuery}" 검색 결과` : ''}`}
+            </p>
           </div>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -198,8 +201,6 @@ export const SearchPage = () => {
           </div>
         ) : null}
 
-<p className="text-sm text-slate-500">총 {repositories.length}개의 세계관을 찾았습니다.</p>
-
         {isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-2">
             {Array.from({ length: 8 }).map((_, index) => (
@@ -210,8 +211,8 @@ export const SearchPage = () => {
           <RepoGrid onRepoClick={setSelectedRepository} repositories={repositories} users={users} />
         ) : (
           <EmptyState
-            title="못 찾으셨나요? 공동창작자로 검색해보세요."
-            description="검색어나 필터를 줄이면 아직 열려 있는 세계관을 더 넓게 볼 수 있습니다."
+            title="조건에 맞는 작품이 없어요."
+            description="검색어나 필터를 조정하면 더 많은 작품을 볼 수 있어요."
           />
         )}
       </section>
