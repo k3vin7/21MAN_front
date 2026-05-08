@@ -1,0 +1,130 @@
+import type { FeaturedContributor, User } from '@/features/user/user.types';
+
+export const usersMock: User[] = [
+  {
+    id: 'user-ara',
+    username: 'ink-mason',
+    displayName: '한아라',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=ink-mason',
+    bio: '전통 설화와 근미래 도시를 엮는 원작자. 기여자의 해석을 공식 세계관의 일부로 남기는 데 관심이 많습니다.',
+    roles: ['AUTHOR', 'CONTRIBUTOR'],
+    links: [
+      { type: 'portfolio', url: 'https://worldbuild.example/ink-mason' },
+      { type: 'email', url: 'mailto:ara@example.com' },
+    ],
+    stats: {
+      repositoriesOwned: 2,
+      contributionsTotal: 18,
+      majorMerges: 5,
+      normalMerges: 9,
+      minorMerges: 4,
+      mergeRate: 72,
+    },
+  },
+  {
+    id: 'user-minseo',
+    username: 'moon-archive',
+    displayName: '서민서',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=moon-archive',
+    bio: '장편 판타지와 궁정 기록을 설계하는 작가. 촘촘한 설정 문서와 빠른 피드백을 선호합니다.',
+    roles: ['AUTHOR'],
+    stats: {
+      repositoriesOwned: 2,
+      contributionsTotal: 9,
+      majorMerges: 2,
+      normalMerges: 5,
+      minorMerges: 2,
+      mergeRate: 64,
+    },
+  },
+  {
+    id: 'user-joon',
+    username: 'byte-shaman',
+    displayName: '강준',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=byte-shaman',
+    bio: 'SF 세계관의 규칙과 시스템을 좋아하는 공동창작자. 충돌 가능성이 낮은 설정 확장을 잘 다룹니다.',
+    roles: ['AUTHOR', 'CONTRIBUTOR'],
+    links: [{ type: 'github', url: 'https://github.com/byte-shaman' }],
+    stats: {
+      repositoriesOwned: 2,
+      contributionsTotal: 24,
+      majorMerges: 7,
+      normalMerges: 12,
+      minorMerges: 5,
+      mergeRate: 78,
+    },
+  },
+  {
+    id: 'user-haneul',
+    username: 'map-weaver',
+    displayName: '이하늘',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=map-weaver',
+    bio: '지역 세력, 항로, 도시 구조를 설계하는 컨트리뷰터. 지도를 이야기로 바꾸는 작업을 좋아합니다.',
+    roles: ['CONTRIBUTOR'],
+    stats: {
+      repositoriesOwned: 0,
+      contributionsTotal: 31,
+      majorMerges: 8,
+      normalMerges: 15,
+      minorMerges: 8,
+      mergeRate: 81,
+    },
+  },
+  {
+    id: 'user-yuri',
+    username: 'scene-smith',
+    displayName: '정유리',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=scene-smith',
+    bio: '짧고 선명한 에피소드와 캐릭터 관계 변화를 제안합니다. 감정선이 필요한 PR에서 강합니다.',
+    roles: ['CONTRIBUTOR'],
+    links: [{ type: 'portfolio', url: 'https://worldbuild.example/scene-smith' }],
+    stats: {
+      repositoriesOwned: 0,
+      contributionsTotal: 27,
+      majorMerges: 4,
+      normalMerges: 17,
+      minorMerges: 6,
+      mergeRate: 76,
+    },
+  },
+  {
+    id: 'user-seo',
+    username: 'contour-leaf',
+    displayName: '윤서',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=contour-leaf',
+    bio: '콘티와 외전 아이디어를 통해 공식 세계관의 빈 공간을 채우는 신예 컨트리뷰터입니다.',
+    roles: ['CONTRIBUTOR'],
+    stats: {
+      repositoriesOwned: 0,
+      contributionsTotal: 14,
+      majorMerges: 2,
+      normalMerges: 6,
+      minorMerges: 6,
+      mergeRate: 58,
+    },
+  },
+];
+
+export const featuredContributorsMock: FeaturedContributor[] = [
+  {
+    userId: 'user-haneul',
+    mainField: '지역 설정',
+    weeklyHighlights: ['폐항 도시 세력도 Major Merge', '항로 충돌 규칙 개선'],
+  },
+  {
+    userId: 'user-yuri',
+    mainField: '에피소드',
+    weeklyHighlights: ['주연 관계 변화 에피소드 채택', '독자 진입 장면 보강'],
+  },
+  {
+    userId: 'user-joon',
+    mainField: '세계 규칙',
+    weeklyHighlights: ['궤도시장 계약법 보강', 'AI 충돌 위험 Low 판정'],
+  },
+  {
+    userId: 'user-seo',
+    mainField: '콘티',
+    weeklyHighlights: ['프롤로그 콘티 Normal Merge', '외전 컷 구성 제안'],
+  },
+];
+
