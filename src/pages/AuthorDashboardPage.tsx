@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, GitMerge, Pause, Send, ShieldAlert, XCircle } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
@@ -56,6 +56,7 @@ const rejectCategories = ['유사 설정 이미 존재', '방향 다름', '품�
 
 export const AuthorDashboardPage = () => {
   const { repoId = '' } = useParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [repository, setRepository] = useState<Repository | null>(null);
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
@@ -243,6 +244,10 @@ export const AuthorDashboardPage = () => {
               : '창작 제안을 반려했습니다',
         tone: decision === 'REJECT' ? 'warning' : 'success',
       });
+
+      if (decision === 'ACCEPT') {
+        navigate(`/r/${updated.repositoryId}`);
+      }
     }
   };
 
