@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, FileText, Sparkles } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
@@ -30,6 +30,7 @@ const loadingSteps = ['내용 분석 중...', '제안 유형 판정 중...', '�
 
 export const PullRequestReviewPage = () => {
   const { repoId = '', prId = '' } = useParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [pullRequest, setPullRequest] = useState<PullRequest | null>(null);
   const [repository, setRepository] = useState<Repository | null>(null);
@@ -136,10 +137,11 @@ export const PullRequestReviewPage = () => {
         setPullRequest(submitted);
         toast({
           title: '창작 제안이 제출되었습니다',
-          description: '이 페이지에서 제출 상태와 타임스탬프를 확인할 수 있습니다.',
+          description: '세계관 소개 페이지로 이동합니다.',
           tone: 'success',
         });
         setConfirmOpen(false);
+        navigate(`/r/${submitted.repositoryId}`);
       }
     } finally {
       setIsSubmitting(false);
