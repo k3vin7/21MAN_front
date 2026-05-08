@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, FileText, Sparkles } from 'lucide-react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
@@ -30,7 +30,6 @@ const loadingSteps = ['내용 분석 중...', '기여 유형 판정 중...', '�
 
 export const PullRequestReviewPage = () => {
   const { repoId = '', prId = '' } = useParams();
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [pullRequest, setPullRequest] = useState<PullRequest | null>(null);
   const [repository, setRepository] = useState<Repository | null>(null);
@@ -107,6 +106,7 @@ export const PullRequestReviewPage = () => {
   }
 
   const allAgreed = AGREEMENT_IDS.every((agreement) => agreements.includes(agreement));
+  const isSubmitted = Boolean(pullRequest.timestamps.submittedAt);
 
   const saveReviewState = async () => {
     const updated = await pullRequestService.updatePullRequestReview(pullRequest.id, {
@@ -127,21 +127,23 @@ export const PullRequestReviewPage = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    const updated = await saveReviewState();
-    const submitted = updated ? await pullRequestService.submitPullRequest(updated.id) : null;
 
-    if (submitted) {
-      setPullRequest(submitted);
-      toast({
-        title: 'PR이 제출되었습니다',
-        description: '원작자 대시보드에서 이제 이 PR을 검토할 수 있습니다.',
-        tone: 'success',
-      });
-      setConfirmOpen(false);
-      navigate(`/r/${submitted.repositoryId}/dashboard`);
+    try {
+      const updated = await saveReviewState();
+      const submitted = updated ? await pullRequestService.submitPullRequest(updated.id) : null;
+
+      if (submitted) {
+        setPullRequest(submitted);
+        toast({
+          title: 'PR이 제출되었습니다',
+          description: '이 페이지에서 제출 상태와 타임스탬프를 확인할 수 있습니다.',
+          tone: 'success',
+        });
+        setConfirmOpen(false);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
   };
 
   return (
@@ -156,7 +158,10 @@ export const PullRequestReviewPage = () => {
 
       <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">AI Review</p>
-        <h1 className="mt-4 text-3xl font-semibold text-slate-950">AI가 PR을 분석했습니다</h1>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <h1 className="text-3xl font-semibold text-slate-950">AI가 PR을 분석했습니다</h1>
+          {isSubmitted ? <Badge tone="teal">제출 완료</Badge> : null}
+        </div>
         <p className="mt-3 text-sm leading-6 text-slate-500">내용을 확인하고 제출하세요.</p>
       </section>
 
@@ -248,11 +253,11 @@ export const PullRequestReviewPage = () => {
           임시 저장
         </Button>
         <Button
-          disabled={!allAgreed || (!agreesWithAI && !opinionNote.trim()) || !title.trim()}
+          disabled={isSubmitted || !allAgreed || (!agreesWithAI && !opinionNote.trim()) || !title.trim()}
           leftIcon={<Sparkles className="size-4" />}
           onClick={() => setConfirmOpen(true)}
         >
-          Submit
+          {isSubmitted ? 'Submitted' : 'Submit'}
         </Button>
       </div>
 
