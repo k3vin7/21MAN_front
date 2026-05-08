@@ -6,10 +6,9 @@ import { useAuthStore } from '@/features/auth/auth.store';
 import { useToast } from '@/hooks/useToast';
 
 const navigationItems = [
-  { to: '/', label: '탐색' },
-  { to: '/search', label: '검색' },
-  { to: '/r/new', label: '세계관 등록' },
-  { to: '/u/ink-mason', label: '프로필' },
+  { to: '/', label: '홈' },
+  { to: '/search', label: '새로운 웹툰 탐색' },
+  { to: '/r/new', label: '내 웹툰 등록' },
 ];
 
 export const Header = () => {
@@ -53,14 +52,14 @@ export const Header = () => {
       <div className="shell py-0">
         <div className="flex flex-col items-center gap-0">
           <div className="relative flex w-full flex-col items-center gap-3 py-3 lg:min-h-[4rem] lg:flex-row lg:justify-end">
-            <nav className="flex flex-wrap items-center justify-center gap-1 lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2">
+            <nav className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:gap-6">
               {navigationItems.map((item) => (
                 <NavLink
                   key={item.to}
                   end={item.to === '/'}
                   className={({ isActive }) =>
                     [
-                      'rounded-xl px-4 py-2.5 text-[15px] font-semibold tracking-tight transition-all duration-150 sm:px-6',
+                      'rounded-xl px-4 py-2.5 text-[15px] font-semibold tracking-tight transition-all duration-150 sm:px-5',
                       isActive
                         ? 'bg-slate-950 text-white shadow-sm'
                         : 'text-slate-500 hover:bg-slate-100 hover:text-slate-950',
