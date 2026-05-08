@@ -1,13 +1,28 @@
 import type {
   Repository,
   RepositorySearchFilters,
+  RecruitingAreaType,
 } from '@/features/repository/repository.types';
 import type { MergeHistoryEntry } from '@/features/pull-request/pullRequest.types';
 import { mergeHistoryMock } from '@/mocks/activities.mock';
 import { repositoriesMock } from '@/mocks/repositories.mock';
+import { apiClient, isApiEnabled } from '@/lib/apiClient';
+import { mapApiMergeHistoryEntry, mapApiRepository } from '@/lib/apiMappers';
+import { API_PATHS } from '@/lib/apiPaths';
 import { cloneMock, mockDelay } from '@/lib/mock';
 
 let repositories = cloneMock(repositoriesMock);
+
+type ApiListResponse = {
+  items?: unknown[];
+};
+
+type ApiRepositoryStats = {
+  received_prs?: number;
+  merged_prs?: number;
+  avg_review_days?: number;
+  contributor_count?: number;
+};
 
 const getActivityBucket = (lastActivity: string) => {
   const diff = Date.now() - new Date(lastActivity).getTime();
@@ -102,44 +117,198 @@ const sortRepositories = (repositories: Repository[], sort: RepositorySearchFilt
   }
 };
 
+const getApiSort = (sort: RepositorySearchFilters['sort']) => {
+  if (sort === 'POPULAR' || sort === 'MERGE_RATE' || sort === 'FAST_REVIEW' || sort === 'RECOMMENDED') {
+    return 'popular';
+  }
+
+  return 'latest';
+};
+
+const getApiRecruitingArea = (type?: RecruitingAreaType) => {
+  const map: Record<RecruitingAreaType, string> = {
+    CHARACTER: 'character_add',
+    EPISODE: 'episode_add',
+    WORLD_RULE: 'worldbuilding',
+    LOCATION: 'location_add',
+    EXTRA: 'extra',
+    STORYBOARD: 'storyboard',
+  };
+
+  return type ? map[type] : undefined;
+};
+
+const withApiFallback = async <T>(apiCall: () => Promise<T>, mockCall: () => Promise<T>) => {
+  if (!isApiEnabled) {
+    return mockCall();
+  }
+
+  try {
+    return await apiCall();
+  } catch (error) {
+    console.warn('Falling back to repository mock service.', error);
+    return mockCall();
+  }
+};
+
+const getMockRepositories = async (filters?: RepositorySearchFilters) => {
+  await mockDelay();
+  const filteredRepositories = filterRepositories(repositories, filters);
+
+  return cloneMock(sortRepositories(filteredRepositories, filters?.sort));
+};
+
+const getMockRepositoryById = async (repositoryId: string) => {
+  await mockDelay();
+  const repository = repositories.find((item) => item.id === repositoryId);
+
+  return repository ? cloneMock(repository) : null;
+};
+
+const getRepositoryWithStats = async (repositoryId: string) => {
+  const repository = await apiClient.get<Record<string, unknown>>(API_PATHS.repositories.detail(repositoryId), undefined, {
+    auth: false,
+  });
+  const stats = await apiClient
+    .get<ApiRepositoryStats>(API_PATHS.repositories.stats(repositoryId))
+    .catch(() => null);
+
+  return mapApiRepository({
+    ...repository,
+    pr_count: repository.pr_count ?? stats?.received_prs,
+    merge_count: repository.merge_count ?? stats?.merged_prs,
+    avg_review_days: repository.avg_review_days ?? stats?.avg_review_days,
+    contributor_count: repository.contributor_count ?? stats?.contributor_count,
+  });
+};
+
+const toApiRepositoryPayload = (repository: Repository) => ({
+  title: repository.title,
+  description: repository.description,
+  thumbnail: repository.thumbnail,
+  tags: repository.tags,
+  external_links: repository.externalLinks.map((link) => link.url),
+  readme: {
+    content: [repository.readme.intro, repository.readme.worldOverview].filter(Boolean).join('\n\n'),
+    characters: repository.readme.mainCharacters.map((character) => ({
+      name: character.name,
+      description: character.description,
+    })),
+    regions: repository.readme.mainLocations.map((location) => ({
+      name: location.name,
+      description: location.description,
+    })),
+    world_rules: repository.readme.coreRules,
+    forbidden_settings: repository.readme.forbiddenSettings,
+  },
+  recruiting_areas: repository.readme.recruitingAreas.map((area) => getApiRecruitingArea(area.type)),
+  contribution_guidelines: repository.readme.contributionGuidelines,
+});
+
 export const repositoryService = {
   async getRepositories(filters?: RepositorySearchFilters): Promise<Repository[]> {
-    await mockDelay();
-    const filteredRepositories = filterRepositories(repositories, filters);
+    return withApiFallback(
+      async () => {
+        const response = await apiClient.get<ApiListResponse>(
+          API_PATHS.repositories.list,
+          {
+            q: filters?.query,
+            tag: filters?.tag,
+            recruiting: getApiRecruitingArea(filters?.recruitingAreas?.[0]),
+            sort: getApiSort(filters?.sort),
+            page: 1,
+            size: 100,
+          },
+          { auth: false },
+        );
+        const apiRepositories = (response.items ?? []).map(mapApiRepository);
+        const filteredRepositories = filterRepositories(apiRepositories, filters);
 
-    return cloneMock(sortRepositories(filteredRepositories, filters?.sort));
+        return sortRepositories(filteredRepositories, filters?.sort);
+      },
+      () => getMockRepositories(filters),
+    );
   },
 
   async getFeaturedRepositories(limit = 4): Promise<Repository[]> {
-    await mockDelay();
-    const featured = sortRepositories(
-      repositories.filter((repository) =>
-        repository.readme.recruitingAreas.some((area) => area.status === 'ACTIVELY_RECRUITING'),
-      ),
-      'RECOMMENDED',
-    );
+    return withApiFallback(
+      async () => {
+        const response = await apiClient.get<ApiListResponse>(
+          API_PATHS.repositories.list,
+          { sort: 'popular', page: 1, size: limit },
+          { auth: false },
+        );
+        const apiRepositories = filterRepositories(
+          (response.items ?? []).map(mapApiRepository),
+          { recruitingOnly: true, sort: 'RECOMMENDED' },
+        );
 
-    return cloneMock(featured.slice(0, limit));
+        return apiRepositories.slice(0, limit);
+      },
+      async () => {
+        await mockDelay();
+        const featured = sortRepositories(
+          repositories.filter((repository) =>
+            repository.readme.recruitingAreas.some((area) => area.status === 'ACTIVELY_RECRUITING'),
+          ),
+          'RECOMMENDED',
+        );
+
+        return cloneMock(featured.slice(0, limit));
+      },
+    );
   },
 
   async getRepositoryById(repositoryId: string): Promise<Repository | null> {
-    await mockDelay();
-    const repository = repositories.find((item) => item.id === repositoryId);
-
-    return repository ? cloneMock(repository) : null;
+    return withApiFallback<Repository | null>(
+      () => getRepositoryWithStats(repositoryId),
+      () => getMockRepositoryById(repositoryId),
+    );
   },
 
   async createRepository(repository: Repository): Promise<Repository> {
-    await mockDelay();
-    repositories = [repository, ...repositories.filter((item) => item.id !== repository.id)];
+    return withApiFallback(
+      async () => {
+        const created = await apiClient.post<Record<string, unknown>>(
+          API_PATHS.repositories.create,
+          toApiRepositoryPayload(repository),
+        );
+        const createdId = String(created.id ?? repository.id);
 
-    return cloneMock(repository);
+        return getRepositoryWithStats(createdId).catch(() =>
+          mapApiRepository({
+            ...created,
+            ...toApiRepositoryPayload(repository),
+            id: createdId,
+          }),
+        );
+      },
+      async () => {
+        await mockDelay();
+        repositories = [repository, ...repositories.filter((item) => item.id !== repository.id)];
+
+        return cloneMock(repository);
+      },
+    );
   },
 
   async getRepositoryMergeHistory(repositoryId: string): Promise<MergeHistoryEntry[]> {
-    await mockDelay();
-    const history = mergeHistoryMock.filter((entry) => entry.repositoryId === repositoryId);
+    return withApiFallback(
+      async () => {
+        const response = await apiClient.get<ApiListResponse>(
+          API_PATHS.repositories.merges(repositoryId),
+          { page: 1, size: 100 },
+          { auth: false },
+        );
 
-    return cloneMock(history);
+        return (response.items ?? []).map((item) => mapApiMergeHistoryEntry(item, repositoryId));
+      },
+      async () => {
+        await mockDelay();
+        const history = mergeHistoryMock.filter((entry) => entry.repositoryId === repositoryId);
+
+        return cloneMock(history);
+      },
+    );
   },
 };
