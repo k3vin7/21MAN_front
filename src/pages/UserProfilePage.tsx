@@ -1,13 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ExternalLink, Link as LinkIcon, Share2 } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { Badge } from '@/components/common/Badge';
-import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/common/Skeleton';
-import { Tabs, type TabItem } from '@/components/common/Tabs';
-import { AchievementBadge } from '@/components/contributor/AchievementBadge';
-import { ActivityGraph } from '@/components/contributor/ActivityGraph';
 import { ContributionSummaryCard } from '@/components/contributor/ContributionSummaryCard';
 import { RepoDetailModal } from '@/components/repository/RepoDetailModal';
 import { RepoGrid } from '@/components/repository/RepoGrid';
@@ -15,26 +10,22 @@ import type { PullRequest } from '@/features/pull-request/pullRequest.types';
 import { pullRequestService } from '@/features/pull-request/pullRequest.service';
 import type { Repository } from '@/features/repository/repository.types';
 import { repositoryService } from '@/features/repository/repository.service';
-import type { Achievement, ProfileActivity, User } from '@/features/user/user.types';
+import { useAuthStore } from '@/features/auth/auth.store';
+import type { User } from '@/features/user/user.types';
 import { userService } from '@/features/user/user.service';
-import { useToast } from '@/hooks/useToast';
-import { formatDateTime } from '@/lib/date';
 import { formatNumber } from '@/lib/format';
 
-type ProfileTab = 'contribution' | 'repository' | 'activity' | 'achievements';
+type ProfileTab = 'contribution' | 'repository';
 
 export const UserProfilePage = () => {
   const { username = '' } = useParams();
-  const { toast } = useToast();
+  const currentUser = useAuthStore((state) => state.user);
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
-  const [activities, setActivities] = useState<ProfileActivity[]>([]);
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [activeTab, setActiveTab] = useState<ProfileTab>('contribution');
   const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
-  const [selectedAchievementId, setSelectedAchievementId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,31 +33,42 @@ export const UserProfilePage = () => {
 
     const fetchProfile = async () => {
       setIsLoading(true);
-      const nextUser = await userService.getUserByUsername(username);
-      const [nextUsers, nextRepositories] = await Promise.all([
-        userService.getUsers(),
-        repositoryService.getRepositories(),
-      ]);
-      const [nextPullRequests, nextActivities, nextAchievements] = nextUser
-        ? await Promise.all([
-            pullRequestService.getPullRequests({ authorId: nextUser.id }),
-            userService.getProfileActivities(nextUser.id),
-            userService.getAchievements(nextUser.id),
-          ])
-        : [[], [], []];
 
-      if (!mounted) {
-        return;
+      try {
+        const isCurrentUserProfile = Boolean(currentUser?.username && currentUser.username === username);
+        const nextUser = isCurrentUserProfile
+          ? await userService.getCurrentUserProfile()
+          : await userService.getUserByUsername(username);
+        const [nextUsers, nextRepositories] = await Promise.all([
+          userService.getUsers(),
+          repositoryService.getRepositories(),
+        ]);
+        const nextPullRequests = nextUser
+          ? await pullRequestService.getPullRequests({ authorId: nextUser.id })
+          : [];
+
+        if (!mounted) {
+          return;
+        }
+
+        setUser(nextUser);
+        setUsers(nextUsers);
+        setRepositories(nextRepositories);
+        setPullRequests(nextPullRequests);
+      } catch {
+        if (!mounted) {
+          return;
+        }
+
+        setUser(null);
+        setUsers([]);
+        setRepositories([]);
+        setPullRequests([]);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
-
-      setUser(nextUser);
-      setUsers(nextUsers);
-      setRepositories(nextRepositories);
-      setPullRequests(nextPullRequests);
-      setActivities(nextActivities);
-      setAchievements(nextAchievements);
-      setSelectedAchievementId(nextAchievements[0]?.id ?? null);
-      setIsLoading(false);
     };
 
     fetchProfile();
@@ -74,7 +76,7 @@ export const UserProfilePage = () => {
     return () => {
       mounted = false;
     };
-  }, [username]);
+  }, [currentUser?.username, username]);
 
   const ownedRepositories = user
     ? repositories.filter((repository) => repository.authorId === user.id)
@@ -93,10 +95,12 @@ export const UserProfilePage = () => {
       .filter((group) => group.pullRequests.length > 0);
   }, [pullRequests, repositories, user]);
 
-  const selectedAchievement = achievements.find((achievement) => achievement.id === selectedAchievementId);
   const selectedAuthor = selectedRepository
     ? users.find((item) => item.id === selectedRepository.authorId)
     : undefined;
+  const officialCredits = user
+    ? user.stats.majorMerges + user.stats.normalMerges + user.stats.minorMerges
+    : 0;
 
   if (isLoading) {
     return <Skeleton className="mx-auto h-[760px] max-w-6xl" />;
@@ -111,120 +115,38 @@ export const UserProfilePage = () => {
           </Link>
         }
         title="프로필을 찾지 못했습니다"
-        description="mock user 목록에 없는 username입니다."
+        description="존재하지 않거나 아직 공개되지 않은 사용자입니다."
       />
     );
   }
 
-  const tabs: TabItem<ProfileTab>[] = [
-    {
-      value: 'contribution',
-      label: 'Contribution',
-      badge: <Badge tone="slate">{pullRequests.length}</Badge>,
-      content: (
-        <div className="grid gap-4 xl:grid-cols-2">
-          {contributionGroups.length ? (
-            contributionGroups.map((group) => (
-              <ContributionSummaryCard
-                key={group.repository.id}
-                pullRequests={group.pullRequests}
-                repository={group.repository}
-              />
-            ))
-          ) : (
-            <EmptyState title="아직 기여한 세계관이 없습니다" />
-          )}
-        </div>
-      ),
-    },
-    {
-      value: 'repository',
-      label: 'Repository',
-      badge: <Badge tone="slate">{ownedRepositories.length}</Badge>,
-      content: ownedRepositories.length ? (
-        <RepoGrid onRepoClick={setSelectedRepository} repositories={ownedRepositories} users={users} />
-      ) : (
-        <EmptyState title="소유한 레포지토리가 없습니다" description="원작자로 세계관을 열면 이곳에 표시됩니다." />
-      ),
-    },
-    {
-      value: 'activity',
-      label: 'Activity',
-      content: (
-        <div className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
-          <ActivityGraph activities={activities} />
-          <div className="space-y-3">
-            {activities.length ? (
-              activities.map((activity) => (
-                <article key={activity.id} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-                  <p className="text-sm font-semibold text-slate-950">{activity.title}</p>
-                  <p className="mt-2 text-xs text-slate-500">{formatDateTime(activity.occurredAt)}</p>
-                </article>
-              ))
-            ) : (
-              <EmptyState title="최근 활동이 없습니다" />
-            )}
-          </div>
-        </div>
-      ),
-    },
-    {
-      value: 'achievements',
-      label: 'Achievements',
-      badge: <Badge tone="slate">{achievements.length}</Badge>,
-      content: (
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {achievements.map((achievement) => (
-              <AchievementBadge
-                key={achievement.id}
-                achievement={achievement}
-                onClick={() => setSelectedAchievementId(achievement.id)}
-                selected={achievement.id === selectedAchievementId}
-              />
-            ))}
-          </div>
-          <aside className="h-fit rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="text-base font-semibold text-slate-950">Badge detail</h3>
-            {selectedAchievement ? (
-              <div className="mt-4 text-sm leading-6 text-slate-600">
-                <p className="font-semibold text-slate-950">{selectedAchievement.title}</p>
-                <p className="mt-2">{selectedAchievement.description}</p>
-                <p className="mt-3 text-slate-500">{formatDateTime(selectedAchievement.earnedAt)}</p>
-              </div>
-            ) : (
-              <p className="mt-4 text-sm text-slate-500">업적을 선택하세요.</p>
-            )}
-          </aside>
-        </div>
-      ),
-    },
-  ];
-
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+    <div className="mx-auto max-w-4xl space-y-10">
+      <section className="pt-2">
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-start">
             <img
               alt={`${user.displayName} avatar`}
-              className="size-28 rounded-lg border border-slate-200 bg-slate-100"
+              className="size-20 rounded-[1.25rem] bg-slate-100"
               src={user.avatar}
             />
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                {user.roles.includes('AUTHOR') ? <Badge tone="teal">원작자</Badge> : null}
-                {user.roles.includes('CONTRIBUTOR') ? <Badge tone="blue">컨트리뷰터</Badge> : null}
-              </div>
-              <h1 className="mt-4 text-3xl font-semibold text-slate-950">@{user.username}</h1>
-              <p className="mt-1 text-lg text-slate-600">{user.displayName}</p>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-500">{user.bio}</p>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-slate-400">
+                {[user.roles.includes('AUTHOR') ? '원작자' : null, user.roles.includes('CONTRIBUTOR') ? '공동창작자' : null]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </p>
+              <h1 className="mt-2 break-words text-4xl font-bold tracking-normal text-slate-950">@{user.username}</h1>
+              <p className="mt-2 text-lg text-slate-500">{user.displayName}</p>
+              <p className="mt-5 max-w-2xl text-[15px] leading-7 text-slate-600">
+                {user.bio || '다른 사람의 세계관에 캐릭터, 설정, 에피소드를 제안하고 채택된 기록을 남깁니다.'}
+              </p>
               {user.links?.length ? (
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-5 flex flex-wrap gap-2">
                   {user.links.map((link) => (
                     <a
                       key={link.url}
-                      className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-accent-300 hover:text-slate-950"
+                      className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
                       href={link.url}
                       rel="noreferrer"
                       target="_blank"
@@ -238,34 +160,49 @@ export const UserProfilePage = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <Button
-              leftIcon={<Share2 className="size-4" />}
-              onClick={() => toast({ title: '프로필 공유 링크를 준비했습니다', tone: 'success' })}
-              variant="secondary"
-            >
-              Share profile
-            </Button>
-            <Button
-              leftIcon={<LinkIcon className="size-4" />}
-              onClick={() => toast({ title: '인용용 프로필 링크를 준비했습니다', tone: 'success' })}
-              variant="secondary"
-            >
-              Cite profile
-            </Button>
+          <div className="sm:min-w-[180px] sm:text-right">
+            <p className="text-sm font-semibold text-slate-500">참여 이력</p>
+            <p className="mt-1 text-6xl font-bold tracking-normal text-slate-950">{formatNumber(officialCredits)}</p>
+            <p className="mt-2 text-sm text-slate-500">공식 반영된 제안</p>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Major Merge" value={user.stats.majorMerges} />
-        <StatCard label="Normal Merge" value={user.stats.normalMerges} />
-        <StatCard label="Minor Merge" value={user.stats.minorMerges} />
-        <StatCard label="Repository" value={user.stats.repositoriesOwned} />
-      </section>
+      <section className="space-y-5">
+        <div className="flex gap-6 border-b border-slate-100">
+          <ProfileTabButton
+            active={activeTab === 'contribution'}
+            count={officialCredits}
+            label="참여 이력"
+            onClick={() => setActiveTab('contribution')}
+          />
+          <ProfileTabButton
+            active={activeTab === 'repository'}
+            count={ownedRepositories.length}
+            label="내 세계관"
+            onClick={() => setActiveTab('repository')}
+          />
+        </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-        <Tabs items={tabs} onValueChange={setActiveTab} value={activeTab} />
+        {activeTab === 'contribution' ? (
+          <div className="grid gap-4 xl:grid-cols-2">
+            {contributionGroups.length ? (
+              contributionGroups.map((group) => (
+                <ContributionSummaryCard
+                  key={group.repository.id}
+                  pullRequests={group.pullRequests}
+                  repository={group.repository}
+                />
+              ))
+            ) : (
+              <CreditEmptyState />
+            )}
+          </div>
+        ) : ownedRepositories.length ? (
+          <RepoGrid onRepoClick={setSelectedRepository} repositories={ownedRepositories} users={users} />
+        ) : (
+          <EmptyState title="소유한 세계관이 없습니다" description="원작자로 세계관을 열면 이곳에 표시됩니다." />
+        )}
       </section>
 
       <RepoDetailModal
@@ -278,16 +215,37 @@ export const UserProfilePage = () => {
   );
 };
 
-type StatCardProps = {
+const ProfileTabButton = ({
+  active,
+  count,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  count: number;
   label: string;
-  value: number;
+  onClick: () => void;
+}) => {
+  return (
+    <button
+      className={`border-b-2 pb-3 text-base font-bold transition ${
+        active ? 'border-slate-950 text-slate-950' : 'border-transparent text-slate-400 hover:text-slate-700'
+      }`}
+      onClick={onClick}
+      type="button"
+    >
+      {label} <span className="ml-1">{formatNumber(count)}</span>
+    </button>
+  );
 };
 
-const StatCard = ({ label, value }: StatCardProps) => {
+const CreditEmptyState = () => {
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-3xl font-semibold text-slate-950">{formatNumber(value)}</p>
-    </article>
+    <div className="rounded-2xl bg-slate-50 p-8">
+      <h3 className="text-xl font-semibold text-slate-950">아직 참여 이력이 없습니다</h3>
+      <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+        세계관에 창작 제안을 보내고 원작자가 공식 반영하면 이곳에 기록됩니다.
+      </p>
+    </div>
   );
 };

@@ -1,7 +1,6 @@
-import { GitMerge, GitPullRequest, LockKeyhole } from 'lucide-react';
+import { CheckCircle2, LockKeyhole, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/common/Badge';
-import { GradeBadge } from '@/components/pull-request/GradeBadge';
 import type { PullRequest } from '@/features/pull-request/pullRequest.types';
 import type { Repository } from '@/features/repository/repository.types';
 import { formatDate } from '@/lib/date';
@@ -18,7 +17,7 @@ export const ContributionSummaryCard = ({
   const publicPullRequests = pullRequests.filter((pullRequest) => pullRequest.visibility === 'PUBLIC');
   const privateCount = pullRequests.length - publicPullRequests.length;
   const merged = publicPullRequests.filter((pullRequest) => pullRequest.status === 'MERGED');
-  const majorMerge = merged.find((pullRequest) => pullRequest.finalGrade === 'MAJOR') ?? merged[0];
+  const featuredProposal = merged.find((pullRequest) => pullRequest.finalGrade === 'MAJOR') ?? merged[0];
   const gradeCounts = {
     MAJOR: pullRequests.filter((pullRequest) => pullRequest.finalGrade === 'MAJOR').length,
     NORMAL: pullRequests.filter((pullRequest) => pullRequest.finalGrade === 'NORMAL').length,
@@ -40,39 +39,39 @@ export const ContributionSummaryCard = ({
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <Badge tone="amber">Major {gradeCounts.MAJOR}</Badge>
-        <Badge tone="teal">Normal {gradeCounts.NORMAL}</Badge>
-        <Badge tone="blue">Minor {gradeCounts.MINOR}</Badge>
+        <Badge tone="amber">핵심 제안 {gradeCounts.MAJOR}</Badge>
+        <Badge tone="teal">설정 보강 {gradeCounts.NORMAL}</Badge>
+        <Badge tone="blue">작은 제안 {gradeCounts.MINOR}</Badge>
         {privateCount ? (
           <Badge tone="slate">
             <LockKeyhole className="mr-1 size-3" />
-            비공개 기여 {privateCount}건
+            비공개 제안 {privateCount}건
           </Badge>
         ) : null}
       </div>
 
-      {majorMerge ? (
-        <div className="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4">
+      {featuredProposal ? (
+        <div className="mt-5 rounded-lg bg-slate-50 p-4">
           <div className="flex flex-wrap items-center gap-2">
-            <GradeBadge compact grade={majorMerge.finalGrade} />
-            <span className="text-sm text-amber-800">Major Merge preview</span>
+            <CheckCircle2 className="size-4 text-slate-700" />
+            <span className="text-sm font-semibold text-slate-700">공식 반영된 창작 제안</span>
           </div>
-          <h4 className="mt-3 text-sm font-semibold text-slate-950">{majorMerge.title}</h4>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{majorMerge.structuredContent.expectedEffect}</p>
+          <h4 className="mt-3 text-sm font-semibold text-slate-950">{featuredProposal.title}</h4>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{featuredProposal.structuredContent.expectedEffect}</p>
           <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
             <span className="flex items-center gap-1">
-              <GitMerge className="size-3.5" />
-              {majorMerge.timestamps.mergedAt ? formatDate(majorMerge.timestamps.mergedAt) : 'Merge 대기'}
+              <CheckCircle2 className="size-3.5" />
+              {featuredProposal.timestamps.mergedAt ? formatDate(featuredProposal.timestamps.mergedAt) : '반영 대기'}
             </span>
-            <Link className="text-accent-700 hover:text-accent-900" to={`/r/${repository.id}/pr/${majorMerge.id}/review`}>
-              원본 PR 보기
+            <Link className="font-semibold text-slate-700 hover:text-slate-950" to={`/r/${repository.id}/pr/${featuredProposal.id}/review`}>
+              제안 보기
             </Link>
           </div>
         </div>
       ) : (
         <div className="mt-5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
-          <GitPullRequest className="size-4 text-accent-600" />
-          아직 public Major Merge가 없습니다.
+          <Send className="size-4 text-slate-500" />
+          아직 공식 반영된 제안이 없습니다.
         </div>
       )}
     </article>
