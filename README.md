@@ -1,6 +1,6 @@
 <div align="center">
 
-# WorldBuild Frontend
+# 서랍 Frontend
 
 좋아하는 웹툰 세계관에 캐릭터, 에피소드, 설정을 제안하고  
 작가가 검토한 기여를 공식 세계관에 반영하는 협업형 월드빌딩 플랫폼입니다.
@@ -16,7 +16,7 @@
 
 ## 서비스 개요
 
-WorldBuild는 웹툰 세계관을 GitHub repository처럼 관리하는 창작 협업 서비스입니다.
+서랍은 웹툰 세계관을 GitHub repository처럼 관리하는 창작 협업 서비스입니다.
 
 작가는 작품의 세계관 repository를 만들고, 독자와 공동 창작자는 pull request처럼 새로운 설정을 제안합니다.  
 제안은 AI 분석을 거쳐 범위, 영구성, 충돌 위험, 기여 등급으로 정리되고, 작가는 이를 검토해 채택, 수정 요청, 반려, 공식 반영을 결정합니다.
@@ -137,6 +137,6 @@ npm run typecheck  # TypeScript 타입 검사
 
 <div align="center">
 
-WorldBuild는 창작자의 세계관을 지키면서도, 독자의 상상을 공식 기록으로 남기는 것을 목표로 합니다.
+서랍은 창작자의 세계관을 지키면서도, 독자의 상상을 공식 기록으로 남기는 것을 목표로 합니다.
 
 </div>
