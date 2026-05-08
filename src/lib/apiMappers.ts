@@ -144,6 +144,16 @@ export const mapApiUser = (payload: unknown): User => {
 export const mapApiRepository = (payload: unknown): Repository => {
   const repository = asObject(payload);
   const author = asObject(repository.author);
+  const authorId = String(
+    author.username ??
+      repository.author_username ??
+      repository.owner_username ??
+      repository.created_by_username ??
+      author.id ??
+      repository.author_id ??
+      repository.owner_id ??
+      '',
+  );
   const readme = asObject(repository.readme);
   const tags = asStringArray(repository.tags);
   const recruitingAreas = buildRecruitingAreas(repository.recruiting_areas);

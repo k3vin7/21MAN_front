@@ -113,7 +113,7 @@ export const AuthorDashboardPage = () => {
 
   const selectedPullRequest = pullRequests.find((pullRequest) => pullRequest.id === selectedId) ?? null;
   const selectedAuthor = selectedPullRequest
-    ? users.find((user) => user.id === selectedPullRequest.authorId)
+    ? users.find((user) => user.id === selectedPullRequest.authorId || user.username === selectedPullRequest.authorId)
     : null;
 
   useEffect(() => {
@@ -306,7 +306,7 @@ export const AuthorDashboardPage = () => {
           {filteredPullRequests.map((pullRequest) => (
             <PullRequestCard
               key={pullRequest.id}
-              author={users.find((user) => user.id === pullRequest.authorId)}
+              author={users.find((user) => user.id === pullRequest.authorId || user.username === pullRequest.authorId)}
               onClick={() => setSelectedId(pullRequest.id)}
               pullRequest={pullRequest}
               selected={pullRequest.id === selectedId}

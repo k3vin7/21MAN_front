@@ -9,7 +9,8 @@ type RepoGridProps = {
 };
 
 export const RepoGrid = ({ repositories, users, onRepoClick }: RepoGridProps) => {
-  const getAuthor = (authorId: string) => users.find((user) => user.id === authorId);
+  const getAuthor = (authorId: string) =>
+    users.find((user) => user.id === authorId || user.username === authorId);
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-2">
