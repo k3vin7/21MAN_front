@@ -26,7 +26,7 @@ const gradeKorean = {
   MINOR: '하',
 } as const;
 
-const loadingSteps = ['내용 분석 중...', '기여 유형 판정 중...', '등급 계산 중...', '충돌 검사 중...'];
+const loadingSteps = ['내용 분석 중...', '제안 유형 판정 중...', '등급 계산 중...', '충돌 검사 중...'];
 
 export const PullRequestReviewPage = () => {
   const { repoId = '', prId = '' } = useParams();
@@ -77,7 +77,7 @@ export const PullRequestReviewPage = () => {
     return (
       <div className="mx-auto max-w-4xl space-y-4">
         <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h1 className="text-2xl font-semibold text-slate-950">AI가 PR을 분석했습니다</h1>
+          <h1 className="text-2xl font-semibold text-slate-950">AI가 창작 제안을 분석했습니다</h1>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {loadingSteps.map((step) => (
               <div key={step} className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
@@ -96,11 +96,11 @@ export const PullRequestReviewPage = () => {
       <EmptyState
         action={
           <Link className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" to={`/r/${repoId}/pr/new`}>
-            새 PR 작성
+            새 창작 제안 작성
           </Link>
         }
-        title="PR을 찾지 못했습니다"
-        description="mock service 메모리에 없는 PR입니다. 작성 페이지에서 AI 분석을 다시 실행해보세요."
+        title="창작 제안을 찾지 못했습니다"
+        description="mock service 메모리에 없는 창작 제안입니다. 작성 페이지에서 AI 분석을 다시 실행해보세요."
       />
     );
   }
@@ -135,7 +135,7 @@ export const PullRequestReviewPage = () => {
       if (submitted) {
         setPullRequest(submitted);
         toast({
-          title: 'PR이 제출되었습니다',
+          title: '창작 제안이 제출되었습니다',
           description: '이 페이지에서 제출 상태와 타임스탬프를 확인할 수 있습니다.',
           tone: 'success',
         });
@@ -153,20 +153,20 @@ export const PullRequestReviewPage = () => {
         to={`/r/${pullRequest.repositoryId}/pr/new`}
       >
         <ArrowLeft className="size-4" />
-        Back to edit
+        수정하러 돌아가기
       </Link>
 
       <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">AI Review</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">AI 검토</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold text-slate-950">AI가 PR을 분석했습니다</h1>
+          <h1 className="text-3xl font-semibold text-slate-950">AI가 창작 제안을 분석했습니다</h1>
           {isSubmitted ? <Badge tone="teal">제출 완료</Badge> : null}
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-500">내용을 확인하고 제출하세요.</p>
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <Input label="PR 제목" onChange={(event) => setTitle(event.target.value)} value={title} />
+        <Input label="제안 제목" onChange={(event) => setTitle(event.target.value)} value={title} />
         <div className="mt-4 flex flex-wrap gap-2">
           {pullRequest.contributionTypes.map((type) => (
             <Badge key={type} tone="blue">
@@ -180,7 +180,7 @@ export const PullRequestReviewPage = () => {
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-3">
           <FileText className="size-5 text-accent-700" />
-          <h2 className="text-lg font-semibold text-slate-950">구조화된 PR</h2>
+          <h2 className="text-lg font-semibold text-slate-950">정리된 창작 제안</h2>
         </div>
         <dl className="mt-5 grid gap-4">
           <StructuredItem label="핵심 제안" value={pullRequest.structuredContent.coreIdea} />
@@ -202,7 +202,7 @@ export const PullRequestReviewPage = () => {
       <section className="rounded-lg border border-accent-200 bg-accent-50 p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-950">AI 기여 등급</h2>
+            <h2 className="text-lg font-semibold text-slate-950">AI 창작 제안 등급</h2>
             <p className="mt-1 text-sm text-slate-600">사용자 표시 등급: {gradeKorean[pullRequest.aiGrading.grade]}</p>
           </div>
           <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export const PullRequestReviewPage = () => {
           leftIcon={<Sparkles className="size-4" />}
           onClick={() => setConfirmOpen(true)}
         >
-          {isSubmitted ? 'Submitted' : 'Submit'}
+          {isSubmitted ? '제출 완료' : '제출'}
         </Button>
       </div>
 
@@ -274,7 +274,7 @@ export const PullRequestReviewPage = () => {
         }
         isOpen={confirmOpen}
         onClose={() => setConfirmOpen(false)}
-        title="PR을 제출할까요?"
+        title="창작 제안을 제출할까요?"
       >
         <p className="text-sm leading-6 text-slate-600">
           제출 후 작성 시각과 제출 시각이 기록되며, 원작자가 열람하면 열람 로그도 추가됩니다.

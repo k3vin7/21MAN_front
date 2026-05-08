@@ -78,7 +78,7 @@ export const useUserStore = create<UserState>((set) => ({
       const featuredContributors = await userService.getFeaturedContributors();
       set({ featuredContributors, isLoading: false });
     } catch {
-      set({ error: '추천 컨트리뷰터를 불러오지 못했습니다.', isLoading: false });
+      set({ error: '추천 공동창작자를 불러오지 못했습니다.', isLoading: false });
     }
   },
 
@@ -96,4 +96,3 @@ export const useUserStore = create<UserState>((set) => ({
     }
   },
 }));
-

@@ -10,7 +10,7 @@ const dashboardSections = [
   {
     icon: Sparkles,
     label: '등급 보정',
-    description: '기여 등급과 머지 정책을 일관되게 관리합니다.',
+    description: '창작 제안 등급과 공식 반영 정책을 일관되게 관리합니다.',
   },
 ];
 
@@ -25,7 +25,7 @@ export const DashboardLayout = () => {
             <LayoutDashboard className="size-5" />
           </div>
           <div>
-            <p className="eyebrow">Author Space</p>
+            <p className="eyebrow">원작자 공간</p>
             <h1 className="mt-2 text-lg font-semibold text-slate-950">{repoId}</h1>
           </div>
         </div>
@@ -50,7 +50,7 @@ export const DashboardLayout = () => {
           className="mt-6 inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:border-accent-300 hover:text-slate-950"
           to={`/r/${repoId}`}
         >
-          레포지토리 상세로 돌아가기
+          세계관 소개로 돌아가기
         </NavLink>
       </aside>
 

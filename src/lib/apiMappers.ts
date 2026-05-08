@@ -153,7 +153,7 @@ export const mapApiRepository = (payload: unknown): Repository => {
 
   return {
     id: String(repository.id ?? ''),
-    title: asString(repository.title, 'Untitled Repository'),
+    title: asString(repository.title, '제목 없는 세계관'),
     thumbnail: asString(repository.thumbnail, DEFAULT_THUMBNAIL),
     authorId,
     description: asString(repository.description),
@@ -171,7 +171,7 @@ export const mapApiRepository = (payload: unknown): Repository => {
         const item = asObject(character);
         return {
           id: `character-${index}`,
-          name: asString(item.name, `Character ${index + 1}`),
+          name: asString(item.name, `캐릭터 ${index + 1}`),
           role: asString(item.role),
           description: asString(item.description),
         };
@@ -180,7 +180,7 @@ export const mapApiRepository = (payload: unknown): Repository => {
         const item = asObject(region);
         return {
           id: `location-${index}`,
-          name: asString(item.name, `Location ${index + 1}`),
+          name: asString(item.name, `장소 ${index + 1}`),
           description: asString(item.description),
         };
       }),
@@ -219,7 +219,7 @@ export const mapApiPullRequest = (payload: unknown): PullRequest => {
     id: String(pullRequest.id ?? pullRequest.pull_request_id ?? ''),
     repositoryId: String(repository.id ?? pullRequest.repo_id ?? pullRequest.repository_id ?? ''),
     authorId: String(author.username ?? author.id ?? pullRequest.author_id ?? ''),
-    title: asString(pullRequest.title, asString(analysis.generated_title, 'Untitled Pull Request')),
+    title: asString(pullRequest.title, asString(analysis.generated_title, '제목 없는 창작 제안')),
     originalContent: asString(pullRequest.raw_content),
     attachments: [],
     contributionTypes: asStringArray(pullRequest.contribution_types ?? analysis.contribution_types).map(
@@ -274,7 +274,7 @@ export const mapApiMergeHistoryEntry = (payload: unknown, repositoryId = '') => 
     repositoryId,
     pullRequestId: String(pullRequest.id ?? ''),
     contributorId: String(contributor.username ?? contributor.id ?? ''),
-    title: asString(pullRequest.title, asString(merge.credit_text, 'Merged contribution')),
+    title: asString(pullRequest.title, asString(merge.credit_text, '공식 반영된 창작 제안')),
     grade: normalizeGrade(merge.final_grade),
     mergedAt: asString(merge.merged_at, new Date().toISOString()),
     summary: asString(merge.credit_text, asString(pullRequest.summary)),

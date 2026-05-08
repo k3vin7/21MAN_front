@@ -36,11 +36,11 @@ const filterOptions: Array<{
   label: string;
   value: 'OPEN' | 'REVIEWING' | 'CHANGES_REQUESTED' | 'CLOSED' | 'MINE';
 }> = [
-  { label: 'Open', value: 'OPEN' },
-  { label: 'Reviewing', value: 'REVIEWING' },
-  { label: 'Changes Requested', value: 'CHANGES_REQUESTED' },
-  { label: 'Closed', value: 'CLOSED' },
-  { label: '내 PR만', value: 'MINE' },
+  { label: '접수됨', value: 'OPEN' },
+  { label: '검토 중', value: 'REVIEWING' },
+  { label: '수정 요청됨', value: 'CHANGES_REQUESTED' },
+  { label: '종료됨', value: 'CLOSED' },
+  { label: '내 제안만', value: 'MINE' },
 ];
 
 const closedStatuses: PullRequestStatus[] = ['ACCEPTED', 'MERGED', 'REJECTED'];
@@ -132,12 +132,12 @@ export const RepositoryTabs = ({
   const tabs: TabItem<RepositoryTabValue>[] = [
     {
       value: 'readme',
-      label: 'README',
+      label: '세계관 문서',
       content: <RepositoryReadme repository={repository} />,
     },
     {
       value: 'pullRequests',
-      label: 'Pull Requests',
+      label: '창작 제안',
       badge: <Badge tone="slate">{pullRequests.length}</Badge>,
       content: (
         <div className="space-y-4">
@@ -177,8 +177,8 @@ export const RepositoryTabs = ({
             </div>
           ) : (
             <EmptyState
-              title="조건에 맞는 PR이 없습니다"
-              description="다른 상태 필터를 선택하거나 내 PR 필터를 해제해보세요."
+              title="조건에 맞는 창작 제안이 없습니다"
+              description="다른 상태 필터를 선택하거나 내 제안 필터를 해제해보세요."
             />
           )}
         </div>
@@ -186,7 +186,7 @@ export const RepositoryTabs = ({
     },
     {
       value: 'contributors',
-      label: 'Contributors',
+      label: '공동창작자',
       badge: <Badge tone="slate">{contributorSummaries.length}</Badge>,
       content: (
         <div className="space-y-4">
@@ -196,7 +196,7 @@ export const RepositoryTabs = ({
               onChange={(event) => setContributorSort(event.target.value as ContributorSort)}
               value={contributorSort}
             >
-              <option value="count">기여 많은순</option>
+              <option value="count">참여 많은순</option>
               <option value="recent">최근 활동순</option>
             </select>
           </div>
@@ -204,12 +204,12 @@ export const RepositoryTabs = ({
             {contributorSummaries.map((summary) => (
               <article key={summary.user.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                 <ContributorBadge
-                  meta={`${formatNumber(summary.contributionCount)} contributions`}
+                  meta={`창작 제안 ${formatNumber(summary.contributionCount)}건`}
                   user={summary.user}
                 />
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Badge tone="teal">기여 {formatNumber(summary.contributionCount)}</Badge>
-                  <Badge tone="amber">Major Merge {formatNumber(summary.majorMergeCount)}</Badge>
+                  <Badge tone="teal">제안 {formatNumber(summary.contributionCount)}</Badge>
+                  <Badge tone="amber">주요 공식 반영 {formatNumber(summary.majorMergeCount)}</Badge>
                 </div>
               </article>
             ))}
@@ -219,7 +219,7 @@ export const RepositoryTabs = ({
     },
     {
       value: 'mergeHistory',
-      label: 'Merge History',
+      label: '공식 반영 기록',
       badge: <Badge tone="slate">{mergeHistory.length}</Badge>,
       content: (
         <div className="space-y-4">
@@ -248,7 +248,7 @@ export const RepositoryTabs = ({
               );
             })
           ) : (
-            <EmptyState title="아직 Merge 이력이 없습니다" description="첫 공식 기여가 생기면 이곳에 타임라인이 쌓입니다." />
+            <EmptyState title="아직 공식 반영 기록이 없습니다" description="첫 공식 반영이 생기면 이곳에 타임라인이 쌓입니다." />
           )}
         </div>
       ),
@@ -260,7 +260,7 @@ export const RepositoryTabs = ({
         <EmptyState
           icon={<BarChart3 className="size-5" />}
           title="데이터를 수집 중입니다"
-          description="기여 패턴, 리뷰 속도, 머지 품질 지표는 더 많은 활동이 쌓이면 제공됩니다."
+          description="창작 참여 패턴, 검토 속도, 공식 반영 품질 지표는 더 많은 활동이 쌓이면 제공됩니다."
         />
       ),
     },

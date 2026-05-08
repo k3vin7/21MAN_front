@@ -10,17 +10,17 @@ type RepoStatsBarProps = {
 export const RepoStatsBar = ({ repository }: RepoStatsBarProps) => {
   const stats = [
     {
-      label: 'PR',
+      label: '창작 제안',
       value: formatNumber(repository.stats.prCount),
       icon: GitPullRequest,
     },
     {
-      label: 'Merge',
+      label: '공식 반영',
       value: formatNumber(repository.stats.mergeCount),
       icon: GitMerge,
     },
     {
-      label: 'Merge rate',
+      label: '반영률',
       value: formatPercent(repository.stats.mergeRate),
       icon: Percent,
     },
@@ -30,7 +30,7 @@ export const RepoStatsBar = ({ repository }: RepoStatsBarProps) => {
       icon: Timer,
     },
     {
-      label: 'Contributors',
+      label: '공동창작자',
       value: formatNumber(repository.stats.contributorCount),
       icon: Users,
     },

@@ -20,7 +20,7 @@ export const TimestampGuard = ({
     {
       icon: Send,
       label: '제출 시점',
-      value: submittedAt ? new Date(submittedAt).toLocaleString('ko-KR') : 'Submit 시 기록',
+      value: submittedAt ? new Date(submittedAt).toLocaleString('ko-KR') : '제출 시 기록',
     },
     {
       icon: Eye,
@@ -36,7 +36,7 @@ export const TimestampGuard = ({
         <div>
           <h2 className="font-semibold text-slate-950">타임스탬프 보호</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            작성, 제출, 열람 로그는 도용 분쟁 시 기여 사실을 설명하는 근거로 사용할 수 있습니다.
+            작성, 제출, 열람 로그는 도용 분쟁 시 창작 참여 사실을 설명하는 근거로 사용할 수 있습니다.
           </p>
         </div>
       </div>

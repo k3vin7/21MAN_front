@@ -161,7 +161,7 @@ export const pullRequestsMock: PullRequest[] = [
     relatedCharacters: [],
     relatedWorldRules: ['도시 괴담은 목격자가 셋 이상이면 실체화된다.'],
     relatedLocations: ['을지로 지하 수사국'],
-    expectedEffect: 'PR과 외전 작성 시 정보 구조를 통일한다.',
+    expectedEffect: '창작 제안과 외전 작성 시 정보 구조를 통일한다.',
     conflictRisk: 'LOW',
     scores: [8, 9, 7, 15, 18],
     grade: 'MINOR',
@@ -341,7 +341,7 @@ export const pullRequestsMock: PullRequest[] = [
     conflictRisk: 'LOW',
     scores: [8, 11, 9, 16, 17],
     grade: 'MINOR',
-    rationale: '공식 설정보다는 연출 가이드에 가까운 기여입니다.',
+    rationale: '공식 설정보다는 연출 가이드에 가까운 창작 제안입니다.',
     visibility: 'PRIVATE',
     status: 'DRAFT',
     submittedAt: null,
@@ -349,4 +349,3 @@ export const pullRequestsMock: PullRequest[] = [
     mergedAt: null,
   }),
 ];
-

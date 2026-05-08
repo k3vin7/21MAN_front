@@ -44,11 +44,11 @@ export const RepoCard = ({ repository, author, onClick }: RepoCardProps) => {
             <div className="mt-3 grid grid-cols-2 gap-3 text-sm text-slate-600">
               <span className="flex items-center gap-2">
                 <GitPullRequest className="size-4 text-accent-600" />
-                PR {repository.stats.prCount}
+                제안 {repository.stats.prCount}
               </span>
               <span className="flex items-center gap-2">
                 <GitMerge className="size-4 text-accent-600" />
-                Merge {repository.stats.mergeCount}
+                공식 반영 {repository.stats.mergeCount}
               </span>
               <span className="flex items-center gap-2">
                 <Users className="size-4 text-accent-600" />

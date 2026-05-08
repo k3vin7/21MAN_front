@@ -59,6 +59,7 @@ export const SearchPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     setFilters((current) => ({
@@ -125,82 +126,17 @@ export const SearchPage = () => {
   };
 
   const activeQuery = filters.query || filters.tag;
+  const activeFilterCount = [
+    filters.genres?.length ?? 0,
+    filters.recruitingAreas?.length ?? 0,
+    filters.badges?.length ?? 0,
+    filters.workScales?.length ?? 0,
+    filters.minMergeRate ? 1 : 0,
+    filters.recruitingOnly ? 1 : 0,
+  ].reduce((sum, count) => sum + count, 0);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <aside className="h-fit rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-28">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="size-4 text-accent-600" />
-            <h1 className="text-base font-semibold text-slate-950">필터</h1>
-          </div>
-          <Button leftIcon={<X className="size-4" />} onClick={resetFilters} size="icon" variant="ghost">
-            초기화
-          </Button>
-        </div>
-
-        <div className="mt-5 space-y-6">
-          <FilterGroup title="Genre">
-            {GENRES.map((genre) => (
-              <FilterCheckbox
-                key={genre}
-                checked={Boolean(filters.genres?.includes(genre))}
-                label={genre}
-                onChange={() => toggleArrayFilter<RepositoryGenre>('genres', genre)}
-              />
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Recruiting Area">
-            {recruitingAreaOptions.map((area) => (
-              <FilterCheckbox
-                key={area}
-                checked={Boolean(filters.recruitingAreas?.includes(area))}
-                label={RECRUITING_AREA_LABELS[area]}
-                onChange={() => toggleArrayFilter<RecruitingAreaType>('recruitingAreas', area)}
-              />
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Author Activity">
-            {authorActivityOptions.map((option) => (
-              <FilterCheckbox
-                key={option.badge}
-                checked={hasBadge(filters, option.badge)}
-                label={option.label}
-                onChange={() => toggleBadge(option.badge)}
-              />
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Merge Rate">
-            {[0, 10, 30].map((rate) => (
-              <FilterRadio
-                key={rate}
-                checked={(filters.minMergeRate ?? 0) === rate}
-                label={rate === 0 ? '전체' : `${rate}% 이상`}
-                onChange={() => setFilters((current) => ({ ...current, minMergeRate: rate || undefined }))}
-              />
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Work Scale">
-            {workScaleOptions.map((option) => (
-              <FilterCheckbox
-                key={option.value}
-                checked={Boolean(filters.workScales?.includes(option.value))}
-                label={option.label}
-                onChange={() => toggleArrayFilter<WorkScale>('workScales', option.value)}
-              />
-            ))}
-          </FilterGroup>
-
-          <Button className="w-full" onClick={resetFilters} variant="secondary">
-            필터 초기화
-          </Button>
-        </div>
-      </aside>
-
+    <div className="space-y-5">
       <section className="min-w-0 space-y-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -210,23 +146,119 @@ export const SearchPage = () => {
             <h1 className="mt-2 text-3xl font-semibold text-slate-950">세계관 탐색</h1>
           </div>
 
-          <select
-            className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
-            onChange={(event) =>
-              setFilters((current) => ({
-                ...current,
-                sort: event.target.value as RepositorySortOption,
-              }))
-            }
-            value={filters.sort}
-          >
-            {sortOptions.map((option) => (
-              <option key={option} value={option}>
-                {REPOSITORY_SORT_LABELS[option]}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Button
+              aria-expanded={isFilterOpen}
+              aria-controls="search-filter-panel"
+              leftIcon={<SlidersHorizontal className="size-4" />}
+              onClick={() => setIsFilterOpen((value) => !value)}
+              variant={isFilterOpen ? 'primary' : 'secondary'}
+            >
+              필터{activeFilterCount ? ` ${activeFilterCount}` : ''}
+            </Button>
+            <select
+              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/15"
+              onChange={(event) =>
+                setFilters((current) => ({
+                  ...current,
+                  sort: event.target.value as RepositorySortOption,
+                }))
+              }
+              value={filters.sort}
+            >
+              {sortOptions.map((option) => (
+                <option key={option} value={option}>
+                  {REPOSITORY_SORT_LABELS[option]}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+
+        {isFilterOpen ? (
+          <div
+            id="search-filter-panel"
+            className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="size-4 text-accent-600" />
+                <h2 className="text-base font-semibold text-slate-950">상세 필터</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button onClick={resetFilters} size="sm" variant="ghost">
+                  초기화
+                </Button>
+                <Button
+                  aria-label="필터 닫기"
+                  leftIcon={<X className="size-4" />}
+                  onClick={() => setIsFilterOpen(false)}
+                  size="icon"
+                  variant="ghost"
+                >
+                  닫기
+                </Button>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+              <FilterGroup title="장르">
+                {GENRES.map((genre) => (
+                  <FilterCheckbox
+                    key={genre}
+                    checked={Boolean(filters.genres?.includes(genre))}
+                    label={genre}
+                    onChange={() => toggleArrayFilter<RepositoryGenre>('genres', genre)}
+                  />
+                ))}
+              </FilterGroup>
+
+              <FilterGroup title="모집 영역">
+                {recruitingAreaOptions.map((area) => (
+                  <FilterCheckbox
+                    key={area}
+                    checked={Boolean(filters.recruitingAreas?.includes(area))}
+                    label={RECRUITING_AREA_LABELS[area]}
+                    onChange={() => toggleArrayFilter<RecruitingAreaType>('recruitingAreas', area)}
+                  />
+                ))}
+              </FilterGroup>
+
+              <FilterGroup title="원작자 활동">
+                {authorActivityOptions.map((option) => (
+                  <FilterCheckbox
+                    key={option.badge}
+                    checked={hasBadge(filters, option.badge)}
+                    label={option.label}
+                    onChange={() => toggleBadge(option.badge)}
+                  />
+                ))}
+              </FilterGroup>
+
+              <FilterGroup title="공식 반영률">
+                {[0, 10, 30].map((rate) => (
+                  <FilterRadio
+                    key={rate}
+                    checked={(filters.minMergeRate ?? 0) === rate}
+                    label={rate === 0 ? '전체' : `${rate}% 이상`}
+                    onChange={() => setFilters((current) => ({ ...current, minMergeRate: rate || undefined }))}
+                  />
+                ))}
+              </FilterGroup>
+
+              <FilterGroup title="작품 규모">
+                {workScaleOptions.map((option) => (
+                  <FilterCheckbox
+                    key={option.value}
+                    checked={Boolean(filters.workScales?.includes(option.value))}
+                    label={option.label}
+                    onChange={() => toggleArrayFilter<WorkScale>('workScales', option.value)}
+                  />
+                ))}
+              </FilterGroup>
+            </div>
+          </div>
+        ) : null}
 
         <div className="flex flex-wrap gap-2">
           <Button
@@ -278,7 +310,7 @@ export const SearchPage = () => {
           <RepoGrid onRepoClick={setSelectedRepository} repositories={repositories} users={users} />
         ) : (
           <EmptyState
-            title="못 찾으셨나요? 컨트리뷰터로 검색해보세요."
+            title="못 찾으셨나요? 공동창작자로 검색해보세요."
             description="검색어나 필터를 줄이면 아직 열려 있는 세계관을 더 넓게 볼 수 있습니다."
           />
         )}

@@ -54,7 +54,7 @@ export const useRepositoryStore = create<RepositoryState>((set, get) => ({
       const repositories = await repositoryService.getRepositories(nextFilters);
       set({ repositories, isLoading: false });
     } catch {
-      set({ error: '레포지토리를 불러오지 못했습니다.', isLoading: false });
+      set({ error: '세계관을 불러오지 못했습니다.', isLoading: false });
     }
   },
 
@@ -65,7 +65,7 @@ export const useRepositoryStore = create<RepositoryState>((set, get) => ({
       const featuredRepositories = await repositoryService.getFeaturedRepositories();
       set({ featuredRepositories, isLoading: false });
     } catch {
-      set({ error: '추천 레포지토리를 불러오지 못했습니다.', isLoading: false });
+      set({ error: '추천 세계관을 불러오지 못했습니다.', isLoading: false });
     }
   },
 
@@ -77,7 +77,7 @@ export const useRepositoryStore = create<RepositoryState>((set, get) => ({
       set({ selectedRepository, isLoading: false });
       return selectedRepository;
     } catch {
-      set({ error: '레포지토리 상세 정보를 불러오지 못했습니다.', isLoading: false });
+      set({ error: '세계관 소개 정보를 불러오지 못했습니다.', isLoading: false });
       return null;
     }
   },
@@ -94,7 +94,7 @@ export const useRepositoryStore = create<RepositoryState>((set, get) => ({
       }));
       return createdRepository;
     } catch {
-      set({ error: '레포지토리를 생성하지 못했습니다.', isLoading: false });
+      set({ error: '세계관을 생성하지 못했습니다.', isLoading: false });
       return null;
     }
   },

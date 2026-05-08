@@ -29,32 +29,32 @@ export const StepBasicInfo = ({ draft, updateDraft }: RepositoryWizardStepProps)
   return (
     <div className="space-y-5">
       <Input
-        label="Title"
+        label="제목"
         onChange={(event) => updateDraft({ title: event.target.value })}
         placeholder="예: 북촌 달그림자 기록"
         value={draft.title}
       />
       <Input
-        label="Thumbnail URL"
+        label="썸네일 URL"
         onChange={(event) => updateDraft({ thumbnail: event.target.value })}
         placeholder="https://images.unsplash.com/..."
         value={draft.thumbnail}
       />
       <Input
-        label="One-line intro"
+        label="한 줄 소개"
         onChange={(event) => updateDraft({ intro: event.target.value })}
         placeholder="이 세계관을 한 문장으로 소개해주세요."
         value={draft.intro}
       />
       <Textarea
-        label="Description"
+        label="소개"
         onChange={(event) => updateDraft({ description: event.target.value })}
         placeholder="검색 카드와 상세 헤더에 표시될 소개입니다."
         value={draft.description}
       />
 
       <fieldset>
-        <legend className="text-sm font-medium text-slate-700">Genre</legend>
+        <legend className="text-sm font-medium text-slate-700">장르</legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {GENRES.map((genre) => (
             <button
@@ -75,7 +75,7 @@ export const StepBasicInfo = ({ draft, updateDraft }: RepositoryWizardStepProps)
 
       <div>
         <label className="text-sm font-medium text-slate-700" htmlFor="tag-input">
-          Tags
+          태그
         </label>
         <input
           id="tag-input"

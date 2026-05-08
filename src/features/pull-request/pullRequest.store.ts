@@ -64,7 +64,7 @@ export const usePullRequestStore = create<PullRequestState>((set, get) => ({
       const pullRequests = await pullRequestService.getPullRequests(nextFilters);
       set({ pullRequests, isLoading: false });
     } catch {
-      set({ error: 'PR 목록을 불러오지 못했습니다.', isLoading: false });
+      set({ error: '창작 제안 목록을 불러오지 못했습니다.', isLoading: false });
     }
   },
 
@@ -76,7 +76,7 @@ export const usePullRequestStore = create<PullRequestState>((set, get) => ({
       set({ selectedPullRequest, isLoading: false });
       return selectedPullRequest;
     } catch {
-      set({ error: 'PR 정보를 불러오지 못했습니다.', isLoading: false });
+      set({ error: '창작 제안 정보를 불러오지 못했습니다.', isLoading: false });
       return null;
     }
   },
@@ -93,7 +93,7 @@ export const usePullRequestStore = create<PullRequestState>((set, get) => ({
       }));
       return pullRequest;
     } catch {
-      set({ error: 'AI 리뷰 PR을 생성하지 못했습니다.', isLoading: false });
+      set({ error: 'AI 검토 창작 제안을 생성하지 못했습니다.', isLoading: false });
       return null;
     }
   },
@@ -114,7 +114,7 @@ export const usePullRequestStore = create<PullRequestState>((set, get) => ({
       }
       return pullRequest;
     } catch {
-      set({ error: 'PR을 제출하지 못했습니다.', isLoading: false });
+      set({ error: '창작 제안을 제출하지 못했습니다.', isLoading: false });
       return null;
     }
   },
@@ -135,7 +135,7 @@ export const usePullRequestStore = create<PullRequestState>((set, get) => ({
       }
       return pullRequest;
     } catch {
-      set({ error: 'PR 리뷰 정보를 저장하지 못했습니다.', isLoading: false });
+      set({ error: '창작 제안 검토 정보를 저장하지 못했습니다.', isLoading: false });
       return null;
     }
   },
@@ -156,7 +156,7 @@ export const usePullRequestStore = create<PullRequestState>((set, get) => ({
       }
       return pullRequest;
     } catch {
-      set({ error: 'PR 열람 기록을 저장하지 못했습니다.', isLoading: false });
+      set({ error: '창작 제안 열람 기록을 저장하지 못했습니다.', isLoading: false });
       return null;
     }
   },
@@ -182,7 +182,7 @@ export const usePullRequestStore = create<PullRequestState>((set, get) => ({
       }
       return pullRequest;
     } catch {
-      set({ error: 'PR 처리 결과를 저장하지 못했습니다.', isLoading: false });
+      set({ error: '창작 제안 처리 결과를 저장하지 못했습니다.', isLoading: false });
       return null;
     }
   },

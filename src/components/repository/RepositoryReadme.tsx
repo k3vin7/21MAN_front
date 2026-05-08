@@ -71,7 +71,7 @@ export const RepositoryReadme = ({ repository }: RepositoryReadmeProps) => {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold text-slate-950">지금 받고 싶은 기여</h2>
+        <h2 className="text-xl font-semibold text-slate-950">지금 받고 싶은 창작 제안</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           {repository.readme.recruitingAreas.map((area) => (
             <RecruitingAreaCard key={area.id} area={area} />
@@ -80,7 +80,7 @@ export const RepositoryReadme = ({ repository }: RepositoryReadmeProps) => {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold text-slate-950">기여 가이드라인</h2>
+        <h2 className="text-xl font-semibold text-slate-950">제안 가이드라인</h2>
         <p className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-700">
           {repository.readme.contributionGuidelines}
         </p>

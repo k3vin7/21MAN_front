@@ -110,8 +110,8 @@ export const NewPullRequestPage = () => {
             검색으로 이동
           </Link>
         }
-        title="기여할 세계관을 찾지 못했습니다"
-        description="mock data에 없는 repository ID입니다."
+        title="창작 제안을 보낼 세계관을 찾지 못했습니다"
+        description="mock data에 없는 세계관 ID입니다."
       />
     );
   }
@@ -155,7 +155,7 @@ export const NewPullRequestPage = () => {
     const input: PullRequestDraftInput = {
       repositoryId: repository.id,
       authorId: MOCK_CURRENT_USER_ID,
-      title: draft.title.trim() || `${repository.title} 기여 제안`,
+      title: draft.title.trim() || `${repository.title} 창작 제안`,
       originalContent: draft.content.trim(),
       contributionTypes:
         draft.contributionTypes.length > 0
@@ -178,10 +178,10 @@ export const NewPullRequestPage = () => {
       </Link>
 
       <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">New Pull Request</p>
-        <h1 className="mt-4 text-3xl font-semibold text-slate-950">이 세계관에 기여하기</h1>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-700">창작 제안</p>
+        <h1 className="mt-4 text-3xl font-semibold text-slate-950">이 세계관에 창작 제안하기</h1>
         <p className="mt-3 text-sm leading-6 text-slate-500">
-          @{author?.username ?? 'unknown'} 의 세계관에 PR을 보냅니다.
+          @{author?.username ?? 'unknown'} 의 세계관에 창작 제안을 보냅니다.
         </p>
       </section>
 
@@ -190,7 +190,7 @@ export const NewPullRequestPage = () => {
           <div>
             <h2 className="text-lg font-semibold text-slate-950">이 작품의 금지 설정을 확인하셨나요?</h2>
             <Link className="mt-2 inline-flex text-sm font-medium text-accent-700 hover:text-accent-900" to={`/r/${repository.id}`}>
-              README 확인하기
+              세계관 문서 확인하기
             </Link>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -227,7 +227,7 @@ export const NewPullRequestPage = () => {
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <label className="text-sm font-medium text-slate-700" htmlFor="pr-title">
-          PR 제목
+          제안 제목
         </label>
         <input
           id="pr-title"
@@ -240,7 +240,7 @@ export const NewPullRequestPage = () => {
         <div className="mt-5">
           <Textarea
             className="min-h-[400px]"
-            helperText="어떤 종류든 자유롭게 쓰세요. AI가 PR 양식으로 정리하고 등급을 판정합니다."
+            helperText="어떤 종류든 자유롭게 쓰세요. AI가 창작 제안 양식으로 정리하고 등급을 판정합니다."
             label="자유 작성"
             onChange={(event) => updateDraft({ content: event.target.value })}
             placeholder={`예시: ${repository.title}에서 아직 비어 있는 장소 하나를 제안하고 싶습니다. 이 장소는 기존 규칙과 이렇게 연결됩니다...`}

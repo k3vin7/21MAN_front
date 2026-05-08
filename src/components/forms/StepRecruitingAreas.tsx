@@ -49,8 +49,8 @@ export const StepRecruitingAreas = ({ draft, updateDraft }: RepositoryWizardStep
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-slate-950">Recruiting areas</h2>
-          <p className="mt-1 text-sm text-slate-500">컨트리뷰터가 어디에 참여할 수 있는지 명확히 알려주세요.</p>
+          <h2 className="text-lg font-semibold text-slate-950">모집 영역</h2>
+          <p className="mt-1 text-sm text-slate-500">공동창작자가 어디에 참여할 수 있는지 명확히 알려주세요.</p>
         </div>
         <Button leftIcon={<Plus className="size-4" />} onClick={addArea} variant="secondary">
           모집 영역 추가
@@ -62,19 +62,19 @@ export const StepRecruitingAreas = ({ draft, updateDraft }: RepositoryWizardStep
           <div key={area.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <div className="grid gap-3 md:grid-cols-3">
               <WizardSelect
-                label="Area type"
+                label="영역 유형"
                 onChange={(value) => updateArea(area.id, { type: value as RecruitingAreaType })}
                 options={areaTypes.map((type) => ({ label: RECRUITING_AREA_LABELS[type], value: type }))}
                 value={area.type}
               />
               <WizardSelect
-                label="Status"
+                label="모집 상태"
                 onChange={(value) => updateArea(area.id, { status: value as RecruitingAreaStatus })}
                 options={statuses.map((status) => ({ label: RECRUITING_STATUS_LABELS[status], value: status }))}
                 value={area.status}
               />
               <WizardSelect
-                label="Difficulty"
+                label="난이도"
                 onChange={(value) => updateArea(area.id, { difficulty: value as Difficulty })}
                 options={difficulties.map((difficulty) => ({ label: DIFFICULTY_LABELS[difficulty], value: difficulty }))}
                 value={area.difficulty}
@@ -82,7 +82,7 @@ export const StepRecruitingAreas = ({ draft, updateDraft }: RepositoryWizardStep
             </div>
             <Textarea
               className="mt-3 min-h-24"
-              label="Description"
+              label="설명"
               onChange={(event) => updateArea(area.id, { description: event.target.value })}
               value={area.description}
             />

@@ -96,8 +96,8 @@ export const RepositoryDetailPage = () => {
             검색으로 돌아가기
           </Link>
         }
-        title="존재하지 않는 repository ID입니다"
-        description="mock data에 없는 세계관입니다. 검색 화면에서 열려 있는 레포지토리를 확인해보세요."
+        title="존재하지 않는 세계관입니다"
+        description="mock data에 없는 세계관입니다. 검색 화면에서 열려 있는 세계관을 확인해보세요."
       />
     );
   }
@@ -166,7 +166,7 @@ export const RepositoryDetailPage = () => {
                   to={`/r/${repository.id}/pr/new`}
                 >
                   <GitPullRequest className="size-4" />
-                  Contribute 기여하기
+                  창작 제안하기
                 </Link>
               </div>
             </div>
