@@ -1,0 +1,138 @@
+import type { MergeHistoryEntry } from '@/features/pull-request/pullRequest.types';
+import type { Achievement, ProfileActivity } from '@/features/user/user.types';
+
+export const mergeHistoryMock: MergeHistoryEntry[] = [
+  {
+    id: 'merge-001',
+    repositoryId: 'baekdu-rail',
+    pullRequestId: 'pr-001',
+    contributorId: 'user-haneul',
+    title: '강릉 환승령에 바람표 검표원 추가',
+    grade: 'NORMAL',
+    mergedAt: '2026-04-22T09:30:00.000Z',
+    summary: '강릉 환승령의 금기 감지 방식과 안내 캐릭터가 공식 설정에 반영되었습니다.',
+  },
+  {
+    id: 'merge-002',
+    repositoryId: 'shell-library',
+    pullRequestId: 'pr-006',
+    contributorId: 'user-seo',
+    title: '잃어버린 생일 기억 대여 사례',
+    grade: 'NORMAL',
+    mergedAt: '2026-04-15T18:10:00.000Z',
+    summary: '기억 대여 규칙을 보여주는 단편 외전이 공식 사례로 채택되었습니다.',
+  },
+  {
+    id: 'merge-003',
+    repositoryId: 'orbit-market',
+    pullRequestId: 'pr-007',
+    contributorId: 'user-haneul',
+    title: '23번 접안구의 산소 배급 지도',
+    grade: 'MAJOR',
+    mergedAt: '2026-04-21T20:10:00.000Z',
+    summary: '시장 구역별 산소 배급 갈등과 접안구 지도가 핵심 설정에 추가되었습니다.',
+  },
+  {
+    id: 'merge-004',
+    repositoryId: 'rain-district',
+    pullRequestId: 'pr-010',
+    contributorId: 'user-haneul',
+    title: '우편국 옆 빗물 정류장 설정',
+    grade: 'NORMAL',
+    mergedAt: '2026-04-26T19:30:00.000Z',
+    summary: '9구역 주민의 생활감과 기억 보존 방식이 공식 장소 설정으로 확장되었습니다.',
+  },
+  {
+    id: 'merge-005',
+    repositoryId: 'dokkaebi-radio',
+    pullRequestId: 'pr-011',
+    contributorId: 'user-yuri',
+    title: '두 번째 새벽 사연: 잊은 이름',
+    grade: 'NORMAL',
+    mergedAt: '2026-05-02T21:00:00.000Z',
+    summary: '소원과 대가가 맞물리는 대표 사연으로 심야국 톤을 확정했습니다.',
+  },
+];
+
+export const profileActivitiesMock: ProfileActivity[] = [
+  {
+    id: 'activity-001',
+    userId: 'user-haneul',
+    type: 'PR_MERGED',
+    repositoryId: 'orbit-market',
+    pullRequestId: 'pr-007',
+    title: '궤도시장 23번가에 산소 배급 지도가 머지되었습니다.',
+    occurredAt: '2026-04-21T20:10:00.000Z',
+  },
+  {
+    id: 'activity-002',
+    userId: 'user-haneul',
+    type: 'CREDIT_GRANTED',
+    repositoryId: 'rain-district',
+    pullRequestId: 'pr-010',
+    title: '비 오는 9구역 공식 크레딧에 이름이 기록되었습니다.',
+    occurredAt: '2026-04-26T19:40:00.000Z',
+  },
+  {
+    id: 'activity-003',
+    userId: 'user-yuri',
+    type: 'PR_CREATED',
+    repositoryId: 'baekdu-rail',
+    pullRequestId: 'pr-002',
+    title: '백두철도 연대기에 새 에피소드를 제안했습니다.',
+    occurredAt: '2026-05-04T12:00:00.000Z',
+  },
+  {
+    id: 'activity-004',
+    userId: 'user-seo',
+    type: 'PR_REVIEWED',
+    repositoryId: 'black-ink-murim',
+    pullRequestId: 'pr-009',
+    title: '흑연문 무림기록 콘티 PR의 AI 분석이 완료되었습니다.',
+    occurredAt: '2026-05-05T10:20:00.000Z',
+  },
+  {
+    id: 'activity-005',
+    userId: 'user-ara',
+    type: 'REPOSITORY_CREATED',
+    repositoryId: 'neon-gumiho',
+    title: '네온 구미호 수사국 레포지토리를 열었습니다.',
+    occurredAt: '2026-04-24T18:00:00.000Z',
+  },
+];
+
+export const achievementsMock: Achievement[] = [
+  {
+    id: 'achievement-001',
+    userId: 'user-haneul',
+    title: '지도 설계자',
+    description: '지역 설정 PR이 3개 이상 공식 세계관에 반영되었습니다.',
+    earnedAt: '2026-04-26T19:40:00.000Z',
+    tone: 'teal',
+  },
+  {
+    id: 'achievement-002',
+    userId: 'user-yuri',
+    title: '장면의 온도',
+    description: '에피소드 기여가 이번 주 주목 기여로 선정되었습니다.',
+    earnedAt: '2026-05-02T21:00:00.000Z',
+    tone: 'rose',
+  },
+  {
+    id: 'achievement-003',
+    userId: 'user-joon',
+    title: '규칙 정리자',
+    description: '세계 규칙 기여의 평균 충돌 위험이 Low를 유지했습니다.',
+    earnedAt: '2026-05-06T11:10:00.000Z',
+    tone: 'blue',
+  },
+  {
+    id: 'achievement-004',
+    userId: 'user-seo',
+    title: '첫 공식 컷',
+    description: '콘티 기여가 공식 연출 가이드에 반영될 후보로 올라갔습니다.',
+    earnedAt: '2026-05-05T10:20:00.000Z',
+    tone: 'amber',
+  },
+];
+
