@@ -4,7 +4,7 @@ import { Header } from '@/components/common/Header';
 
 export const RootLayout = () => {
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-950">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-950">
       <Header />
       <main className="flex-1 py-8 sm:py-10">
         <div className="shell">
