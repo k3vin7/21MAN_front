@@ -346,7 +346,7 @@ export const repositoryService = {
       async () => {
         const response = await apiClient.get<ApiListResponse>(
           API_PATHS.repositories.list,
-          { sort: 'popular', page: 1, size: limit },
+          { sort: 'popular', page: 1, size: Math.max(limit * 3, limit) },
           { auth: false },
         );
         const apiRepositories = filterRepositories(
