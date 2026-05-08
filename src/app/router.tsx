@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { RootLayout } from '@/layouts/RootLayout';
+import { AuthPage } from '@/pages/AuthPage';
 import { AuthorDashboardPage } from '@/pages/AuthorDashboardPage';
 import { HomePage } from '@/pages/HomePage';
 import { NewPullRequestPage } from '@/pages/NewPullRequestPage';
@@ -23,6 +24,14 @@ export const router = createBrowserRouter([
       {
         path: 'search',
         element: <SearchPage />,
+      },
+      {
+        path: 'login',
+        element: <AuthPage mode="login" />,
+      },
+      {
+        path: 'register',
+        element: <AuthPage mode="register" />,
       },
       {
         path: 'r/new',
